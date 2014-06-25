@@ -4,12 +4,10 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,7 +22,7 @@ import android.widget.TextView;
 /**
  * Created by The Bat Cave on 6/2/2014.
  */
-public class UploadPDF_Fragment extends Fragment {
+public class UploadPDF_Fragment extends Fragment{
 
     // Stores names of traversed directories
     ArrayList<String> str = new ArrayList<String>();
@@ -43,11 +41,22 @@ public class UploadPDF_Fragment extends Fragment {
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View rootView = inflater .inflate(R.layout.tools_fragment, container, false);
-        loadFileList();
+        View rootView = inflater .inflate(R.layout.uploadpdf_fragment, container, false);
 
-        showDialog(DIALOG_LOAD_FILE);
-        Log.d(TAG, path.getAbsolutePath());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                loadFileList();
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+
+                        //showDialog(DIALOG_LOAD_FILE);
+                        Log.d(TAG, path.getAbsolutePath());
+                    }
+                });
+            }
+        }).start();
+
         return rootView;
     }
 
@@ -67,7 +76,6 @@ public class UploadPDF_Fragment extends Fragment {
                     // Filters based on whether the file is hidden or not
                     return (sel.isFile() || sel.isDirectory())
                             && !sel.isHidden();
-
                 }
             };
 
@@ -100,8 +108,7 @@ public class UploadPDF_Fragment extends Fragment {
             Log.e(TAG, "path does not exist");
         }
 
-        adapter = new ArrayAdapter<Item>(this,
-                android.R.layout.select_dialog_item, android.R.id.text1,
+        adapter = new ArrayAdapter<Item>(getActivity(),android.R.layout.select_dialog_item, android.R.id.text1,
                 fileList) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -140,10 +147,10 @@ public class UploadPDF_Fragment extends Fragment {
         }
     }
 
-    @Override
+    //@Override
     protected Dialog onCreateDialog(int id) {
         Dialog dialog = null;
-        AlertDialog.Builder builder = new Builder(this);
+        AlertDialog.Builder builder = new Builder(getActivity());
 
         if (fileList == null) {
             Log.e(TAG, "No files loaded");
@@ -154,12 +161,12 @@ public class UploadPDF_Fragment extends Fragment {
         switch (id) {
             case DIALOG_LOAD_FILE:
                 builder.setTitle("Choose your file");
-                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        chosenFile = fileList[which].file;
-                        File sel = new File(path + "/" + chosenFile);
-                        if (sel.isDirectory()) {
+                        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                chosenFile = fileList[which].file;
+                                File sel = new File(path + "/" + chosenFile);
+                                if (sel.isDirectory()) {
                             firstLvl = false;
 
                             // Adds chosen directory to list
@@ -169,10 +176,9 @@ public class UploadPDF_Fragment extends Fragment {
 
                             loadFileList();
 
-                            removeDialog(DIALOG_LOAD_FILE);
-                            showDialog(DIALOG_LOAD_FILE);
+                            //removeDialog(DIALOG_LOAD_FILE);
+                            //showDialog(DIALOG_LOAD_FILE);
                             Log.d(TAG, path.getAbsolutePath());
-
                         }
 
                         // Checks if 'up' was clicked
@@ -193,8 +199,8 @@ public class UploadPDF_Fragment extends Fragment {
                             }
                             loadFileList();
 
-                            removeDialog(DIALOG_LOAD_FILE);
-                            showDialog(DIALOG_LOAD_FILE);
+                            //removeDialog(DIALOG_LOAD_FILE);
+                            //showDialog(DIALOG_LOAD_FILE);
                             Log.d(TAG, path.getAbsolutePath());
 
                         }
@@ -202,7 +208,6 @@ public class UploadPDF_Fragment extends Fragment {
                         else {
                             // Perform action with file picked
                         }
-
                     }
                 });
                 break;

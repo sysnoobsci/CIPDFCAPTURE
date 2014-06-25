@@ -26,9 +26,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+    implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -66,7 +65,6 @@ public class MainActivity extends Activity
         this.first_open = first_open;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //final Dialog loginDialog = new Dialog(this);
@@ -94,8 +92,7 @@ public class MainActivity extends Activity
         final Button cancel = (Button) loginDialog.findViewById(R.id.cancel_button);
         final Button loginButton = (Button) loginDialog.findViewById(R.id.login_button);
 
-        // Make dialog box visible.
-        loginDialog.show();
+
         //Closes app if they try to back out of dialog
         loginDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -170,7 +167,6 @@ public class MainActivity extends Activity
                 }).start();
             }
         });
-
         //Listener for Cancel Button
         cancel.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -180,7 +176,6 @@ public class MainActivity extends Activity
         });
 
     }//end of oncreate
-
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -198,6 +193,8 @@ public class MainActivity extends Activity
                 break;
             case 1:
                 fragment = new UploadPDF_Fragment();
+                // Make dialog box visible when uploadPDF_Fragment is opened.
+                loginDialog.show();
                 break;
             case 2:
                 fragment = new DownloadPDF_Fragment();
@@ -232,7 +229,6 @@ public class MainActivity extends Activity
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
