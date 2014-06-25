@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1d1d1d">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/title_layout"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="40sp"
+            android:layout_margin="4dp"
+            android:text="Login"
+            android:textColor="#999999"
+            android:id="@+id/title"/>
+        </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#999999"
+        android:layout_below="@id/title_layout"
+        android:id="@+id/separator"/>
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_margin="4dp"
+        android:id="@+id/hostname"
+        android:layout_below="@+id/separator"
+        android:layout_centerHorizontal="true"
+        android:text="meraz"
+        android:textColor="@color/White"
+        android:hint="Hostname"/>
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_margin="4dp"
+        android:id="@+id/domain"
+        android:layout_below="@+id/hostname"
+        android:layout_centerHorizontal="true"
+        android:text="usa.systemware.com"
+        android:textColor="@color/White"
+        android:hint="Domain"/>
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_margin="4dp"
+        android:inputType="number"
+        android:id="@+id/port"
+        android:layout_below="@+id/domain"
+        android:layout_centerHorizontal="true"
+        android:text="31000"
+        android:textColor="@color/White"
+        android:hint="Port"/>
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_margin="4dp"
+        android:id="@+id/username"
+        android:layout_below="@+id/port"
+        android:layout_centerHorizontal="true"
+        android:text="admin"
+        android:textColor="@color/White"
+        android:hint="Username"/>
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_margin="4dp"
+        android:inputType="textPassword"
+        android:id="@+id/password"
+        android:layout_below="@+id/username"
+        android:layout_centerHorizontal="true"
+        android:text="password1"
+        android:textColor="@color/White"
+        android:hint="Password"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/password"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/linearLayout">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_margin="4dp"
+            android:text="Cancel"
+            android:id="@+id/cancel_button" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_margin="4dp"
+            android:text="Login"
+            android:id="@+id/login_button" />
+    </LinearLayout>
+</RelativeLayout>
