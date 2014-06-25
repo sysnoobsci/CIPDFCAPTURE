@@ -6,9 +6,9 @@
 
 
     <string name="title_section1">About</string>
-    <string name="title_section2">Find</string>
-    <string name="title_section3">Tools</string>
-    <string name="title_section4">Administration</string>
+    <string name="title_section2">Capture PDF</string>
+    <string name="title_section3">Upload PDF</string>
+    <string name="title_section4">Download PDF</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>

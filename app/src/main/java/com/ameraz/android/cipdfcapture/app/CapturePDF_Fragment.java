@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 /**
  * Created by The Bat Cave on 6/2/2014.
  */
-public class Tools_Fragment extends Fragment {
+public class CapturePDF_Fragment extends Fragment {
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View rootView = inflater .inflate(R.layout.tools_fragment, container, false);
+        View rootView = inflater .inflate(R.layout.find_fragment, container, false);
         return rootView;
     }
 }
