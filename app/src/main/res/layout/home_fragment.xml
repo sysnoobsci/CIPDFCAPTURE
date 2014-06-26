@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="WELCOME TO SYSTEMWARE"
+            android:text="WELCOME TO PHONE CAPTURE"
             android:typeface="sans"
             android:id="@+id/textView"
             android:layout_gravity="center_horizontal"
@@ -35,27 +35,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User, you were last here time/date"
+            android:text="You were last here time/date"
             android:typeface="sans"
             android:id="@+id/textView2"
-            android:textSize="22sp"
-            android:layout_gravity="center_horizontal" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="65dp"
-        android:layout_below="@+id/linearLayout2"
-        android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout3">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User - (User role)"
-            android:typeface="sans"
-            android:id="@+id/textView3"
             android:textSize="22sp"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>

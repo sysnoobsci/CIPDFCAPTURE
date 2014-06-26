@@ -8,6 +8,8 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,10 +20,14 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.ameraz.android.cipdfcapture.app.filebrowser.Browse_Fragment;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -36,11 +42,14 @@ public class MainActivity extends Activity
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
+    SharedPreferences preferences;
+
     private CharSequence mTitle;
     Dialog loginDialog = null;
     Context maContext = MainActivity.this;
     ArrayList<String> logonXmlTextTags;
     Bundle bundle2 = new Bundle();
+    String datetime;
     final static private int LOGIN_TIMEOUT = 500;//time in milliseconds for login attempt to timeout
     final static private int LOGOFF_TIMEOUT = 500;//time in milliseconds for logoff attempt to timeout
     final static private int REQUEST_TIMEOUT = 500;
@@ -67,7 +76,7 @@ public class MainActivity extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //final Dialog loginDialog = new Dialog(this);
+
         loginDialog = new Dialog(this);
         loginDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
@@ -83,6 +92,8 @@ public class MainActivity extends Activity
                 R.id.navigation_drawer,
                 (DrawerLayout)findViewById(R.id.drawer_layout)
         );
+        Log.d("PrefDate",preferences.getString("pref_date", "n/a"));
+        //Home_Fragment.setText(preferences.getString("pref_date", "n/a"));
         // Set GUI of loginDialog screen
         final EditText hostname = (EditText) loginDialog.findViewById(R.id.hostname);
         final EditText domain = (EditText) loginDialog.findViewById(R.id.domain);
@@ -133,6 +144,7 @@ public class MainActivity extends Activity
                             @Override
                             public void run() {
                                 progress.dismiss();
+
                                 XmlParser xobj3 = new XmlParser();
                                 try {
                                     xobj3.parseXMLfunc(reqobj.getResult());
@@ -143,24 +155,14 @@ public class MainActivity extends Activity
                                 }
                                 Log.d("Variable","reqobj.getResult() value is: " + reqobj.getResult());
                                 setLogonXmlTextTags(xobj3.getTextTag());
-                                try {
-                                    ArrayList <String> dateTime = new ArrayList<String>();
-                                    Log.d("Variable", "getLogonXmlTextTags().get(5) value: " + getLogonXmlTextTags().get(5));
-                                    dateTime.add(getLogonXmlTextTags().get(5));
-                                    dateTime.add(", you were last here\n");
-                                    dateTime.add(getLogonXmlTextTags().get(7));
-                                    dateTime.add(getLogonXmlTextTags().get(6));
-                                    Home_Fragment.setText(dateTime);
-                                }
-                                catch(IndexOutOfBoundsException iobe){
-                                    Log.e("Error",iobe.toString());
-                                }
+                                //check if login worked
                                 loginlogoff lobj = new loginlogoff(maContext);
                                 lobj.isLoginSuccessful(reqobj);//check if login was successful
                                 lobj.logonMessage(reqobj);//show status of login
                                 if(lobj.getLogin_successful()){//if login is true,dismiss login screen
                                     loginDialog.dismiss();
                                 }
+
                             }
                         });//end of UiThread
                     }
@@ -182,6 +184,17 @@ public class MainActivity extends Activity
         // update the main content by replacing fragments
         Log.d("Variable", "Value of argument position: " + position);
         Fragment fragment = new Home_Fragment();
+        //setting up date and time on Home_Fragment
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //add current date to preferences for next app opening
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTimeStamp = dateFormat.format(new Date()); // Find todays date
+        Log.d("Date",currentTimeStamp);//log the time stamp
+        SharedPreferences.Editor edit = preferences.edit();
+
+        edit.putString("pref_date", currentTimeStamp);//added date to preferences for next app open
+        edit.commit();
+
         if(getFirst_open()){//if first time opening app, show home screen fragment
             position = -1;
             setFirst_open(false);
@@ -192,7 +205,8 @@ public class MainActivity extends Activity
                 fragment = new CapturePDF_Fragment();
                 break;
             case 1:
-                fragment = new UploadPDF_Fragment();
+                fragment = new Browse_Fragment();
+                //fragment = new UploadPDF_Fragment();
                 // Make dialog box visible when uploadPDF_Fragment is opened.
                 loginDialog.show();
                 break;
@@ -201,12 +215,14 @@ public class MainActivity extends Activity
                 break;
             default:
                 fragment = new Home_Fragment();
+
                 break;
         }
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                         //.replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
+
     }
 
     public void onSectionAttached(int number) {

@@ -60,7 +60,6 @@ public class FileArrayAdapter extends ArrayAdapter<Item>{
                           	t2.setText(o.getData());
                        if(t3!=null)
                           	t3.setText(o.getDate());
-                       
                }
                return v;
        }

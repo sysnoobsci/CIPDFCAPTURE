@@ -191,6 +191,7 @@ public class NavigationDrawerFragment extends Fragment {
         List<String> capture_pdf = new ArrayList<String>();
         capture_pdf.add("fawk");
         capture_pdf.add("man");
+
         //Populate Tools here with the submenu
         List<String> upload_pdf = new ArrayList<String>();
         upload_pdf.add("fawk");

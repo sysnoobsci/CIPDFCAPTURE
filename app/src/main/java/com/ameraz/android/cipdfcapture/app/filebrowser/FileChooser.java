@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
+import com.ameraz.android.cipdfcapture.app.R;
+
 import java.io.File;
 import java.sql.Date;
 import java.text.DateFormat;
@@ -66,7 +68,7 @@ public class FileChooser extends ListActivity {
 		 dir.addAll(fls);
 		 if(!f.getName().equalsIgnoreCase("sdcard"))
 			 dir.add(0,new Item("..","Parent Directory","",f.getParent(),"directory_up"));
-		 adapter = new FileArrayAdapter(FileChooser.this,R.layout.file_view,dir);
+		 adapter = new FileArrayAdapter(FileChooser.this, R.layout.file_view,dir);
 		 this.setListAdapter(adapter); 
     }
     @Override
