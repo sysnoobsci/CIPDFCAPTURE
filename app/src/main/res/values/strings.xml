@@ -14,6 +14,9 @@
     <string name="action_about">About</string>
     <string name="action_logoff">Logoff</string>
 
+    <string name="title_activity_fileexplorer">FileexplorerActivity</string>
+
+
     <string name="navdrawer1">Capture PDF</string>
     <string name="navdrawer2">Upload PDF</string>
     <string name="navdrawer3">Download PDF</string>
