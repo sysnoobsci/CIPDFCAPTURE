@@ -38,7 +38,6 @@ public class Upload_Fragment extends Fragment {
     String curFileName;
     static View rootView;
     EditText edittext;
-    Button browseb;
     Context maContext = getActivity();
     ArrayList<String> logonXmlTextTags;
     SharedPreferences preferences;
@@ -62,19 +61,51 @@ public class Upload_Fragment extends Fragment {
     {
         rootView = inflater .inflate(R.layout.fragment_fileexplorer, container, false);
         edittext = (EditText)rootView.findViewById(R.id.editText);
-        rootView.findViewById(R.id.skipButton).setOnClickListener( new View.OnClickListener() {
+        rootView.findViewById(R.id.skipButton).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {//set listener for browse button
                 getfile(v);
             }
         });
-
+        rootView.findViewById(R.id.upload).setOnClickListener(new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {//set listener for upload button
+            try {
+                uploadButton();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            }
+        }
+        });
         return rootView;
     }
 
     public void getfile(View view){
         Intent intent1 = new Intent(getActivity(), FileChooser.class);
         startActivityForResult(intent1,REQUEST_PATH);
+    }
+    public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
+            ExecutionException, TimeoutException {
+        XmlParser xobj = new XmlParser();
+        APIQueries apiobj = new APIQueries(getActivity());
+        ReqTask reqobj4 = new ReqTask(apiobj.pingQuery(), this.getClass().getName(), maContext);
+        reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
+        xobj.parseXMLfunc(reqobj4.getResult());
+        apiobj.isPingSuccessful(xobj.getTextTag());
+        if(apiobj.getPingresult()){//if the ping is successful(i.e. user logged in)
+            //********put in code for uploading file here***********
+        }
+        else{//if ping fails, user must log in first
+            cilogin();
+        }
     }
     // Listen for results.
     public void cilogin(){
@@ -91,6 +122,7 @@ public class Upload_Fragment extends Fragment {
         final Button cancel = (Button) loginDialog.findViewById(R.id.cancel_button);
         final Button loginButton = (Button) loginDialog.findViewById(R.id.login_button);
 
+        loginDialog.show();//show the login dialog box
         //Closes app if they try to back out of dialog
         loginDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -116,7 +148,9 @@ public class Upload_Fragment extends Fragment {
 
                 new Thread(new Runnable() {
                     public void run() {
-                        final ReqTask reqobj = new ReqTask(liloobj.httpstringcreate(),//send login query to CI via asynctask
+                        APIQueries apiobj = new APIQueries(getActivity());
+                        final ReqTask reqobj = new ReqTask(apiobj.logonQuery(liloobj.getUsername(),
+                                liloobj.getPassword(), null),//send login query to CI via asynctask
                                 this.getClass().getName(), maContext);
                         try {
                             reqobj.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -133,7 +167,6 @@ public class Upload_Fragment extends Fragment {
                             @Override
                             public void run() {
                                 progress.dismiss();
-
                                 XmlParser xobj3 = new XmlParser();
                                 try {
                                     xobj3.parseXMLfunc(reqobj.getResult());
@@ -146,8 +179,8 @@ public class Upload_Fragment extends Fragment {
                                 setLogonXmlTextTags(xobj3.getTextTag());
                                 //check if login worked
                                 loginlogoff lobj = new loginlogoff(maContext);
-                                lobj.isLoginSuccessful(reqobj);//check if login was successful
-                                lobj.logonMessage(reqobj);//show status of login
+                                lobj.isLoginSuccessful(getLogonXmlTextTags());//check if login was successful
+                                lobj.logonMessage();//show status of login
                                 if (lobj.getLogin_successful()) {//if login is true,dismiss login screen
                                     loginDialog.dismiss();
                                 }

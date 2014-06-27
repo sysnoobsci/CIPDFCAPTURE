@@ -186,7 +186,8 @@ public class MainActivity extends Activity
             final loginlogoff liloobj2 = new loginlogoff(maContext);
             new Thread(new Runnable() {
                 public void run() {
-                    ReqTask reqobj4 = new ReqTask(liloobj2.logoffQuery(), this.getClass().getName(), maContext);
+                    APIQueries apiobj = new APIQueries(maContext);
+                    ReqTask reqobj4 = new ReqTask(apiobj.logoffQuery(), this.getClass().getName(), maContext);
                     XmlParser xobj4 = new XmlParser();
                     try {
                         reqobj4.execute().get(LOGOFF_TIMEOUT,TimeUnit.MILLISECONDS);

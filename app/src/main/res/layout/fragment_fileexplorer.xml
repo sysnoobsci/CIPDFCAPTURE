@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" 
-    >
+    android:layout_height="fill_parent"
+    android:weightSum="1">
     <TextView android:id="@+id/textview" 
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content"
@@ -13,7 +13,8 @@
     />    
     <RelativeLayout android:id="@+id/relativeLayout1" 
         android:layout_height="wrap_content" 
-        android:layout_width="wrap_content">  
+        android:layout_width="wrap_content"
+        android:layout_weight="0.36">
         <EditText
             android:layout_alignParentLeft="true" 
             android:hint="EditText"
@@ -36,5 +37,13 @@
 	         android:layout_height="wrap_content" 
 	         android:layout_width="wrap_content">
          </Button>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload File"
+            android:id="@+id/upload"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout> 
 </LinearLayout>

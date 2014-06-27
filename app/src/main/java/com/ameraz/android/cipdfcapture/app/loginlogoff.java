@@ -26,7 +26,6 @@ public class loginlogoff {
     private static int portnumber = 34544;
     private static String username = "admin";
     private static String password = "admin";
-    private static String LogonRes = "";
     private static Boolean connection_state = false;
     private static Boolean login_successful = false;
     private static Boolean logoff_successful = false;
@@ -71,14 +70,6 @@ public class loginlogoff {
         this.password = password;
     }
 
-    public static String getLogonRes() {
-        return LogonRes;
-    }
-
-    public static void setLogonRes(String logonRes) {
-        LogonRes = logonRes;
-    }
-
     public static Boolean getConnection_state() {
         return connection_state;
     }
@@ -103,43 +94,24 @@ public class loginlogoff {
         loginlogoff.logoff_successful = logoff_successful;
     }
 
-    protected String httplogonreq() {
-        String httpstr = "?action=logon&user=" + getUsername() + "&password=" + getPassword();
-        return httpstr;
-    }
-
-    protected String httpstringcreate() {
-        String httpreq = "http://" + getHostname() + "." + getDomain() + ":" + getPortnumber() + "/ci" + httplogonreq();
-        return httpreq;
-    }
-
-    protected void isLoginSuccessful(ReqTask robj) {
-        setLogonRes(robj.getResult());//get result from query
-        if (getLogonRes().contains("<rc>0</rc><xrc>0</xrc><xsrc>0</xsrc>")) {
+    protected void isLoginSuccessful(ArrayList<String> larray) {
+        if(larray.get(0).equals("0") && larray.get(1).equals("0") && larray.get(2).equals("0")){
             setLogin_successful(true);
-        } else {
+        }
+        else{
             setLogin_successful(false);
         }
     }
-
-    void logonMessage(ReqTask robj){
-        String toastMessage;
-        isLoginSuccessful(robj);//check if login was successful
-        if (!getLogin_successful()) {
-            toastMessage = "Logon Failed.";
+    void logonMessage(){
+        if (getLogin_successful()) {
+            ToastMessageTask tmtask = new ToastMessageTask(mContext,"Successfully logged in.");
+            tmtask.execute();
         }
         else {
-            toastMessage = "Logon Successful.";
+            ToastMessageTask tmtask = new ToastMessageTask(mContext,"Problem logging off.");
+            tmtask.execute();
         }
-        ToastMessageTask tmtask = new ToastMessageTask(mContext,toastMessage);
-        tmtask.execute();
-    }
 
-    String logoffQuery(){
-        String targetCIQuery = "http://" + getHostname() + "." +
-                getDomain() + ":" + getPortnumber() + "/ci";
-        String logoffQuery = "?action=logoff";
-        return targetCIQuery + logoffQuery;
     }
 
     void isLogoffSuccessful(ArrayList<String> larray){
