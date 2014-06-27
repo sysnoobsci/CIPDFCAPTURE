@@ -41,7 +41,7 @@ public class UploadPDF_Fragment extends Fragment{
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View rootView = inflater .inflate(R.layout.uploadpdf_fragment, container, false);
+        View rootView = inflater .inflate(R.layout.upload_fragment, container, false);
 
         new Thread(new Runnable() {
             @Override

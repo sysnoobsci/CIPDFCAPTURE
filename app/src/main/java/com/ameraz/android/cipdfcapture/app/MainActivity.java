@@ -76,7 +76,7 @@ public class MainActivity extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         loginDialog = new Dialog(this);
         loginDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
@@ -93,7 +93,9 @@ public class MainActivity extends Activity
                 (DrawerLayout)findViewById(R.id.drawer_layout)
         );
         Log.d("PrefDate",preferences.getString("pref_date", "n/a"));
-        //Home_Fragment.setText(preferences.getString("pref_date", "n/a"));
+        //******FIX THIS******
+        Home_Fragment hmobj = new Home_Fragment();
+        hmobj.setText(preferences.getString("pref_date", "n/a"));
         // Set GUI of loginDialog screen
         final EditText hostname = (EditText) loginDialog.findViewById(R.id.hostname);
         final EditText domain = (EditText) loginDialog.findViewById(R.id.domain);
@@ -108,7 +110,16 @@ public class MainActivity extends Activity
         loginDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                finish();
+                //setting up date and time on Home_Fragment before closing app
+                preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                //add current date to preferences for next app opening
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String currentTimeStamp = dateFormat.format(new Date()); // Find todays date
+                Log.d("Date",currentTimeStamp);//log the time stamp
+                SharedPreferences.Editor edit = preferences.edit();
+                edit.putString("pref_date", currentTimeStamp);//added date to preferences for next app open
+                edit.commit();
+                finish();//close app
             }
         });
         //Listener for loginDialog button
@@ -184,16 +195,7 @@ public class MainActivity extends Activity
         // update the main content by replacing fragments
         Log.d("Variable", "Value of argument position: " + position);
         Fragment fragment = new Home_Fragment();
-        //setting up date and time on Home_Fragment
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        //add current date to preferences for next app opening
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String currentTimeStamp = dateFormat.format(new Date()); // Find todays date
-        Log.d("Date",currentTimeStamp);//log the time stamp
-        SharedPreferences.Editor edit = preferences.edit();
 
-        edit.putString("pref_date", currentTimeStamp);//added date to preferences for next app open
-        edit.commit();
 
         if(getFirst_open()){//if first time opening app, show home screen fragment
             position = -1;

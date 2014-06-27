@@ -20,8 +20,8 @@ public class Home_Fragment extends Fragment {
         rootView = inflater .inflate(R.layout.home_fragment, container, false);
         return rootView;
     }
-    public static void setText(String date){
-        TextView textView = (TextView) rootView.findViewById(R.id.textView2);
+    public void setText(String date){
+        TextView textView = (TextView) getView().findViewById(R.id.textView2);
         textView.setText(", you were last here\n" + date);
     }
 }
