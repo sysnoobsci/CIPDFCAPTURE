@@ -38,15 +38,14 @@ public class FileChooser extends ListActivity {
 				DateFormat formater = DateFormat.getDateTimeInstance();
 				String date_modify = formater.format(lastModDate);
 				if(ff.isDirectory()){
-					
-					
+
 					File[] fbuf = ff.listFiles(); 
 					int buf = 0;
 					if(fbuf != null){ 
 						buf = fbuf.length;
 					} 
-					else buf = 0; 
-					String num_item = String.valueOf(buf);
+					else buf = 0;
+                    String num_item = String.valueOf(buf);
 					if(buf == 0) num_item = num_item + " item";
 					else num_item = num_item + " items";
 					
@@ -55,7 +54,6 @@ public class FileChooser extends ListActivity {
 				}
 				else
 				{
-					
 					fls.add(new Item(ff.getName(),ff.length() + " Byte", date_modify, ff.getAbsolutePath(),"file_icon"));
 				}
 			 }

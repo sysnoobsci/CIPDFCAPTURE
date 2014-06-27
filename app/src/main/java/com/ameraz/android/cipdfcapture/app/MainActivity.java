@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Handler;
 
 public class MainActivity extends Activity
     implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -43,26 +44,18 @@ public class MainActivity extends Activity
     SharedPreferences preferences;
 
     private CharSequence mTitle;
-    Dialog loginDialog = null;
+
     Context maContext = MainActivity.this;
-    ArrayList<String> logonXmlTextTags;
+
     Bundle bundle2 = new Bundle();
     String datetime;
-    final static private int LOGIN_TIMEOUT = 500;//time in milliseconds for login attempt to timeout
+
     final static private int LOGOFF_TIMEOUT = 500;//time in milliseconds for logoff attempt to timeout
     final static private int REQUEST_TIMEOUT = 500;
 
     private Boolean first_open = true;//keeps track of if the app is opening for the first time to show the home screen
 
     ProgressDialog progress;
-
-    public ArrayList<String> getLogonXmlTextTags() {
-        return logonXmlTextTags;
-    }
-
-    public void setLogonXmlTextTags(ArrayList<String> logonXmlTextTags) {
-        this.logonXmlTextTags = logonXmlTextTags;
-    }
 
     public Boolean getFirst_open() {
         return first_open;
@@ -72,15 +65,26 @@ public class MainActivity extends Activity
         this.first_open = first_open;
     }
 
+    public void saveTimestamp(){//before closing app, save current timestamp
+        //add current date to preferences for next app opening
+        Log.d("PrefDate", preferences.getString("pref_date", "n/a"));
+        //setting up date and time on Home_Fragment before closing app
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTimeStamp = dateFormat.format(new Date()); // Find todays date
+        Log.d("Date",currentTimeStamp);//log the time stamp
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putString("pref_date", currentTimeStamp);//added date to preferences for next app open
+        edit.commit();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-        loginDialog = new Dialog(this);
-        loginDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         super.onCreate(savedInstanceState);
         // Create loginDialog Dialog
         setContentView(R.layout.activity_main);
-        loginDialog.setContentView(R.layout.login_dialog);
+
         //navigation drawer stuff
         mNavigationDrawerFragment=(NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -90,102 +94,6 @@ public class MainActivity extends Activity
                 R.id.navigation_drawer,
                 (DrawerLayout)findViewById(R.id.drawer_layout)
         );
-        // Set GUI of loginDialog screen
-        final EditText hostname = (EditText) loginDialog.findViewById(R.id.hostname);
-        final EditText domain = (EditText) loginDialog.findViewById(R.id.domain);
-        final EditText port = (EditText) loginDialog.findViewById(R.id.port);
-        final EditText username = (EditText) loginDialog.findViewById(R.id.username);
-        final EditText password = (EditText) loginDialog.findViewById(R.id.password);
-        final Button cancel = (Button) loginDialog.findViewById(R.id.cancel_button);
-        final Button loginButton = (Button) loginDialog.findViewById(R.id.login_button);
-
-
-        //Closes app if they try to back out of dialog
-        loginDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                Log.d("PrefDate",preferences.getString("pref_date", "n/a"));
-                //******FIX THIS******
-                Home_Fragment.setText(preferences.getString("pref_date", "n/a"));
-                //setting up date and time on Home_Fragment before closing app
-
-                //add current date to preferences for next app opening
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String currentTimeStamp = dateFormat.format(new Date()); // Find todays date
-                Log.d("Date",currentTimeStamp);//log the time stamp
-                SharedPreferences.Editor edit = preferences.edit();
-                edit.putString("pref_date", currentTimeStamp);//added date to preferences for next app open
-                edit.commit();
-
-                finish();//close app
-            }
-        });
-        //Listener for loginDialog button
-        loginButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View v){
-                Log.d("Message", "Login button clicked");
-                final loginlogoff liloobj = new loginlogoff(maContext);//passed in context of this activity
-                liloobj.setHostname(hostname.getText().toString());
-                liloobj.setDomain(domain.getText().toString());
-                liloobj.setPortnumber(Integer.parseInt(port.getText().toString()));
-                liloobj.setUsername(username.getText().toString());
-                liloobj.setPassword(password.getText().toString());
-
-                progress = ProgressDialog.show(maContext, "Logging in...", "Please Wait", true);
-
-                new Thread(new Runnable() {
-                    public void run() {
-                        final ReqTask reqobj = new ReqTask(liloobj.httpstringcreate(),//send login query to CI via asynctask
-                                this.getClass().getName(), maContext);
-                        try {
-                            reqobj.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (TimeoutException e) {
-                            ToastMessageTask tmtask = new ToastMessageTask(maContext, "Logon attempt timed out.");
-                            tmtask.execute();
-                            e.printStackTrace();
-                        }
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                progress.dismiss();
-
-                                XmlParser xobj3 = new XmlParser();
-                                try {
-                                    xobj3.parseXMLfunc(reqobj.getResult());
-                                } catch (XmlPullParserException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                Log.d("Variable","reqobj.getResult() value is: " + reqobj.getResult());
-                                setLogonXmlTextTags(xobj3.getTextTag());
-                                //check if login worked
-                                loginlogoff lobj = new loginlogoff(maContext);
-                                lobj.isLoginSuccessful(reqobj);//check if login was successful
-                                lobj.logonMessage(reqobj);//show status of login
-                                if(lobj.getLogin_successful()){//if login is true,dismiss login screen
-                                    loginDialog.dismiss();
-                                }
-
-                            }
-                        });//end of UiThread
-                    }
-                }).start();
-            }
-        });
-        //Listener for Cancel Button
-        cancel.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View v){
-                finish();
-            }
-        });
 
     }//end of oncreate
 
@@ -207,9 +115,6 @@ public class MainActivity extends Activity
                 break;
             case 1:
                 fragment = new Upload_Fragment();
-                //fragment = new UploadPDF_Fragment();
-                // Make dialog box visible when uploadPDF_Fragment is opened.
-                loginDialog.show();
                 break;
             case 2:
                 fragment = new Download_Fragment();
@@ -225,6 +130,14 @@ public class MainActivity extends Activity
                 .commit();
 
     }
+
+    private Boolean exit = false;
+    @Override
+    public void onBackPressed() {
+        saveTimestamp();
+        finish();//close the app
+    }
+
 
     public void onSectionAttached(int number) {
         switch (number) {

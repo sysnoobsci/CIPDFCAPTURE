@@ -147,10 +147,7 @@ public class NavigationDrawerFragment extends Fragment {
                         break;
                     case 1:
                         switch (childPosition) {
-                            case 0:
-                                fragment = new Upload_Fragment();
-                                break;
-                            case 1:
+                            case 0://only one choice
                                 fragment = new Upload_Fragment();
                                 break;
                         }
@@ -194,8 +191,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         //Populate Tools here with the submenu
         List<String> upload_pdf = new ArrayList<String>();
-        upload_pdf.add("fawk");
-        upload_pdf.add("man");
+        upload_pdf.add("Find and Upload");
         //Populate Admin here with the submenu
         List<String> download_pdf = new ArrayList<String>();
         download_pdf.add("fawk");
