@@ -20,7 +20,7 @@ public class Home_Fragment extends Fragment {
         rootView = inflater .inflate(R.layout.home_fragment, container, false);
         return rootView;
     }
-    public void setText(String date){
+    public static void setText(String date){
         TextView textView = (TextView) getView().findViewById(R.id.textView2);
         textView.setText(", you were last here\n" + date);
     }

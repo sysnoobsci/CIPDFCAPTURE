@@ -138,30 +138,30 @@ public class NavigationDrawerFragment extends Fragment {
                     case 0:
                         switch (childPosition) {
                             case 0:
-                                fragment = new CapturePDF_Fragment();
+                                fragment = new Capture_Fragment();
                                 break;
                             case 1:
-                                fragment = new CapturePDF_Fragment();
+                                fragment = new Capture_Fragment();
                                 break;
                         }
                         break;
                     case 1:
                         switch (childPosition) {
                             case 0:
-                                fragment = new UploadPDF_Fragment();
+                                fragment = new Upload_Fragment();
                                 break;
                             case 1:
-                                fragment = new UploadPDF_Fragment();
+                                fragment = new Upload_Fragment();
                                 break;
                         }
                         break;
                     case 2:
                         switch (childPosition) {
                             case 0:
-                                fragment = new DownloadPDF_Fragment();
+                                fragment = new Download_Fragment();
                                 break;
                             case 1:
-                                fragment = new DownloadPDF_Fragment();
+                                fragment = new Download_Fragment();
                                 break;
                         }
                         break;

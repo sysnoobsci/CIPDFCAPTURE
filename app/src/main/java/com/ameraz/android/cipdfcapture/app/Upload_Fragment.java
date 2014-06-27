@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app.filebrowser;
+package com.ameraz.android.cipdfcapture.app;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -10,14 +10,15 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.ameraz.android.cipdfcapture.app.R;
+import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 
-public class Browse_Fragment extends Fragment {
- 
-	private static final int REQUEST_PATH = 1;
- 
-	String curFileName;
+public class Upload_Fragment extends Fragment {
+
+    private static final int REQUEST_PATH = 1;
+
+    String curFileName;
     static View rootView;
-	EditText edittext;
+    EditText edittext;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -26,18 +27,18 @@ public class Browse_Fragment extends Fragment {
         return rootView;
     }
 
-    public void getfile(View view){ 
-    	Intent intent1 = new Intent(getActivity(), FileChooser.class);
+    public void getfile(View view){
+        Intent intent1 = new Intent(getActivity(), FileChooser.class);
         startActivityForResult(intent1,REQUEST_PATH);
     }
     // Listen for results.
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         // See which child activity is calling us back.
-    	if (requestCode == REQUEST_PATH){
-    		if (resultCode == Activity.RESULT_OK) {
-    			curFileName = data.getStringExtra("GetFileName"); 
-            	edittext.setText(curFileName);
-    		}
-    	 }
+        if (requestCode == REQUEST_PATH){
+            if (resultCode == Activity.RESULT_OK) {
+                curFileName = data.getStringExtra("GetFileName");
+                edittext.setText(curFileName);
+            }
+        }
     }
 }

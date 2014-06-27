@@ -20,8 +20,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.ameraz.android.cipdfcapture.app.filebrowser.Browse_Fragment;
-
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -92,10 +90,6 @@ public class MainActivity extends Activity
                 R.id.navigation_drawer,
                 (DrawerLayout)findViewById(R.id.drawer_layout)
         );
-        Log.d("PrefDate",preferences.getString("pref_date", "n/a"));
-        //******FIX THIS******
-        Home_Fragment hmobj = new Home_Fragment();
-        hmobj.setText(preferences.getString("pref_date", "n/a"));
         // Set GUI of loginDialog screen
         final EditText hostname = (EditText) loginDialog.findViewById(R.id.hostname);
         final EditText domain = (EditText) loginDialog.findViewById(R.id.domain);
@@ -110,8 +104,12 @@ public class MainActivity extends Activity
         loginDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                //setting up date and time on Home_Fragment before closing app
                 preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                Log.d("PrefDate",preferences.getString("pref_date", "n/a"));
+                //******FIX THIS******
+                Home_Fragment.setText(preferences.getString("pref_date", "n/a"));
+                //setting up date and time on Home_Fragment before closing app
+
                 //add current date to preferences for next app opening
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String currentTimeStamp = dateFormat.format(new Date()); // Find todays date
@@ -119,6 +117,7 @@ public class MainActivity extends Activity
                 SharedPreferences.Editor edit = preferences.edit();
                 edit.putString("pref_date", currentTimeStamp);//added date to preferences for next app open
                 edit.commit();
+
                 finish();//close app
             }
         });
@@ -204,16 +203,16 @@ public class MainActivity extends Activity
         FragmentManager fragmentManager = getFragmentManager();
         switch(position) {
             case 0:
-                fragment = new CapturePDF_Fragment();
+                fragment = new Capture_Fragment();
                 break;
             case 1:
-                fragment = new Browse_Fragment();
+                fragment = new Upload_Fragment();
                 //fragment = new UploadPDF_Fragment();
                 // Make dialog box visible when uploadPDF_Fragment is opened.
                 loginDialog.show();
                 break;
             case 2:
-                fragment = new DownloadPDF_Fragment();
+                fragment = new Download_Fragment();
                 break;
             default:
                 fragment = new Home_Fragment();
