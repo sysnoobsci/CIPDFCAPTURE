@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
@@ -90,6 +91,18 @@ public class Upload_Fragment extends Fragment {
             }
         }
         });
+
+        LinearLayout v = (LinearLayout) super.onCreateView(inflater, container, savedInstanceState);
+
+        Button btn = new Button(getActivity().getApplicationContext());
+        btn.setText("Button on Bottom");
+
+        v.addView(btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            }
+        });
+
         //FIX***********
         //Button save = (Button)rootView.findViewById(R.id.save);
         return rootView;
