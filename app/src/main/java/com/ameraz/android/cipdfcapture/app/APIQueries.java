@@ -34,7 +34,8 @@ public class APIQueries {
     }
     //logon
     String logonQuery(String user,String password,String newpwd){
-        String logonQuery = "?action=logon" + qf.formQuery(user,password,newpwd);
+        String logonQuery = "?action=logon" + qf.formQuery("user." + user,"password." + password,
+                "newpwd." + newpwd);
         return targetCIQuery() + logonQuery;
     }
     //logoff

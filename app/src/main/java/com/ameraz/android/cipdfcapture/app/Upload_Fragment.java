@@ -24,6 +24,9 @@ import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,10 +41,11 @@ public class Upload_Fragment extends Fragment {
     String curFileName;
     static View rootView;
     EditText edittext;
-    Context maContext = getActivity();
+    Context maContext;
     ArrayList<String> logonXmlTextTags;
     SharedPreferences preferences;
     ProgressDialog progress;
+    Boolean first_open = true;//checks if it is the first time opening upload fragment
 
     Dialog loginDialog = null;
 
@@ -60,6 +64,7 @@ public class Upload_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         rootView = inflater .inflate(R.layout.fragment_fileexplorer, container, false);
+        maContext = getActivity();//get context from activity
         edittext = (EditText)rootView.findViewById(R.id.editText);
         rootView.findViewById(R.id.skipButton).setOnClickListener(new View.OnClickListener(){
             @Override
@@ -92,6 +97,9 @@ public class Upload_Fragment extends Fragment {
         Intent intent1 = new Intent(getActivity(), FileChooser.class);
         startActivityForResult(intent1,REQUEST_PATH);
     }
+
+
+
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         XmlParser xobj = new XmlParser();
@@ -100,12 +108,14 @@ public class Upload_Fragment extends Fragment {
         reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
         xobj.parseXMLfunc(reqobj4.getResult());
         apiobj.isPingSuccessful(xobj.getTextTag());
-        if(apiobj.getPingresult()){//if the ping is successful(i.e. user logged in)
+
+        if (apiobj.getPingresult()) {//if the ping is successful(i.e. user logged in)
             //********put in code for uploading file here***********
+        } else {//if ping fails, user must log in first
+                cilogin();
         }
-        else{//if ping fails, user must log in first
-            cilogin();
-        }
+
+
     }
     // Listen for results.
     public void cilogin(){
@@ -143,9 +153,7 @@ public class Upload_Fragment extends Fragment {
                 liloobj.setPortnumber(Integer.parseInt(port.getText().toString()));
                 liloobj.setUsername(username.getText().toString());
                 liloobj.setPassword(password.getText().toString());
-
-                progress = ProgressDialog.show(maContext, "Logging in...", "Please Wait", true);
-
+                //progress = ProgressDialog.show(getActivity(), "Logging in...", "Please Wait", true);
                 new Thread(new Runnable() {
                     public void run() {
                         APIQueries apiobj = new APIQueries(getActivity());
@@ -166,7 +174,7 @@ public class Upload_Fragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                progress.dismiss();
+                                //progress.dismiss();
                                 XmlParser xobj3 = new XmlParser();
                                 try {
                                     xobj3.parseXMLfunc(reqobj.getResult());

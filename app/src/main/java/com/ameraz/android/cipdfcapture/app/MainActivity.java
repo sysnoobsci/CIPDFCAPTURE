@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
@@ -77,6 +78,15 @@ public class MainActivity extends Activity
         edit.commit();
     }
 
+    public static class PrefsFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            // Load the preferences from an XML resource
+            addPreferencesFromResource(R.xml.preferences);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
@@ -126,9 +136,7 @@ public class MainActivity extends Activity
         }
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
-                        //.replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
-
     }
 
     private Boolean exit = false;
@@ -180,6 +188,9 @@ public class MainActivity extends Activity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            getFragmentManager().beginTransaction()
+                    //.replace(android.R.id.content, new PrefsFragment()).commit();
+                    .replace(R.id.container, new PrefsFragment()).commit();
             return true;
         }
         if(id == R.id.action_logoff) {
