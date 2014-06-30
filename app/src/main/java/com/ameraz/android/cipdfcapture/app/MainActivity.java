@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
@@ -66,7 +67,7 @@ public class MainActivity extends Activity
         this.first_open = first_open;
     }
 
-    public void saveTimestamp(){//before closing app, save current timestamp
+    public void saveTimestamp(){//save current timestamp
         //add current date to preferences for next app opening
         Log.d("PrefDate", preferences.getString("pref_date", "n/a"));
         //setting up date and time on Home_Fragment before closing app
@@ -105,6 +106,7 @@ public class MainActivity extends Activity
                 (DrawerLayout)findViewById(R.id.drawer_layout)
         );
 
+
     }//end of oncreate
 
     @Override
@@ -139,14 +141,6 @@ public class MainActivity extends Activity
                 .commit();
     }
 
-    private Boolean exit = false;
-    @Override
-    public void onBackPressed() {
-        saveTimestamp();
-        finish();//close the app
-    }
-
-
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
@@ -160,7 +154,11 @@ public class MainActivity extends Activity
                 break;
         }
     }
-
+    @Override
+     public void onStop(){
+        saveTimestamp();
+        super.onStop();
+    }
     public void restoreActionBar() {
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);

@@ -90,6 +90,8 @@ public class Upload_Fragment extends Fragment {
             }
         }
         });
+        //FIX***********
+        //Button save = (Button)rootView.findViewById(R.id.save);
         return rootView;
     }
 
