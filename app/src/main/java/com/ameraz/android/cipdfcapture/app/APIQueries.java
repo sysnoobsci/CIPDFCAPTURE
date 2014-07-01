@@ -2,8 +2,6 @@ package com.ameraz.android.cipdfcapture.app;
 
 import android.content.Context;
 
-import com.ameraz.android.cipdfcapture.app.loginlogoff;
-
 import java.util.ArrayList;
 
 /**

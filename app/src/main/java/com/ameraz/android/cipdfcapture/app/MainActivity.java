@@ -2,12 +2,10 @@ package com.ameraz.android.cipdfcapture.app;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -17,21 +15,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Handler;
 
 public class MainActivity extends Activity
     implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -85,6 +77,17 @@ public class MainActivity extends Activity
             super.onCreate(savedInstanceState);
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preferences);
+            Preference button = findPreference("save");
+            button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference arg0) {
+                    //code for what you want it to do
+                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"CI Server Saved.");
+                    tmtask.execute();
+                    return true;
+                }
+            });
+
         }
     }
 
@@ -105,6 +108,7 @@ public class MainActivity extends Activity
                 R.id.navigation_drawer,
                 (DrawerLayout)findViewById(R.id.drawer_layout)
         );
+
 
 
     }//end of oncreate
@@ -187,7 +191,6 @@ public class MainActivity extends Activity
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             getFragmentManager().beginTransaction()
-                    //.replace(android.R.id.content, new PrefsFragment()).commit();
                     .replace(R.id.container, new PrefsFragment()).commit();
             return true;
         }

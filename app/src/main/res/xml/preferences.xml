@@ -45,14 +45,32 @@
 
             <EditTextPreference
                 android:key="edittext_preference"
-                android:title="@string/title_edittext_preference"
-                android:summary="@string/summary_edittext_preference"
+                android:title="@string/title_next_screen_hostname_preference"
+                android:summary="@string/summary_next_screen_hostname_preference"
                 android:dialogTitle="@string/dialog_title_edittext_preference" />
 
             <EditTextPreference
                 android:key="edittext_preference"
-                android:title="@string/title_edittext_preference"
-                android:summary="@string/summary_edittext_preference"
+                android:title="@string/title_next_screen_domain_preference"
+                android:summary="@string/summary_next_screen_domain_preference"
+                android:dialogTitle="@string/dialog_title_edittext_preference" />
+
+            <EditTextPreference
+                android:key="edittext_preference"
+                android:title="@string/title_next_screen_port_preference"
+                android:summary="@string/summary_next_screen_port_preference"
+                android:dialogTitle="@string/dialog_title_edittext_preference" />
+
+            <EditTextPreference
+                android:key="edittext_preference"
+                android:title="@string/title_next_screen_username_preference"
+                android:summary="@string/summary_next_screen_username_preference"
+                android:dialogTitle="@string/dialog_title_edittext_preference" />
+
+            <EditTextPreference
+                android:key="edittext_preference"
+                android:title="@string/title_next_screen_password_preference"
+                android:summary="@string/summary_next_screen_password_preference"
                 android:dialogTitle="@string/dialog_title_edittext_preference" />
 
             <CheckBoxPreference
@@ -60,11 +78,10 @@
                     android:title="@string/title_next_screen_toggle_preference"
                     android:summary="@string/summary_next_screen_toggle_preference" />
 
-            <Preference android:title="Acts like a button"
+            <Preference android:title="@string/title_next_screen_button_preference"
                 android:key="save"
-                android:summary="This will act like a button"/>
+                android:summary="@string/summary_next_screen_button_preference"/>
 
-                
         </PreferenceScreen>
 
         <PreferenceScreen

@@ -17,20 +17,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
-import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -92,16 +85,7 @@ public class Upload_Fragment extends Fragment {
         }
         });
 
-        LinearLayout v = (LinearLayout) super.onCreateView(inflater, container, savedInstanceState);
 
-        Button btn = new Button(getActivity().getApplicationContext());
-        btn.setText("Button on Bottom");
-
-        v.addView(btn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            }
-        });
 
         //FIX***********
         //Button save = (Button)rootView.findViewById(R.id.save);
@@ -110,7 +94,7 @@ public class Upload_Fragment extends Fragment {
 
     public void getfile(View view){
         Intent intent1 = new Intent(getActivity(), FileChooser.class);
-        startActivityForResult(intent1,REQUEST_PATH);
+        startActivityForResult(intent1, REQUEST_PATH);
     }
 
 
