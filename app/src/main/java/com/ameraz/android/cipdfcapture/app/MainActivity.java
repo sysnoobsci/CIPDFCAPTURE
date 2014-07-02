@@ -7,6 +7,7 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -22,9 +23,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +47,8 @@ public class MainActivity extends Activity
 
     Bundle bundle2 = new Bundle();
     String datetime;
+
+    static DatabaseHandler db;
 
     final static private int LOGOFF_TIMEOUT = 500;//time in milliseconds for logoff attempt to timeout
     final static private int REQUEST_TIMEOUT = 500;
@@ -75,13 +76,6 @@ public class MainActivity extends Activity
         edit.putString("pref_date", currentTimeStamp);//added date to preferences for next app open
         edit.commit();
     }
-    static String changer = "!@#";//string appended to end of pw for purposes of placing in a set
-    public static String pwChanger(String pw){//changes pw so it can be placed in a set in case username and pw are the same
-        return pw.concat(changer);
-    }
-    public static String pwUnchanger(String pwmod){//changes pw back to original string
-        return pwmod.replace(changer, "");//remove changer from String
-    }
 
     public static class PrefsFragment extends PreferenceFragment {
         @Override
@@ -90,6 +84,8 @@ public class MainActivity extends Activity
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preferences);
             Preference button = findPreference("save");
+
+
             button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
@@ -105,36 +101,21 @@ public class MainActivity extends Activity
                     String userkey = preferences.getString("username_preference", null);
                     String pwkey = preferences.getString("password_preference", null);
 
-                    ciprofile.add(profkey);
-                    ciprofile.add(hkey);
-                    ciprofile.add(dkey);
-                    ciprofile.add(portkey);
-                    ciprofile.add(userkey);
-                    ciprofile.add(pwChanger(pwkey));
-                    edit.putStringSet("ci_profile", ciprofile);
-                    edit.commit();//commit changes to preferences
-
-                    ArrayList<String> profiles = new ArrayList<String>();
-                    profiles.addAll(preferences.getStringSet("ci_profile", null));
-                    int i = 0;
-                    for(String ele : profiles){
-                        profiles.set(i, pwUnchanger(profiles.get(i)));//change pw String back to what it was originally
-                        i++;
-                    }
-                    if(profiles!=null) {
-                        for (String cipro : profiles) {
-                            Log.d("Variables", "Profile info " + cipro);
-                        }
-                    }
-                    else{
-                        Log.d("Variables", "profiles was null");
-                    }
+                    ArrayList<String> arlist = new ArrayList<String>();
+                    arlist.add(profkey);
+                    arlist.add(hkey);
+                    arlist.add(dkey);
+                    arlist.add(portkey);
+                    arlist.add(userkey);
+                    arlist.add(pwkey);
+                    db = new DatabaseHandler(getActivity());
+                    db.add_ci_server("config_table",arlist);
                     ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"CI Connection " +
                             "Profile Saved.");
                     tmtask.execute();
                     return true;
                 }
-            });
+            });//end of onclick listener
 
         }
     }
@@ -146,7 +127,7 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         // Create loginDialog Dialog
         setContentView(R.layout.activity_main);
-
+        db = new DatabaseHandler(getApplicationContext());//create a db if one doesn't exist
         //navigation drawer stuff
         mNavigationDrawerFragment=(NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
