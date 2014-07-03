@@ -4,6 +4,7 @@
     <PreferenceCategory
             android:title="@string/CI_config_preferences">
 
+
         <ListPreference
             android:key="list_preference"
             android:title="@string/title_list_cprofiles"

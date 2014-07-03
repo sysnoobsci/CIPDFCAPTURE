@@ -112,7 +112,9 @@ public class MainActivity extends Activity
                     ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"CI Connection " +
                             "Profile Saved.");
                     tmtask.execute();
-                    db.select_ci_server("ci");//test to see if I can query and get new row
+                    //db.select_ci_server("ci");//test to see if I can query and get new row
+                    db.list_ci_servers();
+                    CiServerPref cipref = new CiServerPref(getActivity());
                     return true;
                 }
             });//end of onclick listener
