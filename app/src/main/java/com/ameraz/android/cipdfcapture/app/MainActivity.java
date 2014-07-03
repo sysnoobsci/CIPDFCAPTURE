@@ -48,7 +48,7 @@ public class MainActivity extends Activity
     Bundle bundle2 = new Bundle();
     String datetime;
 
-    static DatabaseHandler db;
+    DatabaseHandler db;
 
     final static private int LOGOFF_TIMEOUT = 500;//time in milliseconds for logoff attempt to timeout
     final static private int REQUEST_TIMEOUT = 500;
@@ -85,7 +85,6 @@ public class MainActivity extends Activity
             addPreferencesFromResource(R.xml.preferences);
             Preference button = findPreference("save");
 
-
             button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
@@ -108,11 +107,12 @@ public class MainActivity extends Activity
                     arlist.add(portkey);
                     arlist.add(userkey);
                     arlist.add(pwkey);
-                    db = new DatabaseHandler(getActivity());
+                    DatabaseHandler db = new DatabaseHandler(getActivity());
                     db.add_ci_server("config_table",arlist);
                     ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"CI Connection " +
                             "Profile Saved.");
                     tmtask.execute();
+                    db.select_ci_server("ci");//test to see if I can query and get new row
                     return true;
                 }
             });//end of onclick listener

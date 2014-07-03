@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -21,6 +22,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     final static int DB_VERSION = 1;
     final static String DB_NAME = "config_table";
     final static String SCRIPT_NAME = "create.sql";
+    final static String CICONFIG_COLUMN_NAME = "Ciprofile";
     Context context;
 
 
@@ -33,11 +35,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         Log.d("Message", "DatabaseHandler.oncreate() executed");
+        Log.d("Message", "Creating database.");
         executeSQLScript(database, SCRIPT_NAME);
     }
 
 
-    private void executeSQLScript(SQLiteDatabase database, String dbname) {
+    private void executeSQLScript(SQLiteDatabase database, String script) {
+        Log.d("Message", "executeSQLScript() called");
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         byte buf[] = new byte[1024];
         int len;
@@ -45,10 +49,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         InputStream inputStream = null;
 
         try {
-            inputStream = assetManager.open(dbname);
+            inputStream = assetManager.open(script);
+            Log.d("Variable","Value of inputStream: " + inputStream);
             while ((len = inputStream.read(buf)) != -1) {
                 outputStream.write(buf, 0, len);
             }
+            Log.d("Variable","contents of buf: " + buf.toString());
             outputStream.close();
             inputStream.close();
 
@@ -62,6 +68,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 }
             }
         } catch (IOException e) {
+            Log.e("Error",e.toString());
             // TODO Handle Script Failed to Load
         }
     }
@@ -78,25 +85,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public String select_ci_server(String cis) {
+    public String select_ci_server(String cis) {//*****John take a look at this
         SQLiteDatabase db = this.getReadableDatabase();
-        String ciserverQuery = "SELECT * FROM config_table WHERE Ciprofile = " + cis + ";";
-        Cursor cursor = db.rawQuery(ciserverQuery, null);
-        int i = 0;
         String result = "";
-        while (cursor.moveToNext()) {
-            result.concat(cursor.getString(i) + ",");
-            i++;
+        try {
+            String ciserverQuery = "SELECT * FROM config_table WHERE " + CICONFIG_COLUMN_NAME + "=" + "'" + cis + "'" + ";";
+
+            Cursor cursor = db.rawQuery(ciserverQuery,null);
+            int i = 0;
+
+            while (cursor.moveToNext()) {
+                result.concat(cursor.getString(i) + ",");
+                i++;
+            }
+            cursor.close();
+            db.close();
         }
-        cursor.close();
-        db.close();
+        catch(SQLiteException e){
+            Log.d("Error",e.toString());
+        }
         Log.d("Variable", "Value of select_ci_server() result: " + result);
         return result;
     }
 
-    public String add_ci_server(String tablename, ArrayList<String> slist) {
+    public void add_ci_server(String tablename, ArrayList<String> slist) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String result = "";
+
         if (!slist.isEmpty()) {//check if list is empty first
 
             String ctcols = " (Ciprofile, Hostname, Domain, Portnumber, Username, Password)";
@@ -113,17 +127,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             String insertciserverQuery = "INSERT INTO " + tablename + ctcols + "VALUES " + colvals;
             Cursor cursor = db.rawQuery(insertciserverQuery, null);
-            int i = 0;
-
+            /*int i = 0;
             while (cursor.moveToNext()) {
                 result.concat(cursor.getString(i) + ",");
                 i++;
-            }
+            }*/
             cursor.close();
             db.close();
-            Log.d("Variable", "Value of result: " + result);
+
         }
-        return result;
+
 
     }
 }
