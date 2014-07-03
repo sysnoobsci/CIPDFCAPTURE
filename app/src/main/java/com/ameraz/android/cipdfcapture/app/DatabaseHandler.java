@@ -1,5 +1,6 @@
 package com.ameraz.android.cipdfcapture.app;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
@@ -21,6 +22,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     final static int DB_VERSION = 1;
     final static String DB_NAME = "config_table";
+    final static String TABLE_NAME = "config_table";
     final static String SCRIPT_NAME = "create.sql";
     final static String CICONFIG_COLUMN_NAME = "Ciprofile";
     Context context;
@@ -89,15 +91,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String result = "";
         try {
-            String ciserverQuery = "SELECT * FROM config_table WHERE " + CICONFIG_COLUMN_NAME + "=" + "'" + cis + "'" + ";";
-
-            Cursor cursor = db.rawQuery(ciserverQuery,null);
-            int i = 0;
-
+            String cisSelectQuery = "SELECT * FROM config_table WHERE " + CICONFIG_COLUMN_NAME + "=" + "'" + cis + "'" + ";";
+            Log.d("Variable", "Value of cisSelectQuery: " + cisSelectQuery);
+            Cursor cursor = db.rawQuery(cisSelectQuery,null);
             while (cursor.moveToNext()) {
-                result.concat(cursor.getString(i) + ",");
-                i++;
+                Log.d("Message", "cursor moved....");
+                result = cursor.getString(cursor.getColumnIndex("_id"));
+                result = result.concat("," + cursor.getString(cursor.getColumnIndex("Ciprofile")));
+                result = result.concat("," + cursor.getString(cursor.getColumnIndex("Hostname")));
+                result = result.concat("," + cursor.getString(cursor.getColumnIndex("Domain")));
+                result = result.concat("," + cursor.getString(cursor.getColumnIndex("Portnumber")));
+                result = result.concat("," + cursor.getString(cursor.getColumnIndex("Username")));
+                result = result.concat("," + cursor.getString(cursor.getColumnIndex("Password")));
             }
+
             cursor.close();
             db.close();
         }
@@ -108,35 +115,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return result;
     }
 
-    public void add_ci_server(String tablename, ArrayList<String> slist) {
-        SQLiteDatabase db = this.getReadableDatabase();
+    public void add_ci_server(ArrayList<String> slist) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
-        if (!slist.isEmpty()) {//check if list is empty first
-
-            String ctcols = " (Ciprofile, Hostname, Domain, Portnumber, Username, Password)";
-
-            String ciprofile = "'" + slist.get(0) + "'";
-            String hostname = "'" + slist.get(1) + "'";
-            String domain = "'" + slist.get(2) + "'";
-            String port = "'" + slist.get(3) + "'";
-            String username = "'" + slist.get(4) + "'";
-            String password = "'" + slist.get(5) + "'";
-
-            String colvals = "(" + ciprofile + "," + hostname + "," + domain + "," + port + "," +
-                    username + "," + password + ")";
-
-            String insertciserverQuery = "INSERT INTO " + tablename + ctcols + "VALUES " + colvals;
-            Cursor cursor = db.rawQuery(insertciserverQuery, null);
-            /*int i = 0;
-            while (cursor.moveToNext()) {
-                result.concat(cursor.getString(i) + ",");
-                i++;
-            }*/
-            cursor.close();
+            ContentValues values = new ContentValues();
+            values.put("Ciprofile", slist.get(0));
+            values.put("Hostname", slist.get(1));
+            values.put("Domain", slist.get(2));
+            values.put("Portnumber", slist.get(3));
+            values.put("Username", slist.get(4));
+            values.put("Password", slist.get(5));
+            db.insert(TABLE_NAME, null, values);
             db.close();
-
         }
 
-
-    }
 }

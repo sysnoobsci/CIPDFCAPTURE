@@ -108,7 +108,7 @@ public class MainActivity extends Activity
                     arlist.add(userkey);
                     arlist.add(pwkey);
                     DatabaseHandler db = new DatabaseHandler(getActivity());
-                    db.add_ci_server("config_table",arlist);
+                    db.add_ci_server(arlist);
                     ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"CI Connection " +
                             "Profile Saved.");
                     tmtask.execute();
