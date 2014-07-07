@@ -113,8 +113,7 @@ public class MainActivity extends Activity
                             "Profile Saved.");
                     tmtask.execute();
                     //db.select_ci_server("ci");//test to see if I can query and get new row
-                    db.list_ci_servers();
-                    CiServerPref cipref = new CiServerPref(getActivity());
+                    //db.list_ci_servers();
                     return true;
                 }
             });//end of onclick listener

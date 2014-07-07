@@ -12,10 +12,9 @@ import android.util.Log;
 
 public class CiServerPref extends ListPreference {
 
-    public CiServerPref(Context context) {
-    //public CiServerPref(Context context, AttributeSet attrs) {
-        super(context);
-        //super(context, attrs);
+
+    public CiServerPref(Context context, AttributeSet attrs) {
+        super(context, attrs);
         DatabaseHandler dbh = new DatabaseHandler(context);
 
         /*BluetoothAdapter bta = BluetoothAdapter.getDefaultAdapter();
@@ -36,7 +35,8 @@ public class CiServerPref extends ListPreference {
         Log.d("Message","Contents of entries" + result);
         setEntries(entries);
 
+        setEntryValues(entries);
         //setEntryValues(entryValues);
-    }
+    }//end of CiServerPref Constructor
 }
 

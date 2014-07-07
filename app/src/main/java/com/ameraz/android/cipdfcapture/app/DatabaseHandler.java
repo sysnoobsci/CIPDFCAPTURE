@@ -114,7 +114,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return ciserversArr;
     }
 
-    public String select_ci_server(String cis) {//*****John take a look at this
+    public String select_ci_server(String cis) {
         SQLiteDatabase db = this.getReadableDatabase();
         String result = "";
         try {

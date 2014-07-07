@@ -4,7 +4,11 @@
     <PreferenceCategory
             android:title="@string/CI_config_preferences">
 
-
+        <com.ameraz.android.cipdfcapture.app.CiServerPref
+            android:title="@string/title_list_cprofiles"
+            android:key="list_preference"
+            />
+        <!--
         <ListPreference
             android:key="list_preference"
             android:title="@string/title_list_cprofiles"
@@ -12,7 +16,7 @@
             android:entries="@array/entries_list_preference"
             android:entryValues="@array/entryvalues_list_preference"
             android:dialogTitle="@string/dialog_title_list_preference" />
-
+        -->
         <!-- This PreferenceScreen tag serves as a screen break (similar to page break
              in word processing). Like for other preference types, we assign a key
              here so it is able to save and restore its instance state. -->
