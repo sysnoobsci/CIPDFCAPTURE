@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -54,11 +55,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         try {
             inputStream = assetManager.open(script);
-            Log.d("Variable","Value of inputStream: " + inputStream);
+            Log.d("Variable", "Value of inputStream: " + inputStream);
             while ((len = inputStream.read(buf)) != -1) {
                 outputStream.write(buf, 0, len);
             }
-            Log.d("Variable","contents of buf: " + buf.toString());
+            Log.d("Variable", "contents of buf: " + buf.toString());
             outputStream.close();
             inputStream.close();
 
@@ -72,7 +73,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 }
             }
         } catch (IOException e) {
-            Log.e("Error",e.toString());
+            Log.e("Error", e.toString());
             // TODO Handle Script Failed to Load
         }
     }
@@ -89,14 +90,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public String[] list_ci_servers(){
+    public String[] list_ci_servers() {
         SQLiteDatabase db = this.getReadableDatabase();
         String result = "";
         List<String> list = new ArrayList<String>();
         try {
             String listciserversQuery = "SELECT " + CICONFIG_COLUMN_NAME + " FROM " + TABLE_NAME;
             Log.d("Variable", "listciserversQuery: " + listciserversQuery);
-            Cursor cursor = db.rawQuery(listciserversQuery,null);
+            Cursor cursor = db.rawQuery(listciserversQuery, null);
             while (cursor.moveToNext()) {
                 Log.d("Message", "cursor moved....");
                 result = result.concat(cursor.getString(cursor.getColumnIndex(CICONFIG_COLUMN_NAME)) + ",");
@@ -104,12 +105,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             list = new ArrayList<String>(Arrays.asList(result.split(",")));
             cursor.close();
             db.close();
-        }
-        catch(SQLiteException e){
-            Log.d("Error",e.toString());
+        } catch (SQLiteException e) {
+            Log.d("Error", e.toString());
         }
         Log.d("Variable", "Value of list_ci_servers() result: " + result);
-        String [] ciserversArr = new String[list.size()];
+        String[] ciserversArr = new String[list.size()];
         ciserversArr = list.toArray(ciserversArr);//convert List<String> to String[]
         return ciserversArr;
     }
@@ -120,7 +120,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         try {
             String cisSelectQuery = "SELECT * FROM config_table WHERE " + CICONFIG_COLUMN_NAME + "=" + "'" + cis + "'" + ";";
             Log.d("Variable", "Value of cisSelectQuery: " + cisSelectQuery);
-            Cursor cursor = db.rawQuery(cisSelectQuery,null);
+            Cursor cursor = db.rawQuery(cisSelectQuery, null);
             while (cursor.moveToNext()) {
                 Log.d("Message", "cursor moved....");
                 result = cursor.getString(cursor.getColumnIndex("_id"));
@@ -134,9 +134,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             cursor.close();
             db.close();
-        }
-        catch(SQLiteException e){
-            Log.d("Error",e.toString());
+        } catch (SQLiteException e) {
+            Log.d("Error", e.toString());
         }
         Log.d("Variable", "Value of select_ci_server() result: " + result);
         return result;
@@ -145,15 +144,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void add_ci_server(ArrayList<String> slist) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-            ContentValues values = new ContentValues();
-            values.put("Ciprofile", slist.get(0));
-            values.put("Hostname", slist.get(1));
-            values.put("Domain", slist.get(2));
-            values.put("Portnumber", slist.get(3));
-            values.put("Username", slist.get(4));
-            values.put("Password", slist.get(5));
-            db.insert(TABLE_NAME, null, values);
+        ContentValues values = new ContentValues();
+        values.put("Ciprofile", slist.get(0));
+        values.put("Hostname", slist.get(1));
+        values.put("Domain", slist.get(2));
+        values.put("Portnumber", slist.get(3));
+        values.put("Username", slist.get(4));
+        values.put("Password", slist.get(5));
+        Boolean insert_successful = true;
+        try {
+            db.insertOrThrow(TABLE_NAME, null, values);
             db.close();
-        }
+            ToastMessageTask tmtask = new ToastMessageTask(context,"CI Connection " +
+                    "Profile Saved.");
+            tmtask.execute();
+        } catch (SQLiteException e) {
 
+            ToastMessageTask tmtask = new ToastMessageTask(context, e.toString());
+            tmtask.execute();
+        }
+    }
 }

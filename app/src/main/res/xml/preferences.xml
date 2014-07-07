@@ -6,7 +6,7 @@
 
         <com.ameraz.android.cipdfcapture.app.CiServerPref
             android:title="@string/title_list_cprofiles"
-            android:key="list_preference"
+            android:key="list_preference_ci_servers"
             />
         <!--
         <ListPreference

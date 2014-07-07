@@ -45,9 +45,6 @@ public class MainActivity extends Activity
 
     Context maContext = MainActivity.this;
 
-    Bundle bundle2 = new Bundle();
-    String datetime;
-
     DatabaseHandler db;
 
     final static private int LOGOFF_TIMEOUT = 500;//time in milliseconds for logoff attempt to timeout
@@ -90,8 +87,6 @@ public class MainActivity extends Activity
                 public boolean onPreferenceClick(Preference arg0) {
                     //code for what you want it to do
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    SharedPreferences.Editor edit = preferences.edit();
-                    Set ciprofile = new LinkedHashSet();//maintains insertion order
 
                     String profkey = preferences.getString("profilename_preference", null);
                     String hkey = preferences.getString("hostname_preference", null);
@@ -109,11 +104,7 @@ public class MainActivity extends Activity
                     arlist.add(pwkey);
                     DatabaseHandler db = new DatabaseHandler(getActivity());
                     db.add_ci_server(arlist);
-                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"CI Connection " +
-                            "Profile Saved.");
-                    tmtask.execute();
-                    //db.select_ci_server("ci");//test to see if I can query and get new row
-                    //db.list_ci_servers();
+
                     return true;
                 }
             });//end of onclick listener
