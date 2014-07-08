@@ -3,6 +3,7 @@ package com.ameraz.android.cipdfcapture.app.filebrowser;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -19,7 +20,18 @@ public class FileChooser extends ListActivity {
 
 	private File currentDir;
     private FileArrayAdapter adapter;
+    private String fullFilePath;
+
+    public String getFullFilePath() {
+        return fullFilePath;
+    }
+
+    public void setFullFilePath(String fullFilePath) {
+        this.fullFilePath = fullFilePath;
+    }
+
     @Override
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); 
         currentDir = new File("/sdcard/");
@@ -59,7 +71,7 @@ public class FileChooser extends ListActivity {
 			 }
 		 }catch(Exception e)
 		 {    
-			 
+			 Log.e("Error",e.toString());
 		 }
 		 Collections.sort(dir);
 		 Collections.sort(fls);
@@ -76,6 +88,7 @@ public class FileChooser extends ListActivity {
 		Item o = adapter.getItem(position);
 		if(o.getImage().equalsIgnoreCase("directory_icon")||o.getImage().equalsIgnoreCase("directory_up")){
 				currentDir = new File(o.getPath());
+                Log.d("Message", "Directory path is " + o.getPath());
 				fill(currentDir);
 		}
 		else
@@ -89,6 +102,8 @@ public class FileChooser extends ListActivity {
     	Intent intent = new Intent();
         intent.putExtra("GetPath",currentDir.toString());
         intent.putExtra("GetFileName",o.getName());
+        Log.d("Message", "File path is " + currentDir.toString() + o.getName());
+        setFullFilePath(currentDir.toString() + o.getName());//setting the full file path
         setResult(RESULT_OK, intent);
         finish();
     }

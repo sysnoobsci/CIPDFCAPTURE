@@ -95,8 +95,6 @@ public class Upload_Fragment extends Fragment {
         startActivityForResult(intent1, REQUEST_PATH);
     }
 
-
-
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -132,8 +130,6 @@ public class Upload_Fragment extends Fragment {
                 //********put in code for uploading file here***********
             }
         }
-
-
     }
 
  public void setCiLoginInfo(loginlogoff liloobj){
@@ -142,12 +138,18 @@ public class Upload_Fragment extends Fragment {
      String ciserver = preferences.getString("list_preference_ci_servers", "n/a");
      String ciserverResult = dbh.select_ci_server(ciserver);
      String[] parms = ciserverResult.split(",");
-
-     liloobj.setHostname(parms[2]);
-     liloobj.setDomain(parms[3]);
-     liloobj.setPortnumber(Integer.parseInt(parms[4]));
-     liloobj.setUsername(parms[5]);
-     liloobj.setPassword(parms[6]);
+     try {
+         liloobj.setHostname(parms[2]);
+         liloobj.setDomain(parms[3]);
+         liloobj.setPortnumber(Integer.parseInt(parms[4]));
+         liloobj.setUsername(parms[5]);
+         liloobj.setPassword(parms[6]);
+     }
+     catch(ArrayIndexOutOfBoundsException aiob){
+         Log.e("Error", aiob.toString());
+         ToastMessageTask tmtask = new ToastMessageTask(maContext,"Select a CI Profile under Settings.");
+         tmtask.execute();
+     }
  }
 
  public Boolean tryLogin(){
@@ -200,95 +202,6 @@ public class Upload_Fragment extends Fragment {
         return loginTry;
     }
 
-    // Listen for results.
-   /*( public void ciloginpingfail(){//show a login dialog box for manual logging in
-        loginDialog = new Dialog(getActivity());
-        loginDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        loginDialog.setContentView(R.layout.login_dialog);
-
-        // Set GUI of loginDialog screen
-        final EditText hostname = (EditText) loginDialog.findViewById(R.id.hostname);
-        final EditText domain = (EditText) loginDialog.findViewById(R.id.domain);
-        final EditText port = (EditText) loginDialog.findViewById(R.id.port);
-        final EditText username = (EditText) loginDialog.findViewById(R.id.username);
-        final EditText password = (EditText) loginDialog.findViewById(R.id.password);
-        final Button cancel = (Button) loginDialog.findViewById(R.id.cancel_button);
-        final Button loginButton = (Button) loginDialog.findViewById(R.id.login_button);
-
-        loginDialog.show();//show the login dialog box
-        //Closes app if they try to back out of dialog
-        loginDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                loginDialog.dismiss();
-                //may need to use fragment manager to swap out fragments here
-            }
-        });
-        //Listener for loginDialog button
-        loginButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View v){
-                Log.d("Message", "Login button clicked");
-                final loginlogoff liloobj = new loginlogoff(maContext);//passed in context of this activity
-                liloobj.setHostname(hostname.getText().toString());
-                liloobj.setDomain(domain.getText().toString());
-                liloobj.setPortnumber(Integer.parseInt(port.getText().toString()));
-                liloobj.setUsername(username.getText().toString());
-                liloobj.setPassword(password.getText().toString());
-                //progress = ProgressDialog.show(getActivity(), "Logging in...", "Please Wait", true);
-                new Thread(new Runnable() {
-                    public void run() {
-                        APIQueries apiobj = new APIQueries(getActivity());
-                        final ReqTask reqobj = new ReqTask(apiobj.logonQuery(liloobj.getUsername(),
-                                liloobj.getPassword(), null),//send login query to CI via asynctask
-                                this.getClass().getName(), maContext);
-                        try {
-                            reqobj.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (TimeoutException e) {
-                            ToastMessageTask tmtask = new ToastMessageTask(maContext, "Logon attempt timed out.");
-                            tmtask.execute();
-                            e.printStackTrace();
-                        }
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //progress.dismiss();
-                                XmlParser xobj3 = new XmlParser();
-                                try {
-                                    xobj3.parseXMLfunc(reqobj.getResult());
-                                } catch (XmlPullParserException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                Log.d("Variable", "reqobj.getResult() value is: " + reqobj.getResult());
-                                setLogonXmlTextTags(xobj3.getTextTag());
-                                //check if login worked
-                                loginlogoff lobj = new loginlogoff(maContext);
-                                lobj.isLoginSuccessful(getLogonXmlTextTags());//check if login was successful
-                                lobj.logonMessage();//show status of login
-                                if (lobj.getLogin_successful()) {//if login is true,dismiss login screen
-                                    loginDialog.dismiss();
-                                }
-                            }
-                        });//end of UiThread
-                    }
-                }).start();
-            }
-        });
-        //Listener for Cancel Button
-        cancel.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View v){
-                loginDialog.dismiss();
-            }
-        });
-    }*/
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         // See which child activity is calling us back.
         if (requestCode == REQUEST_PATH){
