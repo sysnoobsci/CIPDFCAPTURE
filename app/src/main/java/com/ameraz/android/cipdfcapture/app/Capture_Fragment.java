@@ -45,6 +45,7 @@ public class Capture_Fragment extends Fragment {
     private File newImage;
 
     private Bitmap myImage;
+    private Bitmap bm;
 
     static byte[] bArray;
     static com.itextpdf.text.Image image;
@@ -76,7 +77,8 @@ public class Capture_Fragment extends Fragment {
                 } else {
                     try {
                         myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                        myImage.createScaledBitmap(myImage, 4096, 4096, true);
+                        bm = myImage.createScaledBitmap(myImage, 1080, 1920, true);
+                        imageView.setImageBitmap(bm);
                     } catch (Exception e) {
                         Log.d("Error: ", e.toString());
                     }
@@ -101,7 +103,7 @@ public class Capture_Fragment extends Fragment {
             makeSystemwareDir();
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            myImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
             bArray = stream.toByteArray();
 
             try
@@ -146,8 +148,6 @@ public class Capture_Fragment extends Fragment {
                     - document.rightMargin() - indentation) / image.getWidth()) * 100;
 
             image.scalePercent(scaler);
-            //image.scalePercent(50);
-            // image.scaleAbsolute(150f, 150f);
             try{
                 document.add(image);
             } catch (DocumentException e) {
@@ -229,19 +229,33 @@ public class Capture_Fragment extends Fragment {
         switch(requestCode){
             case 0:
                 if(resultCode == getActivity().RESULT_OK)
-                imageView.setImageURI(imageUri);
+                    try {
+                        myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                        bm = myImage.createScaledBitmap(myImage, 1080, 1920, true);
+                        imageView.setImageBitmap(bm);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 break;
             case 1:
+
                 if(resultCode == getActivity().RESULT_OK)
                 imageUri = data.getData();
-                imageView.setImageURI(imageUri);
+                try {
+                    myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                    bm = myImage.createScaledBitmap(myImage, 1080, 1920, true);
+                    imageView.setImageBitmap(bm);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 break;
             case 2:
-                Bitmap bm;
                 String loc = "file://" + data.getStringExtra("GetPath") + "/" + data.getStringExtra("GetFileName");
                 imageUri = Uri.parse(loc);
                 try {
-                    bm = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                    myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                    bm = myImage.createScaledBitmap(myImage, 1080, 1920, true);
                     imageView.setImageBitmap(bm);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -249,7 +263,7 @@ public class Capture_Fragment extends Fragment {
                 break;
         }
     }
-
+//stuff was changed
     private void initializeViews(View rootView) {
         imageView = (ImageView)rootView.findViewById(R.id.imageView);
         takePic = (ImageButton)rootView.findViewById(R.id.capture_new_pic);
