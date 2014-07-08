@@ -88,7 +88,7 @@ public class FileChooser extends ListActivity {
 		Item o = adapter.getItem(position);
 		if(o.getImage().equalsIgnoreCase("directory_icon")||o.getImage().equalsIgnoreCase("directory_up")){
 				currentDir = new File(o.getPath());
-                Log.d("Message", "Directory path is " + o.getPath());
+                Log.d("Message", " Directory path is " + o.getPath());
 				fill(currentDir);
 		}
 		else
