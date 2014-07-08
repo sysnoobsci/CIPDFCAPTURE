@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 
@@ -82,6 +83,8 @@ public class Upload_Fragment extends Fragment {
             }
         }
         });
+        loginlogoff liloobj = new loginlogoff(maContext);
+        setCiLoginInfo(liloobj);//set ciprofile from preferences list
         //FIX***********
         //Button save = (Button)rootView.findViewById(R.id.save);
         return rootView;
@@ -101,21 +104,31 @@ public class Upload_Fragment extends Fragment {
         XmlParser xobj = new XmlParser();
         APIQueries apiobj = new APIQueries(getActivity());
         ReqTask reqobj4 = new ReqTask(apiobj.pingQuery(), this.getClass().getName(), maContext);
-        reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
+        try{
+            reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
+        }
+        catch(TimeoutException te){
+            ToastMessageTask tmtask = new ToastMessageTask(maContext,"Connection to CI Server failed. Check" +
+                    "CI Connection Profile under Settings.");
+            tmtask.execute();
+        }
         xobj.parseXMLfunc(reqobj4.getResult());
         apiobj.isPingSuccessful(xobj.getTextTag());
 
         if (apiobj.getPingresult()) {//if the ping is successful(i.e. user logged in)
             //********put in code for uploading file here***********
-            ciloginpinggood();
+            Log.d("Message", "CI Login successful and ready to upload file.");
         }
         else {//if ping fails, selected ci profile will be used to log back in
             Log.d("Message", "Ping to CI server indicated no login session.");
-            if(!tryLogin()) {//if login attempt fails from trying the CI server profile, manually login
-                ciloginpingfail();
+            if(tryLogin()) {
+                Log.d("Message", "CI Login successful and ready to upload file.");
             }
-            else{
-
+            else{//if login attempt fails from trying the CI server profile, prompt user to check it
+                ToastMessageTask tmtask = new ToastMessageTask(maContext,"Connection to CI Server failed. Check" +
+                        "CI Connection Profile under Settings.");
+                tmtask.execute();
+                //ciloginpingfail();
                 //********put in code for uploading file here***********
             }
         }
@@ -123,16 +136,24 @@ public class Upload_Fragment extends Fragment {
 
     }
 
-    public Boolean tryLogin(){
+ public void setCiLoginInfo(loginlogoff liloobj){
+     DatabaseHandler dbh = new DatabaseHandler(maContext);
+     preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+     String ciserver = preferences.getString("list_preference_ci_servers", "n/a");
+     String ciserverResult = dbh.select_ci_server(ciserver);
+     String[] parms = ciserverResult.split(",");
 
+     liloobj.setHostname(parms[2]);
+     liloobj.setDomain(parms[3]);
+     liloobj.setPortnumber(Integer.parseInt(parms[4]));
+     liloobj.setUsername(parms[5]);
+     liloobj.setPassword(parms[6]);
+ }
+
+ public Boolean tryLogin(){
         Boolean loginTry = false;
-        DatabaseHandler dbh = new DatabaseHandler(maContext);
-        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String ciserver = preferences.getString("list_preference_ci_servers", "n/a");
-        String ciserverResult = dbh.select_ci_server(ciserver);
-        String[] parms = ciserverResult.split(",");
-        //work from here ***************
         final loginlogoff liloobj = new loginlogoff(maContext);//passed in context of this activity
+        setCiLoginInfo(liloobj);
         new Thread(new Runnable() {
             public void run() {
                 APIQueries apiobj = new APIQueries(getActivity());
@@ -153,6 +174,7 @@ public class Upload_Fragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
                         //progress.dismiss();
                         XmlParser xobj3 = new XmlParser();
                         try {
@@ -167,9 +189,9 @@ public class Upload_Fragment extends Fragment {
                         //check if login worked
                         liloobj.isLoginSuccessful(getLogonXmlTextTags());//check if login was successful
                         liloobj.logonMessage();//show status of login
-
                     }
                 });//end of UiThread
+
             }
         }).start();
         if (liloobj.getLogin_successful()){
@@ -177,25 +199,9 @@ public class Upload_Fragment extends Fragment {
         }
         return loginTry;
     }
-    public void ciloginpinggood(){
-        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        DatabaseHandler dbh = new DatabaseHandler(getActivity());
-        String ciserver = preferences.getString("list_preference_ci_servers", "n/a");//get selected ci server from list
-        final loginlogoff liloobj = new loginlogoff(maContext);//passed in context of this activity
-        String result = dbh.select_ci_server(ciserver);
-        String[] resultArray = result.split(",");//split up string into array elements
-        int i = 0;
-        for(String elem : resultArray){
-            Log.d("Variable", "resultArray Element" + i + " value:" + resultArray[i]);
-        }
-        liloobj.setHostname(resultArray[0]);
-        liloobj.setDomain(resultArray[1]);
-        liloobj.setPortnumber(Integer.parseInt(resultArray[2]));
-        liloobj.setUsername(resultArray[3]);
-        liloobj.setPassword(resultArray[4]);
-    }
+
     // Listen for results.
-    public void ciloginpingfail(){
+   /*( public void ciloginpingfail(){//show a login dialog box for manual logging in
         loginDialog = new Dialog(getActivity());
         loginDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         loginDialog.setContentView(R.layout.login_dialog);
@@ -282,7 +288,7 @@ public class Upload_Fragment extends Fragment {
                 loginDialog.dismiss();
             }
         });
-    }
+    }*/
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         // See which child activity is calling us back.
         if (requestCode == REQUEST_PATH){

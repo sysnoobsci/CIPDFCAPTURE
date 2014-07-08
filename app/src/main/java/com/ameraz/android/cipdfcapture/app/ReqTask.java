@@ -20,6 +20,7 @@ package com.ameraz.android.cipdfcapture.app;
         import java.io.IOException;
         import java.io.InputStream;
         import java.io.InputStreamReader;
+        import java.net.UnknownHostException;
 
 
 class ReqTask extends AsyncTask<String, Void, String> {
@@ -118,7 +119,11 @@ class ReqTask extends AsyncTask<String, Void, String> {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            ToastMessageTask tmtask = new ToastMessageTask(mContext,"Connection to CI Server failed. Check" +
+                    "CI Connection Profile under Settings.");
+            tmtask.execute();
         }
+
         Log.d("Variable", "Caller " + getClassName() + ".java - total.toString() result: " + total.toString());
         if (!xmlobj.isXMLformat(total.toString())) {
             Log.e("XMLFormatError", getClassName() + ".java - XML is malformed");
