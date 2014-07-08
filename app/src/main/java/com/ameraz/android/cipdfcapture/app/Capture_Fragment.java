@@ -76,7 +76,7 @@ public class Capture_Fragment extends Fragment {
                 } else {
                     try {
                         myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                        myImage.createScaledBitmap(myImage, 4096, 4096, true);
+                        myImage.createScaledBitmap(myImage, 4500, 4500, true);
                     } catch (Exception e) {
                         Log.d("Error: ", e.toString());
                     }
