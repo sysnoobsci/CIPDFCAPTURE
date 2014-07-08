@@ -140,9 +140,6 @@ public class NavigationDrawerFragment extends Fragment {
                             case 0:
                                 fragment = new Capture_Fragment();
                                 break;
-                            case 1:
-                                fragment = new Capture_Fragment();
-                                break;
                         }
                         break;
                     case 1:
@@ -186,8 +183,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         //Populate Find here with the submenu
         List<String> capture_pdf = new ArrayList<String>();
-        capture_pdf.add("fawk");
-        capture_pdf.add("man");
+        capture_pdf.add("Capture and Upload");
 
         //Populate Tools here with the submenu
         List<String> upload_pdf = new ArrayList<String>();
