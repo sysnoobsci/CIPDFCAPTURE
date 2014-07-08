@@ -1,14 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Capture PDF Fragment"
-        android:id="@+id/textView"
-        android:layout_gravity="center_horizontal"
-        android:textSize="35sp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:id="@+id/scrollView"
+        android:layout_gravity="center_horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:contentDescription="image"
+            android:layout_gravity="center"
+            android:src="@drawable/sw_background"/>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:background="#009dd9">
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/capture_new_pic"
+            android:background="#009dd9"
+            android:src="@drawable/ic_action_camera"
+            android:layout_gravity="center_vertical" />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/capture_gallery"
+            android:background="#009dd9"
+            android:src="@drawable/ic_action_new_picture"
+            android:layout_gravity="center_vertical"/>
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/capture_nav"
+            android:background="#009dd9"
+            android:src="@drawable/ic_action_collection"
+            android:layout_gravity="center_vertical" />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/capture_save"
+            android:background="#009dd9"
+            android:src="@drawable/ic_action_save"
+            android:layout_gravity="center_vertical" />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/capture_share"
+            android:background="#009dd9"
+            android:src="@drawable/ic_action_share"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
 </LinearLayout>
