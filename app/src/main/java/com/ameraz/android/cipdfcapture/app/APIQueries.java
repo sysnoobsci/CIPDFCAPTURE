@@ -32,6 +32,11 @@ public class APIQueries {
                 lilobj.getDomain() + ":" + lilobj.getPortnumber() + "/ci";
         return targetCIQuery;
     }
+    //listnode
+    String listnodeQuery(){
+        String listnodeQuery = "?action=listnode";
+        return targetCIQuery() + listnodeQuery;
+    }
     //logon
     String logonQuery(String user,String password,String newpwd){
         String logonQuery = "?action=logon" + qf.formQuery("user," + user,"password," + password,
@@ -43,6 +48,7 @@ public class APIQueries {
         String logoffQuery = "?action=logoff";
         return targetCIQuery() + logoffQuery;
     }
+
     //ping
     String pingQuery(){
         String pingQuery = "?action=ping";
@@ -68,6 +74,15 @@ public class APIQueries {
                 tmtask.execute();
             }
         }
+    }
+    //retrieve
+    String retrieveQuery(String mode, String tid, String DSID, String xid, String tplid,String fmt,
+                         String combtype,String maxseg,String offset,String axvs,String label,
+                         String inline,String tq,String sln){
+        String retrieveQuery = "?action=retrieve" + qf.formQuery("mode,"+mode,"tid,"+tid,"DSID"+DSID,
+                "xid,"+xid,"tplid,"+tplid,"fmt,"+fmt,"combtype,"+combtype,"maxseg,"+maxseg,"offset,"+offset,
+                "axvs,"+axvs,"label,"+label,"inline,"+inline,"tq,"+tq,"sln,"+sln);
+        return targetCIQuery() + retrieveQuery;
     }
 
 }
