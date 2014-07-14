@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">CIPDFCAPTURE</string>
-
     <string name="title_section1">About</string>
     <string name="title_section2">Capture PDF</string>
     <string name="title_section3">Upload PDF</string>
@@ -13,14 +12,10 @@
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
     <string name="action_logoff">Logoff</string>
-
     <string name="title_activity_fileexplorer">FileexplorerActivity</string>
-
-
     <string name="navdrawer1">Capture PDF</string>
     <string name="navdrawer2">Upload PDF</string>
     <string name="navdrawer3">Download PDF</string>
-
     <string name="title_edittext_preference">Edit text preference</string>
     <string name="summary_edittext_preference">An example that uses an edit text dialog</string>
     <string name="dialog_title_edittext_preference">Enter your favorite animal</string>
@@ -40,8 +35,7 @@
     <string name="title_list_cprofiles">Connection Profiles</string>
     <string name="summary_list_preference">List of Content Integrators to connect to</string>
     <string name="dialog_title_list_preference">Choose one</string>
-
-    <string name="CI_config_screen_preference">New CI Connection <Profile></Profile></string>
+    <string name="CI_config_screen_preference">New CI Connection <Profile /></string>
     <string name="CI_config_summary_screen_preference">Add info for new CI Server</string>
     <string name="title_fragment_preference">Fragment preference</string>
     <string name="summary_fragment_preference">Shows another fragment of preferences</string>
@@ -61,7 +55,6 @@
     <string name="summary_next_screen_password_preference">CI Server Password</string>
     <string name="title_next_screen_button_preference">Save CI server info</string>
     <string name="summary_next_screen_button_preference">Tap to save a connection profile to a CI server</string>
-
     <string name="title_intent_preference">Get Systemware Help</string>
     <string name="summary_intent_preference">Visits www.systemware.com</string>
     <string name="title_my_preference">My preference</string>
@@ -73,12 +66,12 @@
     <string name="summary_parent_preference">This is visually a parent</string>
     <string name="title_child_preference">Child checkbox preference</string>
     <string name="summary_child_preference">This is visually a child</string>
-
     <string name="ci_profile">profilename_preference</string>
     <string name="ci_hostname">hostname_preference</string>
     <string name="ci_domain">domain_preference</string>
     <string name="ci_port">port_preference</string>
     <string name="ci_username">username_preference</string>
     <string name="ci_password">password_preference</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

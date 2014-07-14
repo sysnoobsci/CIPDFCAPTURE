@@ -2,7 +2,6 @@ package com.ameraz.android.cipdfcapture.app;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -84,5 +83,20 @@ public class APIQueries {
                 "axvs,"+axvs,"label,"+label,"inline,"+inline,"tq,"+tq,"sln,"+sln);
         return targetCIQuery() + retrieveQuery;
     }
+    //createtopic
+    String createtopicQuery(String tplid,String[] nvpairs,String detail){
+        String appender = "";
+        int j = 0;
+        for(String nvp : nvpairs){
+            appender.concat(nvp);
+            if(j!=nvpairs.length-1){//if not at end of array, put commas between all the key-value pairs
+                appender.concat(",");
+            }
+            j++;
+        }
+        String createtopicQuery = "?action=createtopic" + qf.formQuery("tplid,"+tplid,appender,"detail,"+ detail);
+        return targetCIQuery() + createtopicQuery;
+    }
+
 
 }

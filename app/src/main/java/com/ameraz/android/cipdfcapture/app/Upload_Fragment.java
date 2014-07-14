@@ -85,6 +85,9 @@ public class Upload_Fragment extends Fragment {
         });
         loginlogoff liloobj = new loginlogoff(maContext);
         setCiLoginInfo(liloobj);//set ciprofile from preferences list
+        if(tryLogin()){
+            //CONTINUE CODE HERE FOR ADDING SERVER NODES TO SPINNER
+        }
         //FIX***********
         //Button save = (Button)rootView.findViewById(R.id.save);
         return rootView;
@@ -193,7 +196,6 @@ public class Upload_Fragment extends Fragment {
                         liloobj.logonMessage();//show status of login
                     }
                 });//end of UiThread
-
             }
         }).start();
         if (liloobj.getLogin_successful()){

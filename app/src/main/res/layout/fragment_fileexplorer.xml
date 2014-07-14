@@ -12,9 +12,8 @@
         android:layout_marginTop="10dp"      
     />    
     <RelativeLayout android:id="@+id/relativeLayout1" 
-        android:layout_height="wrap_content" 
-        android:layout_width="wrap_content"
-        android:layout_weight="0.36">
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content">
         <EditText
             android:layout_alignParentLeft="true" 
             android:hint="EditText"
@@ -43,7 +42,60 @@
             android:layout_height="wrap_content"
             android:text="Upload File"
             android:id="@+id/upload"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
-    </RelativeLayout> 
+            android:layout_gravity="center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="54dp" />
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/skipButton"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="43dp">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Content Server"
+                    android:id="@+id/textView" />
+
+                <Spinner
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinner"
+                    android:paddingLeft="75dp"
+                    android:layout_marginLeft="50dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:id="@+id/textView2" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Report Path"
+                    android:id="@+id/textView3" />
+            </TableRow>
+        </TableLayout>
+
+    </RelativeLayout>
+
 </LinearLayout>
