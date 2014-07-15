@@ -85,23 +85,38 @@ public class Upload_Fragment extends Fragment {
         });
         loginlogoff liloobj = new loginlogoff(maContext);
         setCiLoginInfo(liloobj);//set ciprofile from preferences list
-        if(tryLogin()){
-            //CONTINUE CODE HERE FOR ADDING SERVER NODES TO SPINNER
+        try {
+            if(pingserver()){//try to login, if successful continue
+                XmlParser xobj = new XmlParser();
+                APIQueries apiobj = new APIQueries(getActivity());
+                ReqTask reqobj4 = new ReqTask(apiobj.listnodeQuery(), this.getClass().getName(), maContext);
+                try{
+                    reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
+                }
+                catch(TimeoutException te){
+                    ToastMessageTask tmtask = new ToastMessageTask(maContext,"Connection to CI Server failed. Check" +
+                            "CI Connection Profile under Settings.");
+                    tmtask.execute();
+                }
+                xobj.parseXMLfunc(reqobj4.getResult());
+                xobj.getTextTag();
+                //CONTINUE CODE HERE FOR ADDING SERVER NODES TO SPINNER - GET THE INFO FROM xobj.getTextTag();
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
         }
         //FIX***********
-        //Button save = (Button)rootView.findViewById(R.id.save);
+
         return rootView;
     }
 
-    public void getfile(View view){
-        Intent intent1 = new Intent(getActivity(), FileChooser.class);
-        startActivityForResult(intent1, REQUEST_PATH);
-    }
-
-    public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
-            ExecutionException, TimeoutException {
-        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
+    public Boolean pingserver() throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
         XmlParser xobj = new XmlParser();
         APIQueries apiobj = new APIQueries(getActivity());
         ReqTask reqobj4 = new ReqTask(apiobj.pingQuery(), this.getClass().getName(), maContext);
@@ -115,8 +130,26 @@ public class Upload_Fragment extends Fragment {
         }
         xobj.parseXMLfunc(reqobj4.getResult());
         apiobj.isPingSuccessful(xobj.getTextTag());
-
         if (apiobj.getPingresult()) {//if the ping is successful(i.e. user logged in)
+            Log.d("Message", "CI Server ping successful.");
+            return true;
+        }
+        else{
+            Log.d("Message", "CI Server ping failed.");
+            return false;
+        }
+    }
+
+    public void getfile(View view){
+        Intent intent1 = new Intent(getActivity(), FileChooser.class);
+        startActivityForResult(intent1, REQUEST_PATH);
+    }
+
+    public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
+            ExecutionException, TimeoutException {
+        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        if (pingserver()) {//if the ping is successful(i.e. user logged in)
             //********put in code for uploading file here***********
             Log.d("Message", "CI Login successful and ready to upload file.");
         }
@@ -129,7 +162,6 @@ public class Upload_Fragment extends Fragment {
                 ToastMessageTask tmtask = new ToastMessageTask(maContext,"Connection to CI Server failed. Check" +
                         "CI Connection Profile under Settings.");
                 tmtask.execute();
-                //ciloginpingfail();
                 //********put in code for uploading file here***********
             }
         }
