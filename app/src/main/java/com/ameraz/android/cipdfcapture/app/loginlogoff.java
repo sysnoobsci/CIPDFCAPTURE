@@ -21,12 +21,11 @@ public class loginlogoff {
         loginlogoff.this.mContext = mContext;
     }
 
-    private static String hostname = "gardner";
-    private static String domain = "usa.systemware.com";
-    private static int portnumber = 34544;
-    private static String username = "admin";
-    private static String password = "admin";
-    private static Boolean connection_state = false;
+    private static String hostname;
+    private static String domain;
+    private static int portnumber;
+    private static String username;
+    private static String password;
     private static Boolean login_successful = false;
     private static Boolean logoff_successful = false;
 
@@ -70,14 +69,6 @@ public class loginlogoff {
         this.password = password;
     }
 
-    public static Boolean getConnection_state() {
-        return connection_state;
-    }
-
-    public static void setConnection_state(Boolean connection_state) {
-        loginlogoff.connection_state = connection_state;
-    }
-
     public static Boolean getLogin_successful() {
         return login_successful;
     }
@@ -95,10 +86,16 @@ public class loginlogoff {
     }
 
     protected void isLoginSuccessful(ArrayList<String> larray) {
-        if(larray.get(0).equals("0") && larray.get(1).equals("0") && larray.get(2).equals("0")){
-            setLogin_successful(true);
+        try{
+            if(larray.get(0).equals("0") && larray.get(1).equals("0") && larray.get(2).equals("0")){
+                setLogin_successful(true);
+            }
+            else{
+                setLogin_successful(false);
+            }
         }
-        else{
+        catch(IndexOutOfBoundsException iobe){
+            iobe.printStackTrace();
             setLogin_successful(false);
         }
     }
@@ -133,14 +130,4 @@ public class loginlogoff {
             tmtask.execute();
         }
     }
-
-    private void isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        setConnection_state(activeNetworkInfo != null && activeNetworkInfo.isConnected());
-        Log.d("Message", "loginlogoff.java - getConnection_state(): " + getConnection_state());
-        //return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
 }

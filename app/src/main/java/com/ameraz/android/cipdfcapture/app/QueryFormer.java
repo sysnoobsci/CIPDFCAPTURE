@@ -7,7 +7,7 @@ import android.util.Log;
 import java.util.Arrays;
 import java.util.List;
 
-//form of incoming arguments - argname.argvalue - the "." delimits the string
+//form of incoming arguments - argname,argvalue - the "," delimits the string
 public class QueryFormer {
     public String formQuery(String... args){
         String appender = "";

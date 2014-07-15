@@ -104,11 +104,9 @@ public class MainActivity extends Activity
                     arlist.add(pwkey);
                     DatabaseHandler db = new DatabaseHandler(getActivity());
                     db.add_ci_server(arlist);
-
                     return true;
                 }
             });//end of onclick listener
-
         }
     }
 
@@ -129,9 +127,6 @@ public class MainActivity extends Activity
                 R.id.navigation_drawer,
                 (DrawerLayout)findViewById(R.id.drawer_layout)
         );
-
-
-
     }//end of oncreate
 
     @Override
@@ -139,7 +134,6 @@ public class MainActivity extends Activity
         // update the main content by replacing fragments
         Log.d("Variable", "Value of argument position: " + position);
         Fragment fragment = new Home_Fragment();
-
 
         if(getFirst_open()){//if first time opening app, show home screen fragment
             position = -1;
@@ -220,7 +214,7 @@ public class MainActivity extends Activity
             new Thread(new Runnable() {
                 public void run() {
                     APIQueries apiobj = new APIQueries(maContext);
-                    ReqTask reqobj4 = new ReqTask(apiobj.logoffQuery(), this.getClass().getName(), maContext);
+                    ReqTask reqobj4 = new ReqTask(apiobj.logoffQuery(), maContext);
                     XmlParser xobj4 = new XmlParser();
                     try {
                         reqobj4.execute().get(LOGOFF_TIMEOUT,TimeUnit.MILLISECONDS);

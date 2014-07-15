@@ -87,10 +87,21 @@ public class XmlParser {
         setXmlstring(EMPTY_STRING);
     }
 
-    public String findTagText(String tag){
-        String tagText = "";
+    public String findTagText(String tag) throws XmlPullParserException, IOException {//pass in a tag, and get the tag contents
         if(tag.equals(EMPTY_STRING)){//if nothing is being searched for, return all the xml results
             return getXmlstring();
+        }
+        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        XmlPullParser xpp = factory.newPullParser();
+        xpp.setInput( new StringReader ( getXmlstring() ) );//get the XML string that was created from parsing the query response
+        int eventType = xpp.getEventType();
+        String tagText = "";
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            if(xpp.getName() == tag){//if the tag name matches what you're searching for, append the contents
+                tagText.concat(xpp.getText() + ",");
+            }
+            eventType = xpp.next();
         }
         return tagText;
     }

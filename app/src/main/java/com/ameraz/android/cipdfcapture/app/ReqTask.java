@@ -31,7 +31,6 @@ class ReqTask extends AsyncTask<String, Void, String> {
     HttpPost httppost = new HttpPost("http://www.yoursite.com/");
 
     private String query;
-    private String className;
     private Context mContext;
     private static int taskID = 0;
 
@@ -52,14 +51,6 @@ class ReqTask extends AsyncTask<String, Void, String> {
         this.query = query;
     }
 
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
     public Context getActContext() {
         return mContext;
     }
@@ -76,10 +67,9 @@ class ReqTask extends AsyncTask<String, Void, String> {
         this.taskID = taskID;
     }
 
-    public ReqTask(String query, String className, Context context){
+    public ReqTask(String query, Context context){
         setTaskID(this.taskID);//set unique ID for task
         setQuery(query);
-        setClassName(className);
         Log.d("Variable", "ReqTask" + getTaskID() + " context value: " + context);
         setActContext(context);
         taskID++;
@@ -87,7 +77,7 @@ class ReqTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPreExecute() {
-        //dialog = ProgressDialog.show(getActivityContext(),"Logging in...","Please Wait",false);
+
     }
 
     @Override
@@ -96,20 +86,14 @@ class ReqTask extends AsyncTask<String, Void, String> {
         StringBuilder total = new StringBuilder();
         try {
             HttpPost httptemp = new HttpPost(getQuery());//form http req string and assign to httppost
-            Log.d("Variable", getClassName() + ".java - query input result: " + getQuery());
+            Log.d("Variable", "query input value: " + getQuery());
             httppost = httptemp;
             // Execute HTTP Post Request
-
             HttpResponse response = httpclient.execute(httppost);
-
             HttpEntity ht = response.getEntity();
-
             BufferedHttpEntity buf = new BufferedHttpEntity(ht);
-
             InputStream is = buf.getContent();
-
             BufferedReader r = new BufferedReader(new InputStreamReader(is));
-
             String line;
             while ((line = r.readLine()) != null) {
                 total.append(line);
@@ -119,21 +103,17 @@ class ReqTask extends AsyncTask<String, Void, String> {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            ToastMessageTask tmtask = new ToastMessageTask(mContext,"Connection to CI Server failed. Check" +
-                    "CI Connection Profile under Settings.");
-            tmtask.execute();
         }
-
-        Log.d("Variable", "Caller " + getClassName() + ".java - total.toString() result: " + total.toString());
+        Log.d("Variable", "total.toString() result: " + total.toString());
         if (!xmlobj.isXMLformat(total.toString())) {
-            Log.e("XMLFormatError", getClassName() + ".java - XML is malformed");
+            Log.e("XMLFormatError", "XML is malformed");
         }
         setResult(total.toString());
         return total.toString();
     }
 
     protected void onPostExecute(String result) {
-        Log.d("Variable", "Task Executed from " + this.getClass().getName() + " + result: " + result);
+        Log.d("Variable", "onPostExecute result: " + result);
     }
 }//end of ReqTask
 
