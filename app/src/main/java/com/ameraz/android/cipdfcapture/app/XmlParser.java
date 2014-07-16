@@ -98,7 +98,7 @@ public class XmlParser {
         int eventType = xpp.getEventType();
         String tagText = "";
         while (eventType != XmlPullParser.END_DOCUMENT) {
-            if(xpp.getName() == tag){//if the tag name matches what you're searching for, append the contents
+            if(xpp.getName().equals(tag)){//if the tag name matches what you're searching for, append the contents
                 tagText.concat(xpp.getText() + ",");
             }
             eventType = xpp.next();

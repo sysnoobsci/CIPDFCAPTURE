@@ -133,7 +133,7 @@ public class MainActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         Log.d("Variable", "Value of argument position: " + position);
-        Fragment fragment = new Home_Fragment();
+        Fragment fragment;
 
         if(getFirst_open()){//if first time opening app, show home screen fragment
             position = -1;
@@ -180,6 +180,7 @@ public class MainActivity extends Activity
     }
     public void restoreActionBar() {
         ActionBar actionBar = getActionBar();
+        assert actionBar != null;
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);

@@ -51,7 +51,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         byte buf[] = new byte[1024];
         int len;
         AssetManager assetManager = context.getAssets();
-        InputStream inputStream = null;
+        InputStream inputStream;
 
         try {
             inputStream = assetManager.open(script);
@@ -59,7 +59,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             while ((len = inputStream.read(buf)) != -1) {
                 outputStream.write(buf, 0, len);
             }
-            Log.d("Variable", "contents of buf: " + buf.toString());
             outputStream.close();
             inputStream.close();
 
@@ -151,7 +150,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("Portnumber", slist.get(3));
         values.put("Username", slist.get(4));
         values.put("Password", slist.get(5));
-        Boolean insert_successful = true;
         try {
             db.insertOrThrow(TABLE_NAME, null, values);
             db.close();

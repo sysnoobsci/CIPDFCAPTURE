@@ -28,9 +28,7 @@
             android:name=".filebrowser.FileChooser"
             android:label="Choose File"
             android:theme="@android:style/Theme.Holo">
-            <action android:name="filexplore.myapplication2.FileChooser" />
 
-            <category android:name="android.intent.category.DEFAULT" />
         </activity>
     </application>
 

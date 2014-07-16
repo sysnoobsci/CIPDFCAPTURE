@@ -40,7 +40,6 @@ public class Capture_Fragment extends Fragment {
     private ImageButton searchGallery;
     private ImageButton navFileSystem;
     private ImageButton savePDF;
-    private ImageButton sharePDF;
     private Uri imageUri;
     private String incImage;
     private File newImage;
@@ -116,7 +115,7 @@ public class Capture_Fragment extends Fragment {
                     incImage = "/storage/sdcard0/Systemware/sys_original_image" + System.currentTimeMillis() + ".jpg";
                     newImage = new File(incImage);
                     try {
-                        if (newImage.exists() == false) {
+                        if (!newImage.exists()) {
                             newImage.getParentFile().mkdirs();
                             newImage.createNewFile();
                         }
@@ -189,7 +188,7 @@ public class Capture_Fragment extends Fragment {
         searchGallery = (ImageButton) rootView.findViewById(R.id.capture_gallery);
         navFileSystem = (ImageButton) rootView.findViewById(R.id.capture_nav);
         savePDF = (ImageButton) rootView.findViewById(R.id.capture_save);
-        sharePDF = (ImageButton) rootView.findViewById(R.id.capture_share);
+        ImageButton sharePDF = (ImageButton) rootView.findViewById(R.id.capture_share);
     }
 
     private class saveImageAsPDF extends AsyncTask {

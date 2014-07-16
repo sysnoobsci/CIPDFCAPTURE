@@ -3,6 +3,7 @@ package com.ameraz.android.cipdfcapture.app.filebrowser;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -34,7 +35,7 @@ public class FileChooser extends ListActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); 
-        currentDir = new File("/sdcard/");
+        currentDir = new File(Environment.getExternalStorageDirectory().getPath());
         fill(currentDir); 
     }
     private void fill(File f)
@@ -52,7 +53,7 @@ public class FileChooser extends ListActivity {
 				if(ff.isDirectory()){
 
 					File[] fbuf = ff.listFiles(); 
-					int buf = 0;
+					int buf;
 					if(fbuf != null){ 
 						buf = fbuf.length;
 					} 
