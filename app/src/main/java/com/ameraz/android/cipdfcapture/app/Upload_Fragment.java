@@ -66,15 +66,8 @@ public class Upload_Fragment extends Fragment {
             public void onClick(View v){//set listener for upload button
                 try {
                     uploadButton();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (XmlPullParserException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (TimeoutException e) {
+                }
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -83,9 +76,9 @@ public class Upload_Fragment extends Fragment {
         setCiLoginInfo(liloobj);//set ciprofile from preferences list
         tryLogin();
         try {
-                if (pingserver()) {//try to login, if successful continue
+            APIQueries apiobj = new APIQueries(getActivity());
+                if (apiobj.pingserver()) {//check if logged in
                     XmlParser xobj = new XmlParser();
-                    APIQueries apiobj = new APIQueries(getActivity());
                     ReqTask reqobj4 = new ReqTask(apiobj.listnodeQuery(), maContext);
                     try {
                         reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -101,43 +94,14 @@ public class Upload_Fragment extends Fragment {
                     Log.d("Variable", "nameresults value: " + nameresults);
                     //CONTINUE CODE HERE FOR ADDING SERVER NODES TO SPINNER - GET THE INFO FROM xobj.getTextTag();
                 }
-            }catch(ExecutionException e){
-                e.printStackTrace();
-            }catch(InterruptedException e){
-                e.printStackTrace();
-            }catch(IOException e){
-                e.printStackTrace();
-            }catch(XmlPullParserException e){
+            }
+            catch(Exception e){
                 e.printStackTrace();
             }
             //FIX***********
-
         return rootView;
     }
 
-    public Boolean pingserver() throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
-        XmlParser xobj = new XmlParser();
-        APIQueries apiobj = new APIQueries(getActivity());
-        ReqTask reqobj4 = new ReqTask(apiobj.pingQuery(), maContext);
-        try{
-            reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
-        }
-        catch(TimeoutException te){
-            ToastMessageTask tmtask = new ToastMessageTask(maContext,"Connection to CI Server timed out. Check" +
-                    "CI Connection Profile under Settings.");
-            tmtask.execute();
-        }
-        xobj.parseXMLfunc(reqobj4.getResult());
-        apiobj.isPingSuccessful(xobj.getTextTag());
-        if (apiobj.getPingresult()) {//if the ping is successful(i.e. user logged in)
-            Log.d("Message", "CI Server ping successful.");
-            return true;
-        }
-        else{
-            Log.d("Message", "CI Server ping failed.");
-            return false;
-        }
-    }
 
     public void getfile(View view){
         Intent intent1 = new Intent(getActivity(), FileChooser.class);
@@ -147,8 +111,8 @@ public class Upload_Fragment extends Fragment {
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        if (pingserver()) {//if the ping is successful(i.e. user logged in)
+        APIQueries apiobj = new APIQueries(maContext);
+        if (apiobj.pingserver()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //********put in code for uploading file here***********
         }
@@ -197,21 +161,19 @@ public class Upload_Fragment extends Fragment {
                         liloobj.getPassword(), null), maContext);//send login query to CI via asynctask
                 try {
                     reqobj.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
-                } catch (TimeoutException e) {
+                }
+                catch (TimeoutException e) {
                     ToastMessageTask tmtask = new ToastMessageTask(maContext, "Logon attempt timed out.");
                     tmtask.execute();
                     e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
+                }
+                catch (Exception e) {
                     e.printStackTrace();
                 }
                 XmlParser xobj3 = new XmlParser();
                 try {
                     xobj3.parseXMLfunc(reqobj.getResult());
-                } catch (XmlPullParserException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 Log.d("Variable", "reqobj.getResult() value is: " + reqobj.getResult());

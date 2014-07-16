@@ -3,7 +3,13 @@ package com.ameraz.android.cipdfcapture.app;
 import android.content.Context;
 import android.util.Log;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by adrian.meraz on 6/27/2014.
@@ -12,6 +18,7 @@ public class APIQueries {
     Context mContext;
     QueryFormer qf = new QueryFormer();
     Boolean pingresult = false;
+    final static int PING_TIMEOUT = 500;
 
     public APIQueries(Context mContext){
         this.mContext = mContext;
@@ -52,6 +59,29 @@ public class APIQueries {
     String pingQuery(){
         String pingQuery = "?action=ping";
         return targetCIQuery() + pingQuery;
+    }
+    public Boolean pingserver() throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
+        XmlParser xobj = new XmlParser();
+        APIQueries apiobj = new APIQueries(mContext);
+        ReqTask reqobj4 = new ReqTask(apiobj.pingQuery(), mContext);
+        try{
+            reqobj4.execute().get(PING_TIMEOUT, TimeUnit.MILLISECONDS);
+        }
+        catch(TimeoutException te){
+            ToastMessageTask tmtask = new ToastMessageTask(mContext,"Connection to CI Server timed out. Check" +
+                    "CI Connection Profile under Settings.");
+            tmtask.execute();
+        }
+        xobj.parseXMLfunc(reqobj4.getResult());
+        apiobj.isPingSuccessful(xobj.getTextTag());
+        if (apiobj.getPingresult()) {//if the ping is successful(i.e. user logged in)
+            Log.d("Message", "CI Server ping successful.");
+            return true;
+        }
+        else{
+            Log.d("Message", "CI Server ping failed.");
+            return false;
+        }
     }
     //ping check
     protected void isPingSuccessful(ArrayList<String> larray) {
