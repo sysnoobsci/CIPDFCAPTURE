@@ -53,7 +53,10 @@ public class XmlParser {
 
     public String parseXMLfunc(String xmlstring)
             throws XmlPullParserException, IOException{
-
+        clearXMLString();//clear the String before adding a new XMLString
+        clearXMLTags();
+        Log.d("Variable", "getXmlstring() results after clear:" + getXmlstring());
+        Log.d("Variable", "getTextTag() results(arrayList size) after clear:" + String.valueOf(getTextTag().size()));
         ArrayList<String> listOfTextTags = new ArrayList<String>();//a list contain all the text inside XML tags
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -85,6 +88,10 @@ public class XmlParser {
 
     public void clearXMLString(){
         setXmlstring(EMPTY_STRING);
+    }
+
+    public void clearXMLTags(){
+        textTag.clear();
     }
 
     public String findTagText(String tag) throws XmlPullParserException, IOException {//pass in a tag, and get the tag contents

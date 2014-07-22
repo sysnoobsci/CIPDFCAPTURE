@@ -34,7 +34,7 @@ public class Upload_Fragment extends Fragment {
     static View rootView;
     EditText edittext;
     Context maContext;
-    ArrayList<String> logonXmlTextTags;
+    static ArrayList<String> logonXmlTextTags;
     SharedPreferences preferences;
     ProgressDialog progress;
 
@@ -42,19 +42,18 @@ public class Upload_Fragment extends Fragment {
 
     final static private int LOGIN_TIMEOUT = 500;//time in milliseconds for login attempt to timeout
 
-    public ArrayList<String> getLogonXmlTextTags() {
+    public static ArrayList<String> getLogonXmlTextTags() {
         return logonXmlTextTags;
     }
 
-    public void setLogonXmlTextTags(ArrayList<String> logonXmlTextTags) {
-        this.logonXmlTextTags = logonXmlTextTags;
+    public static void setLogonXmlTextTags(ArrayList<String> logonXmlTextTags) {
+        Upload_Fragment.logonXmlTextTags = logonXmlTextTags;
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        rootView = inflater .inflate(R.layout.fragment_fileexplorer, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_fileexplorer, container, false);
         maContext = getActivity();//get context from activity
-        edittext = (EditText)rootView.findViewById(R.id.editText);
+        edittext = (EditText) rootView.findViewById(R.id.editText);
         rootView.findViewById(R.id.skipButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {//set listener for browse button
@@ -63,42 +62,41 @@ public class Upload_Fragment extends Fragment {
         });
         rootView.findViewById(R.id.upload).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){//set listener for upload button
+            public void onClick(View v) {//set listener for upload button
                 try {
                     uploadButton();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
         loginlogoff liloobj = new loginlogoff(maContext);
-        setCiLoginInfo(liloobj);//set ciprofile from preferences list
-        tryLogin();
-        try {
+        liloobj.setCiLoginInfo();//set ciprofile from preferences list
+        if(liloobj.tryLogin()){
+            try {
             APIQueries apiobj = new APIQueries(getActivity());
-                if (apiobj.pingserver()) {//check if logged in
-                    XmlParser xobj = new XmlParser();
-                    ReqTask reqobj4 = new ReqTask(apiobj.listnodeQuery(), maContext);
-                    try {
-                        reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
-                    }catch (TimeoutException te) {
-                        ToastMessageTask tmtask = new ToastMessageTask(maContext, "Connection to CI Server failed. Check" +
-                                "CI Connection Profile under Settings.");
-                        tmtask.execute();
-                    }
-                    xobj.parseXMLfunc(reqobj4.getResult());
-                    String xidresults = xobj.findTagText("xid");
-                    String nameresults = xobj.findTagText("name");
-                    Log.d("Variable", "xidresults value: " + xidresults);
-                    Log.d("Variable", "nameresults value: " + nameresults);
-                    //CONTINUE CODE HERE FOR ADDING SERVER NODES TO SPINNER - GET THE INFO FROM xobj.getTextTag();
+            if (apiobj.pingserver()) {//check if logged in
+                XmlParser xobj = new XmlParser();
+                ReqTask reqobj4 = new ReqTask(apiobj.listnodeQuery(), maContext);
+                try {
+                    reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
+                } catch (TimeoutException te) {
+                    ToastMessageTask tmtask = new ToastMessageTask(maContext, "Connection to CI Server failed. Check" +
+                            "CI Connection Profile under Settings.");
+                    tmtask.execute();
                 }
+                xobj.parseXMLfunc(reqobj4.getResult());
+                String xidresults = xobj.findTagText("xid");
+                String nameresults = xobj.findTagText("name");
+                Log.d("Variable", "xidresults value: " + xidresults);
+                Log.d("Variable", "nameresults value: " + nameresults);
+                //CONTINUE CODE HERE FOR ADDING SERVER NODES TO SPINNER - GET THE INFO FROM xobj.getTextTag();
             }
-            catch(Exception e){
-                e.printStackTrace();
-            }
-            //FIX***********
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //FIX***********
+        }
         return rootView;
     }
 
@@ -111,6 +109,7 @@ public class Upload_Fragment extends Fragment {
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        loginlogoff liloobj = new loginlogoff(maContext);
         APIQueries apiobj = new APIQueries(maContext);
         if (apiobj.pingserver()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
@@ -118,7 +117,7 @@ public class Upload_Fragment extends Fragment {
         }
         else {//if ping fails, selected ci profile will be used to log back in
             Log.d("Message", "Ping to CI server indicated no login session.");
-            if(tryLogin()) {
+            if(liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
                 //********put in code for uploading file here***********
             }
@@ -128,65 +127,6 @@ public class Upload_Fragment extends Fragment {
                 tmtask.execute();
             }
         }
-    }
-
- public void setCiLoginInfo(loginlogoff liloobj){
-     DatabaseHandler dbh = new DatabaseHandler(maContext);
-     preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-     String ciserver = preferences.getString("list_preference_ci_servers", "n/a");
-     String ciserverResult = dbh.select_ci_server(ciserver);
-     String[] parms = ciserverResult.split(",");
-     try {
-         liloobj.setHostname(parms[2]);
-         liloobj.setDomain(parms[3]);
-         liloobj.setPortnumber(Integer.parseInt(parms[4]));
-         liloobj.setUsername(parms[5]);
-         liloobj.setPassword(parms[6]);
-     }
-     catch(ArrayIndexOutOfBoundsException aiob){
-         Log.e("Error", aiob.toString());
-         ToastMessageTask tmtask = new ToastMessageTask(maContext,"Select a CI Profile under Settings.");
-         tmtask.execute();
-     }
- }
-
- public Boolean tryLogin(){
-        Boolean loginTry = false;
-        final loginlogoff liloobj = new loginlogoff(maContext);//passed in context of this activity
-        setCiLoginInfo(liloobj);
-        new Thread(new Runnable() {
-            public void run() {
-                APIQueries apiobj = new APIQueries(getActivity());
-                ReqTask reqobj = new ReqTask(apiobj.logonQuery(liloobj.getUsername(),
-                        liloobj.getPassword(), null), maContext);//send login query to CI via asynctask
-                try {
-                    reqobj.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
-                }
-                catch (TimeoutException e) {
-                    ToastMessageTask tmtask = new ToastMessageTask(maContext, "Logon attempt timed out.");
-                    tmtask.execute();
-                    e.printStackTrace();
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-                XmlParser xobj3 = new XmlParser();
-                try {
-                    xobj3.parseXMLfunc(reqobj.getResult());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                Log.d("Variable", "reqobj.getResult() value is: " + reqobj.getResult());
-                setLogonXmlTextTags(xobj3.getTextTag());
-                //check if login worked
-                liloobj.isLoginSuccessful(getLogonXmlTextTags());//check if login was successful
-                liloobj.logonMessage();//show status of login
-            }
-        }).start();
-        if (liloobj.getLogin_successful()){
-            loginTry = true;
-        }
-        return loginTry;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){

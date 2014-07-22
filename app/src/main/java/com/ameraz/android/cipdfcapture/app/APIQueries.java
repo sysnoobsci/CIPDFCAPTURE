@@ -56,18 +56,21 @@ public class APIQueries {
     }
 
     //ping
-    String pingQuery(){
-        String pingQuery = "?action=ping";
+    String pingQuery(String sid){
+        String pingQuery = "?action=ping" + qf.formQuery("sid," + sid);
         return targetCIQuery() + pingQuery;
     }
     public Boolean pingserver() throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
+        Boolean pingresult;// default is false
         XmlParser xobj = new XmlParser();
         APIQueries apiobj = new APIQueries(mContext);
-        ReqTask reqobj4 = new ReqTask(apiobj.pingQuery(), mContext);
+
+        ReqTask reqobj4 = new ReqTask(apiobj.pingQuery(loginlogoff.getSid()), mContext);
         try{
             reqobj4.execute().get(PING_TIMEOUT, TimeUnit.MILLISECONDS);
         }
         catch(TimeoutException te){
+            Log.e("Error", te.toString());
             ToastMessageTask tmtask = new ToastMessageTask(mContext,"Connection to CI Server timed out. Check" +
                     "CI Connection Profile under Settings.");
             tmtask.execute();
@@ -76,16 +79,18 @@ public class APIQueries {
         apiobj.isPingSuccessful(xobj.getTextTag());
         if (apiobj.getPingresult()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Server ping successful.");
-            return true;
+            pingresult = true;
         }
         else{
             Log.d("Message", "CI Server ping failed.");
-            return false;
+            pingresult = false;
         }
+        return pingresult;
     }
     //ping check
     protected void isPingSuccessful(ArrayList<String> larray) {
         if(larray.size()==0){//if the array is of size 0, nothing was returned from the ciserver
+            Log.d("Message", "Nothing returned from CI server.");
             setPingresult(false);
         }
         else {
@@ -96,10 +101,10 @@ public class APIQueries {
                     setPingresult(false);
                 }
             }
-            catch(IndexOutOfBoundsException iob){
+            catch(Exception e){
                 ToastMessageTask tmtask = new ToastMessageTask(mContext,"Error. Connection to CI Server failed. Check " +
                                                 "CI Connection Profile under Settings.");
-                Log.e("Error",iob.toString());
+                Log.e("Error",e.toString());
                 tmtask.execute();
             }
         }

@@ -98,7 +98,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             Log.d("Variable", "listciserversQuery: " + listciserversQuery);
             Cursor cursor = db.rawQuery(listciserversQuery, null);
             while (cursor.moveToNext()) {
-                Log.d("Message", "cursor moved....");
                 result = result.concat(cursor.getString(cursor.getColumnIndex(CICONFIG_COLUMN_NAME)) + ",");
             }
             list = new ArrayList<String>(Arrays.asList(result.split(",")));
@@ -121,7 +120,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             Log.d("Variable", "Value of cisSelectQuery: " + cisSelectQuery);
             Cursor cursor = db.rawQuery(cisSelectQuery, null);
             while (cursor.moveToNext()) {
-                Log.d("Message", "cursor moved....");
                 result = cursor.getString(cursor.getColumnIndex("_id"));
                 result = result.concat("," + cursor.getString(cursor.getColumnIndex("Ciprofile")));
                 result = result.concat("," + cursor.getString(cursor.getColumnIndex("Hostname")));
