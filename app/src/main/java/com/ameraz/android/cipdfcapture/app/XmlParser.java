@@ -33,7 +33,7 @@ public class XmlParser {
         this.xmlstring = xmlstring;
     }
 
-    static StringBuilder total = new StringBuilder();
+    StringBuilder total = new StringBuilder();
 
     public Boolean getIs_xml() {
         return is_xml;

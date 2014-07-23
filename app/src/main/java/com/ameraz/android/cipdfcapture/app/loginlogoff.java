@@ -81,10 +81,12 @@ public class loginlogoff {
     }
 
     public static void setSid(String result) {
+        Log.d("Variable","result value: " + result);
         String target = "<session sid=\"";
         int a = target.indexOf(result);
-        int b = a + target.length()-1;
-        int c =  a + SIZE_OF_TARGET_SID + target.length();//54 is the size of the sid plus the "target" string size
+        int b = a + target.length();
+        int c =  a + SIZE_OF_TARGET_SID + target.length() + 1;//54 is the size of the sid plus the "target" string size
+        Log.d("Variable","result.substring(b,c) value" + result.substring(b,c));
         loginlogoff.sid = result.substring(b,c);
     }
 
@@ -172,16 +174,15 @@ public class loginlogoff {
     }
 
     public Boolean tryLogin(){
-        Boolean loginTry = false;
-        final XmlParser xobj3 = new XmlParser();
+        final Boolean[] loginTry = {false};
+
         setCiLoginInfo();
         new Thread(new Runnable() {
             public void run() {
-
+                XmlParser xobj3 = new XmlParser();
                 APIQueries apiobj = new APIQueries(mContext);
                 ReqTask reqobj = new ReqTask(apiobj.logonQuery(getUsername(),
                         getPassword(), null), mContext);//send login query to CI via asynctask
-
                 try {
                     reqobj.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
                 }
@@ -195,6 +196,7 @@ public class loginlogoff {
                 }
 
                 try {
+                    Log.d("Variable","reqobj.getResult() value: " + reqobj.getResult());
                     xobj3.parseXMLfunc(reqobj.getResult());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -204,12 +206,14 @@ public class loginlogoff {
                 //check if login worked
                 isLoginSuccessful(Upload_Fragment.getLogonXmlTextTags());//check if login was successful
                 logonMessage();//show status of login
+                if (getLogin_successful()){
+                    loginTry[0] = true;
+                    Log.d("Variable","reqobj.getResult(): " + reqobj.getResult());
+                    setSid(reqobj.getResult());//get the session id if the login was successful
+                }
             }
         }).start();
-        if (getLogin_successful()){
-            loginTry = true;
-            setSid(xobj3.getXmlstring());//get the session id if the login was successful
-        }
-        return loginTry;
+
+        return loginTry[0];
     }
 }
