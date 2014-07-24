@@ -70,36 +70,44 @@ public class Upload_Fragment extends Fragment {
                 }
             }
         });
-        loginlogoff liloobj = new loginlogoff(maContext);
-        liloobj.setCiLoginInfo();//set ciprofile from preferences list
-        if(liloobj.tryLogin()){
-            try {
-            APIQueries apiobj = new APIQueries(getActivity());
-            if (apiobj.pingserver()) {//check if logged in
-                XmlParser xobj = new XmlParser();
-                ReqTask reqobj4 = new ReqTask(apiobj.listnodeQuery(), maContext);
-                try {
-                    reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
-                } catch (TimeoutException te) {
-                    ToastMessageTask tmtask = new ToastMessageTask(maContext, "Connection to CI Server failed. Check" +
-                            "CI Connection Profile under Settings.");
-                    tmtask.execute();
-                }
-                xobj.parseXMLfunc(reqobj4.getResult());
-                String xidresults = xobj.findTagText("xid");
-                String nameresults = xobj.findTagText("name");
-                Log.d("Variable", "xidresults value: " + xidresults);
-                Log.d("Variable", "nameresults value: " + nameresults);
-                //CONTINUE CODE HERE FOR ADDING SERVER NODES TO SPINNER - GET THE INFO FROM xobj.getTextTag();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //FIX***********
-        }
+        setupServerNodes();
         return rootView;
     }
 
+    public void setupServerNodes(){
+        new Thread(new Runnable() {
+            public void run() {
+                loginlogoff liloobj = new loginlogoff(maContext);
+                try {
+                    if (liloobj.tryLogin()) {
+                        APIQueries apiobj = new APIQueries(getActivity());
+                        if (apiobj.pingserver()) {//check if logged in
+                            XmlParser xobj = new XmlParser();
+                            ReqTask reqobj4 = new ReqTask(apiobj.listnodeQuery(), maContext);
+                            try {
+                                reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
+                            } catch (TimeoutException te) {
+                                ToastMessageTask tmtask = new ToastMessageTask(maContext, "Connection to CI Server failed. Check" +
+                                        "CI Connection Profile under Settings.");
+                                tmtask.execute();
+                            }
+                            xobj.parseXMLfunc(reqobj4.getResult());
+                            String xidresults = xobj.findTagText("xid");
+                            String nameresults = xobj.findTagText("name");
+                            Log.d("Variable", "xidresults value: " + xidresults);
+                            Log.d("Variable", "nameresults value: " + nameresults);
+                            //CONTINUE CODE HERE FOR ADDING SERVER NODES TO SPINNER - GET THE INFO FROM xobj.getTextTag();
+                        }
+                        //FIX***********
+                    }
+                }
+                catch(Exception e){
+                    Log.e("Error - setupServerNodes",e.toString());
+                }
+
+            }
+        }).start();
+    }
 
     public void getfile(View view){
         Intent intent1 = new Intent(getActivity(), FileChooser.class);

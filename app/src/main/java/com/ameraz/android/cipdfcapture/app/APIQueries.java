@@ -38,7 +38,7 @@ public class APIQueries {
                 lilobj.getDomain() + ":" + lilobj.getPortnumber() + "/ci";
         return targetCIQuery;
     }
-    //listnode
+    //listnode - add &sid to the string for it to work properly
     String listnodeQuery(){
         String listnodeQuery = "?action=listnode";
         return targetCIQuery() + listnodeQuery;
@@ -61,10 +61,13 @@ public class APIQueries {
         return targetCIQuery() + pingQuery;
     }
     public Boolean pingserver() throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
-        Boolean pingresult;// default is false
         XmlParser xobj = new XmlParser();
         APIQueries apiobj = new APIQueries(mContext);
-
+        //check if there is an sid (i.e. a session established)
+        if(loginlogoff.getSid() == "" || loginlogoff.getSid() == null){
+            Log.d("Message", "CI Server ping failed.");
+            return false;//if no session established, return false
+        }
         ReqTask reqobj4 = new ReqTask(apiobj.pingQuery(loginlogoff.getSid()), mContext);
         try{
             reqobj4.execute().get(PING_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -79,13 +82,12 @@ public class APIQueries {
         apiobj.isPingSuccessful(xobj.getTextTag());
         if (apiobj.getPingresult()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Server ping successful.");
-            pingresult = true;
+            return true;
         }
         else{
             Log.d("Message", "CI Server ping failed.");
-            pingresult = false;
+            return false;
         }
-        return pingresult;
     }
     //ping check
     protected void isPingSuccessful(ArrayList<String> larray) {

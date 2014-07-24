@@ -7,7 +7,11 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -82,11 +86,12 @@ public class loginlogoff {
 
     public static void setSid(String result) {
         Log.d("Variable","result value: " + result);
-        String target = "<session sid=\"";
-        int a = target.indexOf(result);
+        String target = "session sid=\"";
+        int a = result.indexOf(target);
         int b = a + target.length();
-        int c =  a + SIZE_OF_TARGET_SID + target.length() + 1;//54 is the size of the sid plus the "target" string size
-        Log.d("Variable","result.substring(b,c) value" + result.substring(b,c));
+        int c =  a + SIZE_OF_TARGET_SID + target.length();//54 is the size of the sid plus the "target" string size
+        Log.d("Variable","Values of a,b,c: " + a + ", " + b + ", " + c);
+        Log.d("Variable","result.substring(b,c) value: " + result.substring(b,c));
         loginlogoff.sid = result.substring(b,c);
     }
 
@@ -173,12 +178,14 @@ public class loginlogoff {
         }
     }
 
-    public Boolean tryLogin(){
-        final Boolean[] loginTry = {false};
-
+    public Boolean tryLogin() throws InterruptedException, ExecutionException, XmlPullParserException, IOException {
         setCiLoginInfo();
-        new Thread(new Runnable() {
-            public void run() {
+        //try a ping first, if successful, don't try logging in again
+        APIQueries apiobj2 = new APIQueries(mContext);
+        if(apiobj2.pingserver()){
+            Log.d("Message","Logon session already established. Ping Successful.");
+            return true;//if ping is successful, return true
+        }
                 XmlParser xobj3 = new XmlParser();
                 APIQueries apiobj = new APIQueries(mContext);
                 ReqTask reqobj = new ReqTask(apiobj.logonQuery(getUsername(),
@@ -194,7 +201,6 @@ public class loginlogoff {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-
                 try {
                     Log.d("Variable","reqobj.getResult() value: " + reqobj.getResult());
                     xobj3.parseXMLfunc(reqobj.getResult());
@@ -207,13 +213,10 @@ public class loginlogoff {
                 isLoginSuccessful(Upload_Fragment.getLogonXmlTextTags());//check if login was successful
                 logonMessage();//show status of login
                 if (getLogin_successful()){
-                    loginTry[0] = true;
                     Log.d("Variable","reqobj.getResult(): " + reqobj.getResult());
                     setSid(reqobj.getResult());//get the session id if the login was successful
+                    return true;
                 }
-            }
-        }).start();
-
-        return loginTry[0];
+        return false;
     }
 }
