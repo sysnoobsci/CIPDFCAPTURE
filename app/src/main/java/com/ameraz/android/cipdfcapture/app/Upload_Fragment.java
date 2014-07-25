@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,7 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 
@@ -35,10 +36,12 @@ public class Upload_Fragment extends Fragment {
     EditText edittext;
     Context maContext;
     static ArrayList<String> logonXmlTextTags;
+    ArrayList<String> xidList;
+    ArrayList<String> nameList;
     SharedPreferences preferences;
-    ProgressDialog progress;
+    Spinner sp1;
 
-    Dialog loginDialog = null;
+
 
     final static private int LOGIN_TIMEOUT = 500;//time in milliseconds for login attempt to timeout
 
@@ -70,20 +73,25 @@ public class Upload_Fragment extends Fragment {
                 }
             }
         });
-        setupServerNodes();
+        getServerNodesSpinner();
+        sp1 = (Spinner) rootView.findViewById(R.id.spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(maContext,android.R.layout.simple_spinner_item,nameList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp1.setAdapter(adapter);
         return rootView;
     }
 
-    public void setupServerNodes(){
+    public void getServerNodesSpinner(){
         new Thread(new Runnable() {
             public void run() {
                 loginlogoff liloobj = new loginlogoff(maContext);
+
                 try {
                     if (liloobj.tryLogin()) {
                         APIQueries apiobj = new APIQueries(getActivity());
                         if (apiobj.pingserver()) {//check if logged in
                             XmlParser xobj = new XmlParser();
-                            ReqTask reqobj4 = new ReqTask(apiobj.listnodeQuery(), maContext);
+                            ReqTask reqobj4 = new ReqTask(apiobj.listnodeQuery(loginlogoff.getSid()), maContext);
                             try {
                                 reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
                             } catch (TimeoutException te) {
@@ -92,23 +100,32 @@ public class Upload_Fragment extends Fragment {
                                 tmtask.execute();
                             }
                             xobj.parseXMLfunc(reqobj4.getResult());
-                            String xidresults = xobj.findTagText("xid");
-                            String nameresults = xobj.findTagText("name");
+                            String xidresults = xobj.findTagText("xid",reqobj4.getResult());
+                            String nameresults = xobj.findTagText("name",reqobj4.getResult());
                             Log.d("Variable", "xidresults value: " + xidresults);
                             Log.d("Variable", "nameresults value: " + nameresults);
-                            //CONTINUE CODE HERE FOR ADDING SERVER NODES TO SPINNER - GET THE INFO FROM xobj.getTextTag();
+                            xidList = stringSplitter(xidresults);
+                            nameList = stringSplitter(nameresults);
                         }
-                        //FIX***********
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                catch(Exception e){
-                    Log.e("Error - setupServerNodes",e.toString());
-                }
-
             }
         }).start();
     }
 
+    public ArrayList<String> stringSplitter(String splitee){
+        ArrayList<String> arrList = new ArrayList<String>();
+        String[] strArr = splitee.split(",");
+        for(String element : strArr){
+            if(!element.equals("")){//if the element is not empty, add it
+                arrList.add(element);
+                Log.d("Arrlist", "element value: " + element);
+            }
+        }
+        return arrList;
+    }
     public void getfile(View view){
         Intent intent1 = new Intent(getActivity(), FileChooser.class);
         startActivityForResult(intent1, REQUEST_PATH);

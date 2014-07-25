@@ -39,8 +39,8 @@ public class APIQueries {
         return targetCIQuery;
     }
     //listnode - add &sid to the string for it to work properly
-    String listnodeQuery(){
-        String listnodeQuery = "?action=listnode";
+    String listnodeQuery(String sid){
+        String listnodeQuery = "?action=listnode" + qf.formQuery("sid," + sid);
         return targetCIQuery() + listnodeQuery;
     }
     //logon

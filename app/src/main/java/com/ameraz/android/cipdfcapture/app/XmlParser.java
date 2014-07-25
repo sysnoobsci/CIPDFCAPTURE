@@ -55,8 +55,6 @@ public class XmlParser {
             throws XmlPullParserException, IOException{
         clearXMLString();//clear the String before adding a new XMLString
         clearXMLTags();
-        Log.d("Variable", "getXmlstring() results after clear:" + getXmlstring());
-        Log.d("Variable", "getTextTag() results(arrayList size) after clear:" + String.valueOf(getTextTag().size()));
         ArrayList<String> listOfTextTags = new ArrayList<String>();//a list contain all the text inside XML tags
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -94,23 +92,35 @@ public class XmlParser {
         textTag.clear();
     }
 
-    public String findTagText(String tag) throws XmlPullParserException, IOException {//pass in a tag, and get the tag contents
-        if(tag.equals(EMPTY_STRING)){//if nothing is being searched for, return all the xml results
+    public String findTagText(String tag,String xmlstring) throws XmlPullParserException, IOException {//pass in a tag, and get the tag contents
+        if(tag.equals("")){//if nothing is being searched for, return all the xml results
+            Log.d("Variable","No tag being searched for.");
             return getXmlstring();
         }
+        Log.d("SearchTag","Value of tag: " + tag);
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
         XmlPullParser xpp = factory.newPullParser();
-        xpp.setInput( new StringReader ( getXmlstring() ) );//get the XML string that was created from parsing the query response
+        xpp.setInput( new StringReader ( xmlstring ) );//get the XML string that was created from parsing the query response
         int eventType = xpp.getEventType();
-        String tagText = "";
+        StringBuilder tagText = new StringBuilder();
+        String matcher = "";
         while (eventType != XmlPullParser.END_DOCUMENT) {
-            if(xpp.getName().equals(tag)){//if the tag name matches what you're searching for, append the contents
-                tagText.concat(xpp.getText() + ",");
+            if(eventType == XmlPullParser.START_TAG) {
+                Log.d("xpp", "xpp.getName() value: " + xpp.getName());
+                matcher = xpp.getName();
+            }
+            else if(eventType == XmlPullParser.TEXT) {
+                Log.d("matcher", "matcher value: " + matcher);
+                if(matcher.equals(tag)){//if the tag name matches what you're searching for, append the contents
+                    Log.d("xpp","xpp.getText() value: " + xpp.getText());
+                    tagText.append(xpp.getText()).append(",");
+                    matcher = "";//clear out the String again
+                }
             }
             eventType = xpp.next();
         }
-        return tagText;
+        return tagText.toString();
     }
 
     protected Boolean isXMLformat(String xmlstring){
