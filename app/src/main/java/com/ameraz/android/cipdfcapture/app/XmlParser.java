@@ -107,13 +107,13 @@ public class XmlParser {
         String matcher = "";
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if(eventType == XmlPullParser.START_TAG) {
-                Log.d("xpp", "xpp.getName() value: " + xpp.getName());
+                //Log.d("xpp", "xpp.getName() value: " + xpp.getName());
                 matcher = xpp.getName();
             }
             else if(eventType == XmlPullParser.TEXT) {
-                Log.d("matcher", "matcher value: " + matcher);
+                //Log.d("matcher", "matcher value: " + matcher);
                 if(matcher.equals(tag)){//if the tag name matches what you're searching for, append the contents
-                    Log.d("xpp","xpp.getText() value: " + xpp.getText());
+                    //Log.d("xpp","xpp.getText() value: " + xpp.getText());
                     tagText.append(xpp.getText()).append(",");
                     matcher = "";//clear out the String again
                 }

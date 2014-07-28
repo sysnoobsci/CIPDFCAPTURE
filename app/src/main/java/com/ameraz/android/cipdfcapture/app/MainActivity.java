@@ -74,7 +74,7 @@ public class MainActivity extends Activity
         edit.commit();
     }
 
-    public static class PrefsFragment extends PreferenceFragment {
+    public static class PrefsFragment extends PreferenceFragment {//saves prefs when save connection is pressed
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);

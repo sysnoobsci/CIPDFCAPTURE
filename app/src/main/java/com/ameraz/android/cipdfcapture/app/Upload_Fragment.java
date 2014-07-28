@@ -22,7 +22,9 @@ import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -74,10 +76,7 @@ public class Upload_Fragment extends Fragment {
             }
         });
         getServerNodesSpinner();
-        sp1 = (Spinner) rootView.findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(maContext,android.R.layout.simple_spinner_item,nameList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp1.setAdapter(adapter);
+
         return rootView;
     }
 
@@ -106,6 +105,16 @@ public class Upload_Fragment extends Fragment {
                             Log.d("Variable", "nameresults value: " + nameresults);
                             xidList = stringSplitter(xidresults);
                             nameList = stringSplitter(nameresults);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sp1 = (Spinner) rootView.findViewById(R.id.spinner);
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(maContext, android.R.layout.simple_spinner_item, nameList);
+                                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                    sp1.setAdapter(adapter);
+                                }
+                            });
+
                         }
                     }
                 } catch (Exception e) {
@@ -131,6 +140,12 @@ public class Upload_Fragment extends Fragment {
         startActivityForResult(intent1, REQUEST_PATH);
     }
 
+    public String getTime(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTimeStamp = dateFormat.format(new Date()); // Find todays date
+        return currentTimeStamp;
+    }
+
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -138,6 +153,8 @@ public class Upload_Fragment extends Fragment {
         APIQueries apiobj = new APIQueries(maContext);
         if (apiobj.pingserver()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
+            //create a topic instance object
+            //TopicInstance tiobj = new TopicInstance(FileChooser.getFilePa);
             //********put in code for uploading file here***********
         }
         else {//if ping fails, selected ci profile will be used to log back in

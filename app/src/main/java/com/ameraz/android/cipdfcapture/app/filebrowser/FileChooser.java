@@ -21,7 +21,7 @@ public class FileChooser extends ListActivity {
 
 	private File currentDir;
     private FileArrayAdapter adapter;
-    private String fullFilePath;
+    private static String fullFilePath;
 
     public String getFullFilePath() {
         return fullFilePath;

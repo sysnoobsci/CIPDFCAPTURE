@@ -63,7 +63,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Content Server"
-                    android:id="@+id/textView" />
+                    android:id="@+id/textView"
+                    android:layout_marginLeft="20dp" />
 
                 <Spinner
                     android:layout_width="fill_parent"
@@ -81,7 +82,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Name"
-                    android:id="@+id/textView2" />
+                    android:id="@+id/textView2"
+                    android:layout_marginLeft="20dp" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editText2"
+                    android:layout_marginLeft="50dp" />
             </TableRow>
 
             <TableRow
@@ -92,7 +100,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Report Path"
-                    android:id="@+id/textView3" />
+                    android:id="@+id/textView3"
+                    android:layout_marginLeft="20dp" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editText3"
+                    android:layout_marginLeft="50dp" />
             </TableRow>
         </TableLayout>
 
