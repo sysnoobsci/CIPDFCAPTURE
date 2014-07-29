@@ -2,12 +2,6 @@
 <pre-dex-items>
 
     <item
-        dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\itextpdf-5.5.1-52a700fd604080bc8e72a5d37d31a388d8c45c6f.jar"
-        jar="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\libs\itextpdf-5.5.1.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="081fee01fb0d7da7665261ac0e005f583985087d"/>
-    <item
         dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\classes-fe7247a4690d3e896ddc973f9d88637393da6fdb.jar"
         jar="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\build\intermediates\exploded-aar\com.android.support\appcompat-v7\19.1.0\classes.jar"
         jumboMode="false"
@@ -19,5 +13,11 @@
         jumboMode="false"
         revision="19.1.0"
         sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
+    <item
+        dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\itextpdf-5.5.1-52a700fd604080bc8e72a5d37d31a388d8c45c6f.jar"
+        jar="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\libs\itextpdf-5.5.1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="081fee01fb0d7da7665261ac0e005f583985087d"/>
 
 </pre-dex-items>

@@ -1,9 +1,7 @@
 package com.ameraz.android.cipdfcapture.app;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -35,15 +34,16 @@ public class Upload_Fragment extends Fragment {
 
     String curFileName;
     static View rootView;
-    EditText edittext;
+    EditText filenametext;
+    EditText reportnametext;
+    EditText reportpathtext;
     Context maContext;
     static ArrayList<String> logonXmlTextTags;
     ArrayList<String> xidList;
     ArrayList<String> nameList;
     SharedPreferences preferences;
     Spinner sp1;
-
-
+    String spinnerSelected;
 
     final static private int LOGIN_TIMEOUT = 500;//time in milliseconds for login attempt to timeout
 
@@ -55,10 +55,20 @@ public class Upload_Fragment extends Fragment {
         Upload_Fragment.logonXmlTextTags = logonXmlTextTags;
     }
 
+    public String getSpinnerSelected() {
+        return spinnerSelected;
+    }
+
+    public void setSpinnerSelected(String spinnerSelected) {
+        this.spinnerSelected = spinnerSelected;
+    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_fileexplorer, container, false);
         maContext = getActivity();//get context from activity
-        edittext = (EditText) rootView.findViewById(R.id.editText);
+        filenametext = (EditText) rootView.findViewById(R.id.editText);
+        reportnametext = (EditText) rootView.findViewById(R.id.editText2);
+        reportpathtext = (EditText) rootView.findViewById(R.id.editText3);
         rootView.findViewById(R.id.skipButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {//set listener for browse button
@@ -135,6 +145,7 @@ public class Upload_Fragment extends Fragment {
         }
         return arrList;
     }
+
     public void getfile(View view){
         Intent intent1 = new Intent(getActivity(), FileChooser.class);
         startActivityForResult(intent1, REQUEST_PATH);
@@ -154,13 +165,30 @@ public class Upload_Fragment extends Fragment {
         if (apiobj.pingserver()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
-            //TopicInstance tiobj = new TopicInstance(FileChooser.getFilePa);
+            if(!filenametext.getText().toString().isEmpty() || !reportnametext.getText().toString().isEmpty() ||
+                    !reportpathtext.getText().toString().isEmpty()) {
+                TopicInstance tiobj = new TopicInstance(filenametext.getText().toString(), getSpinnerSelected(),
+                reportnametext.getText().toString(), reportpathtext.getText().toString(), getTime());
+            }
+            else{
+                ToastMessageTask tmtask = new ToastMessageTask(maContext,"Error. Fill out all the fields.");
+                tmtask.execute();
+            }
             //********put in code for uploading file here***********
         }
         else {//if ping fails, selected ci profile will be used to log back in
             Log.d("Message", "Ping to CI server indicated no login session.");
             if(liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
+                if(!filenametext.getText().toString().isEmpty() || !reportnametext.getText().toString().isEmpty() ||
+                        !reportpathtext.getText().toString().isEmpty()) {
+                    TopicInstance tiobj = new TopicInstance(filenametext.getText().toString(), getSpinnerSelected(),
+                            reportnametext.getText().toString(), reportpathtext.getText().toString(), getTime());
+                }
+                else{
+                    ToastMessageTask tmtask = new ToastMessageTask(maContext,"Error. Fill out all the fields.");
+                    tmtask.execute();
+                }
                 //********put in code for uploading file here***********
             }
             else{//if login attempt fails from trying the CI server profile, prompt user to check it
@@ -171,12 +199,22 @@ public class Upload_Fragment extends Fragment {
         }
     }
 
+    public void onItemSelected(AdapterView<?> parent,
+                               View v, int position, long id) {
+        String selected = parent.getItemAtPosition(position).toString();
+        setSpinnerSelected(selected);
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         // See which child activity is calling us back.
         if (requestCode == REQUEST_PATH){
             if (resultCode == Activity.RESULT_OK) {
                 curFileName = data.getStringExtra("GetFileName");
-                edittext.setText(curFileName);
+                filenametext.setText(curFileName);
             }
         }
     }
