@@ -1,37 +1,19 @@
 package com.ameraz.android.cipdfcapture.app;
 
+import java.io.IOException;
+
 /**
  * Created by adrian.meraz on 7/28/2014.
  */
 public class TopicInstance {
-    String filename;
-    String csnode;
     String rname;
-    String rpath;
-    String datecreated;
+    String filename;
 
-    public TopicInstance(String filename, String csnode, String rname, String rpath, String datecreated) {
-        this.filename = filename;
-        this.csnode = csnode;
+    public TopicInstance(String rname, String filename) throws IOException {
         this.rname = rname;
-        this.rpath = rpath;
-        this.datecreated = datecreated;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
         this.filename = filename;
-    }
-
-    public String getCsnode() {
-        return csnode;
-    }
-
-    public void setCsnode(String csnode) {
-        this.csnode = csnode;
+        LoadFile.readFile(getFilename());//read in file when topic instance is created
+        //continue code
     }
 
     public String getRname() {
@@ -42,19 +24,13 @@ public class TopicInstance {
         this.rname = rname;
     }
 
-    public String getRpath() {
-        return rpath;
+    public String getFilename() {
+        return filename;
     }
 
-    public void setRpath(String rpath) {
-        this.rpath = rpath;
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
-    public String getDatecreated() {
-        return datecreated;
-    }
 
-    public void setDatecreated(String datecreated) {
-        this.datecreated = datecreated;
-    }
 }

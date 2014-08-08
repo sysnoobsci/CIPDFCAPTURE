@@ -128,7 +128,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 result = result.concat("," + cursor.getString(cursor.getColumnIndex("Username")));
                 result = result.concat("," + cursor.getString(cursor.getColumnIndex("Password")));
             }
-
             cursor.close();
             db.close();
         } catch (SQLiteException e) {

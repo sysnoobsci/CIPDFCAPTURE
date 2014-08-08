@@ -85,11 +85,11 @@ public class Upload_Fragment extends Fragment {
                 }
             }
         });
-        getServerNodesSpinner();
+        //getServerNodesSpinner();
 
         return rootView;
     }
-
+    /*
     public void getServerNodesSpinner(){
         new Thread(new Runnable() {
             public void run() {
@@ -133,7 +133,7 @@ public class Upload_Fragment extends Fragment {
             }
         }).start();
     }
-
+    */
     public ArrayList<String> stringSplitter(String splitee){
         ArrayList<String> arrList = new ArrayList<String>();
         String[] strArr = splitee.split(",");
@@ -167,8 +167,7 @@ public class Upload_Fragment extends Fragment {
             //create a topic instance object
             if(!filenametext.getText().toString().isEmpty() || !reportnametext.getText().toString().isEmpty() ||
                     !reportpathtext.getText().toString().isEmpty()) {
-                TopicInstance tiobj = new TopicInstance(filenametext.getText().toString(), getSpinnerSelected(),
-                reportnametext.getText().toString(), reportpathtext.getText().toString(), getTime());
+                TopicInstance tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
             }
             else{
                 ToastMessageTask tmtask = new ToastMessageTask(maContext,"Error. Fill out all the fields.");
@@ -182,8 +181,7 @@ public class Upload_Fragment extends Fragment {
                 Log.d("Message", "CI Login successful and ready to upload file.");
                 if(!filenametext.getText().toString().isEmpty() || !reportnametext.getText().toString().isEmpty() ||
                         !reportpathtext.getText().toString().isEmpty()) {
-                    TopicInstance tiobj = new TopicInstance(filenametext.getText().toString(), getSpinnerSelected(),
-                            reportnametext.getText().toString(), reportpathtext.getText().toString(), getTime());
+                    TopicInstance tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
                 }
                 else{
                     ToastMessageTask tmtask = new ToastMessageTask(maContext,"Error. Fill out all the fields.");
