@@ -8,11 +8,12 @@ import java.io.IOException;
 public class TopicInstance {
     String rname;
     String filename;
+    String filebufferstring;
 
     public TopicInstance(String rname, String filename) throws IOException {
         this.rname = rname;
         this.filename = filename;
-        LoadFile.readFile(getFilename());//read in file when topic instance is created
+        setFilebuffer(LoadFile.readFile(getFilename()));//read in file when topic instance is created
         //continue code
     }
 
@@ -32,5 +33,15 @@ public class TopicInstance {
         this.filename = filename;
     }
 
+    public String getFilebuffer() {
+        return filebufferstring;
+    }
 
+    public void setFilebuffer(byte[] filebuffer) {//convert the byte array to a binary string representation of the bytes
+        StringBuilder s1 = new StringBuilder();
+        for(byte b1: filebuffer){
+            s1.append(String.format("%8s", Integer.toBinaryString(b1 & 0xFF)).replace(' ', '0'));
+        }
+        this.filebufferstring = s1.toString();
+    }
 }

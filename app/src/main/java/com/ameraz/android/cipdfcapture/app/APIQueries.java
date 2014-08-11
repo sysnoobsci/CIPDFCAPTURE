@@ -38,6 +38,20 @@ public class APIQueries {
                 lilobj.getDomain() + ":" + lilobj.getPortnumber() + "/ci";
         return targetCIQuery;
     }
+    //createtopic
+    String createtopicQuery(String tplid,String[] nvpairs,String detail){
+        String appender = "";
+        int j = 0;
+        for(String nvp : nvpairs){
+            appender.concat(nvp);
+            if(j!=nvpairs.length-1){//if not at end of array, put commas between all the key-value pairs
+                appender.concat(",");
+            }
+            j++;
+        }
+        String createtopicQuery = "?action=createtopic" + qf.formQuery("tplid,"+tplid,appender,"detail,"+ detail);
+        return targetCIQuery() + createtopicQuery;
+    }
     //listnode - add &sid to the string for it to work properly
     String listnodeQuery(String sid){
         String listnodeQuery = "?action=listnode" + qf.formQuery("sid," + sid);
@@ -120,20 +134,7 @@ public class APIQueries {
                 "axvs,"+axvs,"label,"+label,"inline,"+inline,"tq,"+tq,"sln,"+sln);
         return targetCIQuery() + retrieveQuery;
     }
-    //createtopic
-    String createtopicQuery(String tplid,String[] nvpairs,String detail){
-        String appender = "";
-        int j = 0;
-        for(String nvp : nvpairs){
-            appender.concat(nvp);
-            if(j!=nvpairs.length-1){//if not at end of array, put commas between all the key-value pairs
-                appender.concat(",");
-            }
-            j++;
-        }
-        String createtopicQuery = "?action=createtopic" + qf.formQuery("tplid,"+tplid,appender,"detail,"+ detail);
-        return targetCIQuery() + createtopicQuery;
-    }
+
 
 
 }

@@ -129,4 +129,15 @@ public class XmlParser {
         return getIs_xml();
     }
 
+    public Boolean goodRC(String xml){
+        if(xml.contains("<rc>0</rc><xrc>0</xrc><xsrc>0</xsrc>")){
+            Log.d("Message","XML contains good return codes...");
+            return true;
+        }
+        else{
+            Log.d("Message","XML contains bad return codes...");
+            return false;
+        }
+    }
+
 }

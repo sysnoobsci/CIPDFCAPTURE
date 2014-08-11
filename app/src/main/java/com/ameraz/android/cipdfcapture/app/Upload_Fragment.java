@@ -36,16 +36,18 @@ public class Upload_Fragment extends Fragment {
     static View rootView;
     EditText filenametext;
     EditText reportnametext;
-    EditText reportpathtext;
     Context maContext;
     static ArrayList<String> logonXmlTextTags;
     ArrayList<String> xidList;
     ArrayList<String> nameList;
     SharedPreferences preferences;
-    Spinner sp1;
-    String spinnerSelected;
+
 
     final static private int LOGIN_TIMEOUT = 500;//time in milliseconds for login attempt to timeout
+    final static private int CT_TIMEOUT = 500;//time in milliseconds for createtopic attempt to timeout
+    final static private int NVPAIRS = 2;//number of nvpairs in createtopic api call
+    final static private String tplid1 = "create.redmine1625";//time in milliseconds for createtopic attempt to timeout
+
 
     public static ArrayList<String> getLogonXmlTextTags() {
         return logonXmlTextTags;
@@ -55,20 +57,12 @@ public class Upload_Fragment extends Fragment {
         Upload_Fragment.logonXmlTextTags = logonXmlTextTags;
     }
 
-    public String getSpinnerSelected() {
-        return spinnerSelected;
-    }
-
-    public void setSpinnerSelected(String spinnerSelected) {
-        this.spinnerSelected = spinnerSelected;
-    }
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_fileexplorer, container, false);
         maContext = getActivity();//get context from activity
         filenametext = (EditText) rootView.findViewById(R.id.editText);
         reportnametext = (EditText) rootView.findViewById(R.id.editText2);
-        reportpathtext = (EditText) rootView.findViewById(R.id.editText3);
+
         rootView.findViewById(R.id.skipButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {//set listener for browse button
@@ -160,28 +154,68 @@ public class Upload_Fragment extends Fragment {
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        TopicInstance tiobj;
+        XmlParser xobj = new XmlParser();
         loginlogoff liloobj = new loginlogoff(maContext);
         APIQueries apiobj = new APIQueries(maContext);
         if (apiobj.pingserver()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
-            if(!filenametext.getText().toString().isEmpty() || !reportnametext.getText().toString().isEmpty() ||
-                    !reportpathtext.getText().toString().isEmpty()) {
-                TopicInstance tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
+            if(!filenametext.getText().toString().isEmpty() || !reportnametext.getText().toString().isEmpty()) {
+                tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
+                String[] nvpairsarr = new String[NVPAIRS];
+                nvpairsarr[0] = "file,"+tiobj.getFilebuffer();
+                nvpairsarr[1] = "name,"+tiobj.getRname();
+                ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y"),maContext);
+                try {
+                    reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
+                } catch (TimeoutException te) {
+                    ToastMessageTask tmtask = new ToastMessageTask(maContext, "Create topic call failed. Check" +
+                            "CI Connection Profile under Settings.");
+                    tmtask.execute();
+                }
+                xobj.parseXMLfunc(reqobj4.getResult());
+                if(xobj.goodRC(xobj.getXmlstring())){//if return codes are good, it was successful
+                    ToastMessageTask tmtask = new ToastMessageTask(maContext,"File was successfully Uploaded.");
+                    tmtask.execute();
+                }
+                else{
+                    ToastMessageTask tmtask = new ToastMessageTask(maContext,"File upload failed.");
+                    tmtask.execute();
+                }
             }
             else{
                 ToastMessageTask tmtask = new ToastMessageTask(maContext,"Error. Fill out all the fields.");
                 tmtask.execute();
             }
-            //********put in code for uploading file here***********
+
         }
         else {//if ping fails, selected ci profile will be used to log back in
             Log.d("Message", "Ping to CI server indicated no login session.");
             if(liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
-                if(!filenametext.getText().toString().isEmpty() || !reportnametext.getText().toString().isEmpty() ||
-                        !reportpathtext.getText().toString().isEmpty()) {
-                    TopicInstance tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
+                if(!filenametext.getText().toString().isEmpty() || !reportnametext.getText().toString().isEmpty()) {
+                    tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
+                    String[] nvpairsarr = new String[NVPAIRS];
+                    nvpairsarr[0] = "file,"+tiobj.getFilebuffer();
+                    nvpairsarr[1] = "name,"+tiobj.getRname();
+                    ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y"),maContext);
+                    try {
+                        reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
+                    } catch (TimeoutException te) {
+                        ToastMessageTask tmtask = new ToastMessageTask(maContext, "Create topic call failed. Check" +
+                                "CI Connection Profile under Settings.");
+                        tmtask.execute();
+                    }
+                    xobj.parseXMLfunc(reqobj4.getResult());
+                    if(xobj.goodRC(xobj.getXmlstring())){//if return codes are good, it was successful
+                        ToastMessageTask tmtask = new ToastMessageTask(maContext,"File was successfully Uploaded.");
+                        tmtask.execute();
+                    }
+                    else{
+                        ToastMessageTask tmtask = new ToastMessageTask(maContext,"File upload failed.");
+                        tmtask.execute();
+                    }
                 }
                 else{
                     ToastMessageTask tmtask = new ToastMessageTask(maContext,"Error. Fill out all the fields.");
@@ -189,22 +223,12 @@ public class Upload_Fragment extends Fragment {
                 }
                 //********put in code for uploading file here***********
             }
-            else{//if login attempt fails from trying the CI server profile, prompt user to check it
+            else{//if login attempt fails from trying the CI server profile, prompt user to check profile
                 ToastMessageTask tmtask = new ToastMessageTask(maContext,"Connection to CI Server failed. Check" +
                         "CI Connection Profile under Settings.");
                 tmtask.execute();
             }
         }
-    }
-
-    public void onItemSelected(AdapterView<?> parent,
-                               View v, int position, long id) {
-        String selected = parent.getItemAtPosition(position).toString();
-        setSpinnerSelected(selected);
-    }
-
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
