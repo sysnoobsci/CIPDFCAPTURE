@@ -3,7 +3,10 @@ package com.ameraz.android.cipdfcapture.app;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,6 +48,8 @@ public class Capture_Fragment extends Fragment {
     private File newImage;
     private Bitmap myImage;
     private Bitmap bm;
+    private int width;
+    private int height;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,8 +60,26 @@ public class Capture_Fragment extends Fragment {
         navFileSystemListener();
         savePDFListener();
         sharePDFListener();
+        imageViewListener();
 
         return rootView;
+    }
+
+    private void imageViewListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imageUri!=null){
+                    Intent intent = new Intent();
+                    intent.setAction(android.content.Intent.ACTION_VIEW);
+                    intent.setDataAndType(imageUri, "image/png");
+                    startActivity(intent);
+                }else{
+                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Nothing to view.");
+                    tmtask.execute();
+                }
+            }
+        });
     }
 
     private void sharePDFListener() {
@@ -71,14 +94,6 @@ public class Capture_Fragment extends Fragment {
                     ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Nothing to save.");
                     tmtask.execute();
                 } else {
-/*                    try {
-                        myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                        bm = myImage.createScaledBitmap(myImage, 1080, 1920, true);
-                        //destroyBitmap();
-                        imageView.setImageBitmap(bm);
-                    } catch (Exception e) {
-                        Log.d("Error: ", e.toString());
-                    }*/
                     new saveImageAsPDF().execute();
                 }
             }
@@ -136,49 +151,98 @@ public class Capture_Fragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //getImageDimensions();
         if (resultCode == getActivity().RESULT_OK) {
             switch (requestCode) {
                 case 0:
-
-                    try {
-                        myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                        bm = myImage.createScaledBitmap(myImage, 1080, 1920, true);
-                        destroyBitmap();
-                        imageView.setImageBitmap(bm);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    Log.d("onActivityResult ", "case 0");
+                    scaleAndDisplayBitmap();
                     break;
                 case 1:
-
+                    Log.d("onActivityResult ", "case 1");
                     imageUri = data.getData();
-                    try {
-                        myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                        bm = myImage.createScaledBitmap(myImage, 1080, 1920, true);
-                        destroyBitmap();
-                        imageView.setImageBitmap(bm);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
+                    //getImageOrientation();
+                    scaleAndDisplayBitmap();
                     break;
                 case 2:
-
+                    Log.d("onActivityResult ", "case 2");
                     String loc = "file://" + data.getStringExtra("GetPath") + "/" + data.getStringExtra("GetFileName");
                     imageUri = Uri.parse(loc);
-                    try {
-                        //myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                        bm = myImage.createScaledBitmap(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri), 1080, 1920, true);
-                        destroyBitmap();
-                        imageView.setImageBitmap(bm);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    scaleAndDisplayBitmap();
                     break;
                 default:
                     break;
             }
         }
+    }
+
+    private void rotateImage() {
+        File imageFile = new File(imageUri.toString());
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(imageFile.getAbsolutePath());
+        } catch (IOException e) {
+            Log.d("nope ", "nope 1");
+            e.printStackTrace();
+        }
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        int rotate = 0;
+        switch(orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                rotate-=90;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                rotate-=90;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                rotate-=90;
+        }
+        Log.d("rotate = ", Integer.toString(rotate));
+        Log.d("orientation = ", Integer.toString(orientation));
+/*        bm = myImage;
+        Bitmap workingBitmap = Bitmap.createBitmap(bm);
+        Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(mutableBitmap);
+        canvas.rotate(rotate);
+        getImageDimensions();*/
+        //bm = mutableBitmap.createScaledBitmap(mutableBitmap, width, height, true);
+
+    }
+
+    private void scaleAndDisplayBitmap() {
+        try {
+            myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //rotateImage();
+        getImageDimensions();
+        bm = myImage.createScaledBitmap(myImage, width, height, true);
+        destroyBitmap();
+        imageView.setImageBitmap(bm);
+    }
+
+    private void getImageDimensions() {
+        width = myImage.getWidth();
+        height = myImage.getHeight();
+        int maxWidth = imageView.getWidth();
+        int maxHeight = imageView.getHeight();
+        int ratio = 0;
+
+        if (width > height) {
+            // for landscape
+            ratio = width / maxWidth;
+            width = maxWidth;
+            height = height / ratio;
+        } else if (height > width) {
+            //  for portrait
+            ratio = height / maxHeight;
+            height = maxHeight;
+            width = width / ratio;
+        } else {
+            // for square images
+            height = maxHeight;
+            width = maxWidth;
+        }
+        Log.d("width = " + Integer.toString(width), "height = " + Integer.toString(height)+ "ratio = " + Integer.toString(ratio));
     }
 
     //stuff was changed
@@ -193,7 +257,6 @@ public class Capture_Fragment extends Fragment {
 
     private class saveImageAsPDF extends AsyncTask {
         ProgressDialog dialog;
-
 
         @Override
         protected void onPreExecute() {

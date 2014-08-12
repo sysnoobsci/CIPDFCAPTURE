@@ -2,22 +2,22 @@
 <pre-dex-items>
 
     <item
-        dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\classes-fe7247a4690d3e896ddc973f9d88637393da6fdb.jar"
-        jar="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\build\intermediates\exploded-aar\com.android.support\appcompat-v7\19.1.0\classes.jar"
+        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\itextpdf-5.5.1-1f590ddc5fa75b29ee8cb903405670779ae2e0b0.jar"
+        jar="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\libs\itextpdf-5.5.1.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28"/>
+        sha1="081fee01fb0d7da7665261ac0e005f583985087d"/>
     <item
-        dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\support-v4-19.1.0-e311e493b238b75da4095bd5ee7b69d76d73dc42.jar"
-        jar="C:\Program Files (x86)\Android\android-studio\sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"
+        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\support-v4-19.1.0-3be9ffa23ff45dc9406f74dcd53a980d777f3445.jar"
+        jar="C:\Users\john.williams\AppData\Local\Android\android-studio\sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
     <item
-        dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\itextpdf-5.5.1-52a700fd604080bc8e72a5d37d31a388d8c45c6f.jar"
-        jar="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\libs\itextpdf-5.5.1.jar"
+        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\classes-8d2373f9eb60d1cf1e6571b017aa62002fe9505c.jar"
+        jar="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\build\intermediates\exploded-aar\com.android.support\appcompat-v7\19.1.0\classes.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="081fee01fb0d7da7665261ac0e005f583985087d"/>
+        sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28"/>
 
 </pre-dex-items>
