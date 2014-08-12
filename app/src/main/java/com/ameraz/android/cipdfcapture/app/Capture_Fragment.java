@@ -3,11 +3,16 @@ package com.ameraz.android.cipdfcapture.app;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,11 +28,16 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by John Williams on 6/2/2014.
@@ -40,11 +50,23 @@ public class Capture_Fragment extends Fragment {
     private ImageButton searchGallery;
     private ImageButton navFileSystem;
     private ImageButton savePDF;
+    private ImageButton sharePDF;
     private Uri imageUri;
     private String incImage;
     private File newImage;
     private Bitmap myImage;
     private Bitmap bm;
+    private int width;
+    private int height;
+
+    SharedPreferences preferences;
+
+
+
+    final static private int LOGIN_TIMEOUT = 500;//time in milliseconds for login attempt to timeout
+    final static private int CT_TIMEOUT = 500;//time in milliseconds for createtopic attempt to timeout
+    final static private int NVPAIRS = 2;//number of nvpairs in createtopic api call
+    final static private String tplid1 = "create.redmine1625";//time in milliseconds for createtopic attempt to timeout
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,12 +77,47 @@ public class Capture_Fragment extends Fragment {
         navFileSystemListener();
         savePDFListener();
         sharePDFListener();
+        imageViewListener();
 
         return rootView;
     }
 
-    private void sharePDFListener() {
+    private void imageViewListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imageUri!=null){
+                    Intent intent = new Intent();
+                    intent.setAction(android.content.Intent.ACTION_VIEW);
+                    intent.setDataAndType(imageUri, "image/png");
+                    startActivity(intent);
+                }else{
+                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Nothing to view.");
+                    tmtask.execute();
+                }
+            }
+        });
+    }
 
+    private void sharePDFListener() {
+        sharePDF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    uploadButton();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (XmlPullParserException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void savePDFListener() {
@@ -71,14 +128,6 @@ public class Capture_Fragment extends Fragment {
                     ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Nothing to save.");
                     tmtask.execute();
                 } else {
-/*                    try {
-                        myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                        bm = myImage.createScaledBitmap(myImage, 1080, 1920, true);
-                        //destroyBitmap();
-                        imageView.setImageBitmap(bm);
-                    } catch (Exception e) {
-                        Log.d("Error: ", e.toString());
-                    }*/
                     new saveImageAsPDF().execute();
                 }
             }
@@ -136,49 +185,98 @@ public class Capture_Fragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //getImageDimensions();
         if (resultCode == getActivity().RESULT_OK) {
             switch (requestCode) {
                 case 0:
-
-                    try {
-                        myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                        bm = myImage.createScaledBitmap(myImage, 1080, 1920, true);
-                        destroyBitmap();
-                        imageView.setImageBitmap(bm);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    Log.d("onActivityResult ", "case 0");
+                    scaleAndDisplayBitmap();
                     break;
                 case 1:
-
+                    Log.d("onActivityResult ", "case 1");
                     imageUri = data.getData();
-                    try {
-                        myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                        bm = myImage.createScaledBitmap(myImage, 1080, 1920, true);
-                        destroyBitmap();
-                        imageView.setImageBitmap(bm);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
+                    //getImageOrientation();
+                    scaleAndDisplayBitmap();
                     break;
                 case 2:
-
+                    Log.d("onActivityResult ", "case 2");
                     String loc = "file://" + data.getStringExtra("GetPath") + "/" + data.getStringExtra("GetFileName");
                     imageUri = Uri.parse(loc);
-                    try {
-                        //myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                        bm = myImage.createScaledBitmap(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri), 1080, 1920, true);
-                        destroyBitmap();
-                        imageView.setImageBitmap(bm);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    scaleAndDisplayBitmap();
                     break;
                 default:
                     break;
             }
         }
+    }
+
+    private void rotateImage() {
+        File imageFile = new File(imageUri.toString());
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(imageFile.getAbsolutePath());
+        } catch (IOException e) {
+            Log.d("nope ", "nope 1");
+            e.printStackTrace();
+        }
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        int rotate = 0;
+        switch(orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                rotate-=90;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                rotate-=90;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                rotate-=90;
+        }
+        Log.d("rotate = ", Integer.toString(rotate));
+        Log.d("orientation = ", Integer.toString(orientation));
+/*        bm = myImage;
+        Bitmap workingBitmap = Bitmap.createBitmap(bm);
+        Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(mutableBitmap);
+        canvas.rotate(rotate);
+        getImageDimensions();*/
+        //bm = mutableBitmap.createScaledBitmap(mutableBitmap, width, height, true);
+
+    }
+
+    private void scaleAndDisplayBitmap() {
+        try {
+            myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //rotateImage();
+        getImageDimensions();
+        bm = myImage.createScaledBitmap(myImage, width, height, true);
+        destroyBitmap();
+        imageView.setImageBitmap(bm);
+    }
+
+    private void getImageDimensions() {
+        width = myImage.getWidth();
+        height = myImage.getHeight();
+        int maxWidth = imageView.getWidth();
+        int maxHeight = imageView.getHeight();
+        int ratio = 0;
+
+        if (width > height) {
+            // for landscape
+            ratio = width / maxWidth;
+            width = maxWidth;
+            height = height / ratio;
+        } else if (height > width) {
+            //  for portrait
+            ratio = height / maxHeight;
+            height = maxHeight;
+            width = width / ratio;
+        } else {
+            // for square images
+            height = maxHeight;
+            width = maxWidth;
+        }
+        Log.d("width = " + Integer.toString(width), "height = " + Integer.toString(height)+ "ratio = " + Integer.toString(ratio));
     }
 
     //stuff was changed
@@ -188,12 +286,11 @@ public class Capture_Fragment extends Fragment {
         searchGallery = (ImageButton) rootView.findViewById(R.id.capture_gallery);
         navFileSystem = (ImageButton) rootView.findViewById(R.id.capture_nav);
         savePDF = (ImageButton) rootView.findViewById(R.id.capture_save);
-        ImageButton sharePDF = (ImageButton) rootView.findViewById(R.id.capture_share);
+        sharePDF = (ImageButton) rootView.findViewById(R.id.capture_share);
     }
 
     private class saveImageAsPDF extends AsyncTask {
         ProgressDialog dialog;
-
 
         @Override
         protected void onPreExecute() {
@@ -280,5 +377,87 @@ public class Capture_Fragment extends Fragment {
     public void destroyBitmap(){
         myImage.recycle();
         myImage = null;
+    }
+
+    public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
+            ExecutionException, TimeoutException {
+        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        TopicInstance tiobj;
+        XmlParser xobj = new XmlParser();
+        loginlogoff liloobj = new loginlogoff(getActivity());
+        APIQueries apiobj = new APIQueries(getActivity());
+        if (apiobj.pingserver()) {//if the ping is successful(i.e. user logged in)
+            Log.d("Message", "CI Login successful and ready to upload file.");
+            //create a topic instance object
+            if(imageUri != null) {
+                //tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
+                String[] nvpairsarr = new String[NVPAIRS];
+                nvpairsarr[0] = "file,"+imageUri;
+                nvpairsarr[1] = "name,"+"hi";
+                ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y",loginlogoff.getSid()),getActivity());
+                try {
+                    reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
+                } catch (TimeoutException te) {
+                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Create topic call failed. Check" +
+                            "CI Connection Profile under Settings.");
+                    tmtask.execute();
+                }
+                xobj.parseXMLfunc(reqobj4.getResult());
+                if(xobj.goodRC(xobj.getXmlstring())){//if return codes are good, it was successful
+                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"File was successfully Uploaded.");
+                    tmtask.execute();
+                }
+                else{
+                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"File upload failed.");
+                    tmtask.execute();
+                }
+            }
+            else{
+                ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");
+                tmtask.execute();
+            }
+
+        }
+        else {//if ping fails, selected ci profile will be used to log back in
+            Log.d("Message", "Ping to CI server indicated no login session.");
+            if(liloobj.tryLogin()) {
+                Log.d("Message", "CI Login successful and ready to upload file.");
+                if(imageUri != null) {
+                    //tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
+                    String[] nvpairsarr = new String[NVPAIRS];
+                    nvpairsarr[0] = "file,"+ imageUri;
+                    Log.d("Variable","Value of nvpairsarr[0]: " + nvpairsarr[0]);
+                    nvpairsarr[1] = "name,"+ "hi";
+                    Log.d("Variable","Value of nvpairsarr[1]: " + nvpairsarr[1]);
+                    ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()),getActivity());
+                    try {
+                        reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
+                    } catch (TimeoutException te) {
+                        ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Create topic call failed. Check" +
+                                "CI Connection Profile under Settings.");
+                        tmtask.execute();
+                    }
+                    xobj.parseXMLfunc(reqobj4.getResult());
+                    if(xobj.goodRC(xobj.getXmlstring())){//if return codes are good, it was successful
+                        ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"File was successfully Uploaded.");
+                        tmtask.execute();
+                    }
+                    else{
+                        ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"File upload failed.");
+                        tmtask.execute();
+                    }
+                }
+                else{
+                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");
+                    tmtask.execute();
+                }
+                //********put in code for uploading file here***********
+            }
+            else{//if login attempt fails from trying the CI server profile, prompt user to check profile
+                ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Connection to CI Server failed. Check" +
+                        "CI Connection Profile under Settings.");
+                tmtask.execute();
+            }
+        }
     }
 }
