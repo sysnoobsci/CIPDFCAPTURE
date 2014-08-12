@@ -22,6 +22,7 @@ public class FileChooser extends ListActivity {
 	private File currentDir;
     private FileArrayAdapter adapter;
     private static String fullFilePath;
+    private static String fileName;
 
     public static String getFullFilePath() {
         return fullFilePath;
@@ -31,11 +32,21 @@ public class FileChooser extends ListActivity {
         this.fullFilePath = fullFilePath;
     }
 
+    public static String getFileName() {
+        return fileName;
+    }
+
+    public static void setFileName(String fileName) {
+        FileChooser.fileName = fileName;
+    }
+
     @Override
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); 
         currentDir = new File(Environment.getExternalStorageDirectory().getPath());
+        Log.d("Variable","Value of currentDir after being set by " +
+                "Environment.getExternalStorageDirectory().getPath():" + currentDir.toString());
         fill(currentDir); 
     }
     private void fill(File f)
@@ -103,8 +114,10 @@ public class FileChooser extends ListActivity {
     	Intent intent = new Intent();
         intent.putExtra("GetPath",currentDir.toString());
         intent.putExtra("GetFileName",o.getName());
-        Log.d("Message", "File path is " + currentDir.toString() + o.getName());
-        setFullFilePath(currentDir.toString() + o.getName());//setting the full file path
+        Log.d("Message", "File path is " + currentDir.toString() + "/" + o.getName());
+        //getUriForFile()
+        setFileName(o.getName());//setting the file name
+        setFullFilePath(currentDir.toString() + "/" + o.getName());//setting the full file path
         setResult(RESULT_OK, intent);
         finish();
     }

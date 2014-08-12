@@ -166,7 +166,7 @@ public class Upload_Fragment extends Fragment {
                 String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "file,"+tiobj.getFilebuffer();
                 nvpairsarr[1] = "name,"+tiobj.getRname();
-                ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y"),maContext);
+                ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y",loginlogoff.getSid()),maContext);
                 try {
                     reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
                 } catch (TimeoutException te) {
@@ -198,8 +198,10 @@ public class Upload_Fragment extends Fragment {
                     tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
                     String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "file,"+tiobj.getFilebuffer();
+                    Log.d("Variable","Value of nvpairsarr[0]: " + nvpairsarr[0]);
                     nvpairsarr[1] = "name,"+tiobj.getRname();
-                    ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y"),maContext);
+                    Log.d("Variable","Value of nvpairsarr[1]: " + nvpairsarr[1]);
+                    ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()),maContext);
                     try {
                         reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
                     } catch (TimeoutException te) {

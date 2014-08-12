@@ -215,7 +215,7 @@ public class MainActivity extends Activity
             new Thread(new Runnable() {
                 public void run() {
                     APIQueries apiobj = new APIQueries(maContext);
-                    ReqTask reqobj4 = new ReqTask(apiobj.logoffQuery(), maContext);
+                    ReqTask reqobj4 = new ReqTask(apiobj.logoffQuery(loginlogoff.getSid()), maContext);
                     XmlParser xobj4 = new XmlParser();
                     try {
                         reqobj4.execute().get(LOGOFF_TIMEOUT,TimeUnit.MILLISECONDS);

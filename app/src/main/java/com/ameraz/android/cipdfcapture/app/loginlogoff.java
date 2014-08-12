@@ -90,8 +90,6 @@ public class loginlogoff {
         int a = result.indexOf(target);
         int b = a + target.length();
         int c =  a + SIZE_OF_TARGET_SID + target.length();//54 is the size of the sid plus the "target" string size
-        Log.d("Variable","Values of a,b,c: " + a + ", " + b + ", " + c);
-        Log.d("Variable","result.substring(b,c) value: " + result.substring(b,c));
         loginlogoff.sid = result.substring(b,c);
     }
 
