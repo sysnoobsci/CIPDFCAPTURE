@@ -3,8 +3,19 @@ package com.ameraz.android.cipdfcapture.app;
 import android.content.Context;
 import android.util.Log;
 
+import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -39,7 +50,7 @@ public class APIQueries {
         return targetCIQuery;
     }
     //createtopic
-    String createtopicQuery(String tplid,String[] nvpairs,String detail,String sid){
+    String createtopicQuery(String tplid,String[] nvpairs,String detail,String sid) throws IOException {
         StringBuilder appender = new StringBuilder();
         int j = 0;
         for(String nvp : nvpairs){
@@ -51,8 +62,26 @@ public class APIQueries {
         }
         Log.d("Variable","createtopicQuery() value of appender: " + appender.toString());
         String createtopicQuery = "?action=createtopic" + qf.formQuery("tplid,"+tplid,appender.toString(),"detail,"+ detail,"sid," + sid);
+        final HttpClient httpclient = new DefaultHttpClient();
+        final HttpPost httppost = new HttpPost(createtopicQuery);
+        final File newImage = new File(FileChooser.getFullFilePath());
+        new Thread(new Runnable() {//run http transaction in a background thread
+            public void run() {
+                try {
+                    MultipartEntity entity = new MultipartEntity();
+                    entity.addPart("type", new StringBody("pdf"));
+                    entity.addPart("file", new FileBody(newImage));
+                    httppost.setEntity(entity);
+                    HttpResponse response = httpclient.execute(httppost);
+                } catch (ClientProtocolException e) {
+                } catch (IOException e) {
+                }
+            }
+        }).start();
         return targetCIQuery() + createtopicQuery;
+
     }
+
     //listnode - add &sid to the string for it to work properly
     String listnodeQuery(String sid){
         String listnodeQuery = "?action=listnode" + qf.formQuery("sid," + sid);

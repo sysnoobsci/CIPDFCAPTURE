@@ -11,10 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 
@@ -35,7 +32,7 @@ public class Upload_Fragment extends Fragment {
     String curFileName;
     static View rootView;
     EditText filenametext;
-    EditText reportnametext;
+    EditText descriptiontext;
     Context maContext;
     static ArrayList<String> logonXmlTextTags;
     ArrayList<String> xidList;
@@ -61,7 +58,7 @@ public class Upload_Fragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_fileexplorer, container, false);
         maContext = getActivity();//get context from activity
         filenametext = (EditText) rootView.findViewById(R.id.editText);
-        reportnametext = (EditText) rootView.findViewById(R.id.editText2);
+        descriptiontext = (EditText) rootView.findViewById(R.id.editText2);
 
         rootView.findViewById(R.id.skipButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,18 +151,17 @@ public class Upload_Fragment extends Fragment {
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        TopicInstance tiobj;
+
         XmlParser xobj = new XmlParser();
         loginlogoff liloobj = new loginlogoff(maContext);
         APIQueries apiobj = new APIQueries(maContext);
         if (apiobj.pingserver()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
-            if(!filenametext.getText().toString().isEmpty() || !reportnametext.getText().toString().isEmpty()) {
-                tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
+            if(!filenametext.getText().toString().isEmpty() || !descriptiontext.getText().toString().isEmpty()) {
                 String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "file,"+tiobj.getFilebuffer();
-                nvpairsarr[1] = "name,"+tiobj.getRname();
+                nvpairsarr[1] = "name,"+tiobj.getDescription();
                 ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y",loginlogoff.getSid()),maContext);
                 try {
                     reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -194,12 +190,13 @@ public class Upload_Fragment extends Fragment {
             Log.d("Message", "Ping to CI server indicated no login session.");
             if(liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
-                if(!filenametext.getText().toString().isEmpty() || !reportnametext.getText().toString().isEmpty()) {
-                    tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
+                if(!filenametext.getText().toString().isEmpty() || !descriptiontext.getText().toString().isEmpty()) {
+
+
                     String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "file,"+tiobj.getFilebuffer();
                     Log.d("Variable","Value of nvpairsarr[0]: " + nvpairsarr[0]);
-                    nvpairsarr[1] = "name,"+tiobj.getRname();
+                    nvpairsarr[1] = "name,"+tiobj.getDescription();
                     Log.d("Variable","Value of nvpairsarr[1]: " + nvpairsarr[1]);
                     ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()),maContext);
                     try {

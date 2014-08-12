@@ -2,6 +2,7 @@ package com.ameraz.android.cipdfcapture.app.filebrowser;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.ListView;
 import com.ameraz.android.cipdfcapture.app.R;
 
 import java.io.File;
+import java.net.URI;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ public class FileChooser extends ListActivity {
     private FileArrayAdapter adapter;
     private static String fullFilePath;
     private static String fileName;
+    private static Uri itemURI;
 
     public static String getFullFilePath() {
         return fullFilePath;
@@ -38,6 +41,14 @@ public class FileChooser extends ListActivity {
 
     public static void setFileName(String fileName) {
         FileChooser.fileName = fileName;
+    }
+
+    public static Uri getItemURI() {
+        return itemURI;
+    }
+
+    public static void setItemURI(Uri itemURI) {
+        FileChooser.itemURI = itemURI;
     }
 
     @Override
@@ -114,10 +125,11 @@ public class FileChooser extends ListActivity {
     	Intent intent = new Intent();
         intent.putExtra("GetPath",currentDir.toString());
         intent.putExtra("GetFileName",o.getName());
-        Log.d("Message", "File path is " + currentDir.toString() + "/" + o.getName());
-        //getUriForFile()
         setFileName(o.getName());//setting the file name
         setFullFilePath(currentDir.toString() + "/" + o.getName());//setting the full file path
+        Log.d("Message", "File path is " + currentDir.toString() + "/" + o.getName());
+        File newImage = new File(getFullFilePath());
+        setItemURI(Uri.fromFile(newImage));
         setResult(RESULT_OK, intent);
         finish();
     }
