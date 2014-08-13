@@ -62,8 +62,10 @@ public class APIQueries {
         }
         Log.d("Variable","createtopicQuery() value of appender: " + appender.toString());
         String createtopicQuery = "?action=createtopic" + qf.formQuery("tplid,"+tplid,appender.toString(),"detail,"+ detail,"sid," + sid);
+        String fullQuery = targetCIQuery() + createtopicQuery;
+        final HttpResponse[] response = new HttpResponse[1];
         final HttpClient httpclient = new DefaultHttpClient();
-        final HttpPost httppost = new HttpPost(createtopicQuery);
+        final HttpPost httppost = new HttpPost(fullQuery);
         final File newImage = new File(FileChooser.getFullFilePath());
         new Thread(new Runnable() {//run http transaction in a background thread
             public void run() {
@@ -72,14 +74,13 @@ public class APIQueries {
                     entity.addPart("type", new StringBody("pdf"));
                     entity.addPart("file", new FileBody(newImage));
                     httppost.setEntity(entity);
-                    HttpResponse response = httpclient.execute(httppost);
+                    response[0] = httpclient.execute(httppost);
                 } catch (ClientProtocolException e) {
                 } catch (IOException e) {
                 }
             }
         }).start();
-        return targetCIQuery() + createtopicQuery;
-
+        return response[0].toString();
     }
 
     //listnode - add &sid to the string for it to work properly
@@ -108,7 +109,7 @@ public class APIQueries {
         XmlParser xobj = new XmlParser();
         APIQueries apiobj = new APIQueries(mContext);
         //check if there is an sid (i.e. a session established)
-        if(loginlogoff.getSid() == "" || loginlogoff.getSid() == null){
+        if(loginlogoff.getSid().equals("") || loginlogoff.getSid() == null){
             Log.d("Message", "CI Server ping failed.");
             return false;//if no session established, return false
         }

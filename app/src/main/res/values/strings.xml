@@ -58,14 +58,8 @@
     <string name="title_intent_preference">Get Systemware Help</string>
     <string name="summary_intent_preference">Visits www.systemware.com</string>
     <string name="title_my_preference">My preference</string>
-    <string name="summary_my_preference">This is a custom counter preference</string>
-    <string name="title_advanced_toggle_preference">Haunted preference</string>
-    <string name="summary_on_advanced_toggle_preference">I\'m on! :)</string>
-    <string name="summary_off_advanced_toggle_preference">I\'m off! :(</string>
-    <string name="title_parent_preference">Parent checkbox preference</string>
-    <string name="summary_parent_preference">This is visually a parent</string>
-    <string name="title_child_preference">Child checkbox preference</string>
-    <string name="summary_child_preference">This is visually a child</string>
+
+
     <string name="ci_profile">profilename_preference</string>
     <string name="ci_hostname">hostname_preference</string>
     <string name="ci_domain">domain_preference</string>

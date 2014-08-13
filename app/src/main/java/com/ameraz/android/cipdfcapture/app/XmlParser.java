@@ -33,6 +33,25 @@ public class XmlParser {
         this.xmlstring = xmlstring;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     StringBuilder total = new StringBuilder();
 
     public Boolean getIs_xml() {

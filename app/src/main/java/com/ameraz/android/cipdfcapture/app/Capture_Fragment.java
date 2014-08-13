@@ -382,7 +382,7 @@ public class Capture_Fragment extends Fragment {
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        TopicInstance tiobj;
+
         XmlParser xobj = new XmlParser();
         loginlogoff liloobj = new loginlogoff(getActivity());
         APIQueries apiobj = new APIQueries(getActivity());
@@ -390,7 +390,7 @@ public class Capture_Fragment extends Fragment {
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
             if(imageUri != null) {
-                //tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
+
                 String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "file,"+imageUri;
                 nvpairsarr[1] = "name,"+"hi";
