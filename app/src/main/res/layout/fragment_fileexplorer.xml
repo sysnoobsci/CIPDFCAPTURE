@@ -6,7 +6,7 @@
     <TextView android:id="@+id/textview" 
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content"
-        android:text="Get File Name From SDCard"  
+        android:text="@string/getfilenamesdcard"
         android:textSize="18dp"
         android:gravity="center" 
         android:layout_marginTop="10dp"      
@@ -16,7 +16,7 @@
         android:layout_width="wrap_content">
         <EditText
             android:layout_alignParentLeft="true" 
-            android:hint="EditText"
+            android:hint="@string/filename"
             android:id="@+id/editText" 
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
@@ -25,11 +25,11 @@
             android:layout_marginTop="15dp" 
 	        android:ems="10"
 	        android:inputType="textPersonName" 
-            android:layout_toLeftOf="@+id/skipButton" >
+            android:layout_toLeftOf="@+id/browseButton" >
     	</EditText>
     
-        <Button android:text="Browser"
-	         android:id="@+id/skipButton" 
+        <Button android:text="@string/browserbutton"
+	         android:id="@+id/browseButton"
 	         android:textSize="18dp"
 	         android:layout_marginTop="10dp" 
 	         android:layout_alignParentRight="true" 
@@ -40,7 +40,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Upload File"
+            android:text="@string/uploadbutton"
             android:id="@+id/upload"
             android:layout_gravity="center_horizontal"
             android:layout_alignParentBottom="true"
@@ -50,7 +50,7 @@
         <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="200dp"
-            android:layout_below="@+id/skipButton"
+            android:layout_below="@+id/browseButton"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="43dp">
@@ -62,53 +62,19 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Content Server"
-                    android:id="@+id/textView"
-                    android:layout_marginLeft="20dp" />
-
-                <Spinner
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinner"
-                    android:paddingLeft="75dp"
-                    android:layout_marginLeft="50dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Name"
+                    android:text="@string/topicdesc"
                     android:id="@+id/textView2"
-                    android:layout_marginLeft="20dp" />
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="50dp" />
 
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="170dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/editText2"
-                    android:layout_marginLeft="50dp" />
+                    android:layout_marginLeft="50dp"
+                    android:hint="@string/topicdescval" />
             </TableRow>
 
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Report Path"
-                    android:id="@+id/textView3"
-                    android:layout_marginLeft="20dp" />
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/editText3"
-                    android:layout_marginLeft="50dp" />
-            </TableRow>
         </TableLayout>
 
     </RelativeLayout>

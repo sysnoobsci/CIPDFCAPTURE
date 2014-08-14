@@ -60,7 +60,7 @@ public class Upload_Fragment extends Fragment {
         filenametext = (EditText) rootView.findViewById(R.id.editText);
         descriptiontext = (EditText) rootView.findViewById(R.id.editText2);
 
-        rootView.findViewById(R.id.skipButton).setOnClickListener(new View.OnClickListener() {
+        rootView.findViewById(R.id.browseButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {//set listener for browse button
                 getfile(v);

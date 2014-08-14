@@ -109,7 +109,7 @@ public class APIQueries {
         XmlParser xobj = new XmlParser();
         APIQueries apiobj = new APIQueries(mContext);
         //check if there is an sid (i.e. a session established)
-        if(loginlogoff.getSid().equals("") || loginlogoff.getSid() == null){
+        if(loginlogoff.getSid() == ("") || loginlogoff.getSid() == null){
             Log.d("Message", "CI Server ping failed.");
             return false;//if no session established, return false
         }

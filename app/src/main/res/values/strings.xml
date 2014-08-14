@@ -67,5 +67,11 @@
     <string name="ci_username">username_preference</string>
     <string name="ci_password">password_preference</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="getfilenamesdcard">Get File Name From SDCard</string>
+    <string name="filename">File Name</string>
+    <string name="browserbutton">Browser</string>
+    <string name="uploadbutton">Upload File</string>
+    <string name="topicdesc">Description</string>
+    <string name="topicdescval">Description</string>
 
 </resources>
