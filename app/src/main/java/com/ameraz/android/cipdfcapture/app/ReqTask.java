@@ -70,7 +70,6 @@ class ReqTask extends AsyncTask<String, Void, String> {
     public ReqTask(String query, Context context){
         setTaskID(this.taskID);//set unique ID for task
         setQuery(query);
-        Log.d("Variable", "ReqTask" + getTaskID() + " context value: " + context);
         setActContext(context);
         taskID++;
     }

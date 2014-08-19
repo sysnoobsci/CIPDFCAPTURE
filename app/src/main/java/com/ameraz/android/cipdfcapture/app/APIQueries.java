@@ -5,18 +5,24 @@ import android.util.Log;
 
 import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +35,8 @@ public class APIQueries {
     Context mContext;
     QueryFormer qf = new QueryFormer();
     Boolean pingresult = false;
-    final static int PING_TIMEOUT = 500;
+    final static int PING_TIMEOUT = 500;//time in milliseconds for ping attempt to timeout
+    final static private int CT_TIMEOUT = 500;//time in milliseconds for createtopic attempt to timeout
 
     public APIQueries(Context mContext){
         this.mContext = mContext;
@@ -52,6 +59,8 @@ public class APIQueries {
     //createtopic
     String createtopicQuery(String tplid,String[] nvpairs,String detail,String sid) throws IOException {
         StringBuilder appender = new StringBuilder();
+        final HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost("http://www.yoursite.com/");
         int j = 0;
         for(String nvp : nvpairs){
             appender.append(nvp);
@@ -61,25 +70,45 @@ public class APIQueries {
             j++;
         }
         Log.d("Variable","createtopicQuery() value of appender: " + appender.toString());
-        String createtopicQuery = "?action=createtopic" + qf.formQuery("tplid,"+tplid,appender.toString(),"detail,"+ detail,"sid," + sid);
-        String fullQuery = targetCIQuery() + createtopicQuery;
-        Log.d("Variable","fullQuery value: " + fullQuery);
-        final HttpResponse[] response = new HttpResponse[1];
-        final HttpClient httpclient = new DefaultHttpClient();
-        final HttpPost httppost = new HttpPost(fullQuery);
-        final File newImage = new File(FileChooser.getFullFilePath());
-        //run http transaction in a background thread
-        //try making a ASync class that does this
-        try {
-            MultipartEntity entity = new MultipartEntity();
-            entity.addPart("type", new StringBody("pdf"));
-            entity.addPart("file", new FileBody(newImage));
-            httppost.setEntity(entity);
-            response[0] = httpclient.execute(httppost);
-        } catch (ClientProtocolException e) {
-        } catch (IOException e) {
-        }
-        return response[0].toString();
+        //String createtopicQuery = "?action=createtopic" + qf.formQuery("tplid,"+tplid,appender.toString(),"detail,"+ detail,"sid," + sid);
+        final StringBuilder total = new StringBuilder();
+        File newImage = new File(FileChooser.getFullFilePath());
+        httppost = new HttpPost(targetCIQuery());
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.addPart("action", new StringBody("createtopic"));
+        builder.addPart("tplid", new StringBody(tplid));
+        //just dummy values
+        builder.addPart("name", new StringBody("ag2001"));
+        //
+        builder.addPart("detail", new StringBody(detail));
+        builder.addPart("sid", new StringBody(sid));
+        builder.addPart("file", new FileBody(newImage));
+
+
+        HttpEntity entity = builder.build();
+        httppost.setEntity(entity);
+        final HttpPost finalHttppost = httppost;
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    HttpResponse response = httpclient.execute(finalHttppost);
+                    HttpEntity ht = response.getEntity();
+                    BufferedHttpEntity buf = new BufferedHttpEntity(ht);
+                    InputStream is = buf.getContent();
+                    BufferedReader r = new BufferedReader(new InputStreamReader(is));
+                    String line;
+                    while ((line = r.readLine()) != null) {
+                        total.append(line);
+                    }
+                } catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        return total.toString();
     }
 
     //listnode - add &sid to the string for it to work properly

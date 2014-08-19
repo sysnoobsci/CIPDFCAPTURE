@@ -76,54 +76,10 @@ public class Upload_Fragment extends Fragment {
                 }
             }
         });
-        //getServerNodesSpinner();
+
         return rootView;
     }
-    /*
-    public void getServerNodesSpinner(){
-        new Thread(new Runnable() {
-            public void run() {
-                loginlogoff liloobj = new loginlogoff(maContext);
 
-                try {
-                    if (liloobj.tryLogin()) {
-                        APIQueries apiobj = new APIQueries(getActivity());
-                        if (apiobj.pingserver()) {//check if logged in
-                            XmlParser xobj = new XmlParser();
-                            ReqTask reqobj4 = new ReqTask(apiobj.listnodeQuery(loginlogoff.getSid()), maContext);
-                            try {
-                                reqobj4.execute().get(LOGIN_TIMEOUT, TimeUnit.MILLISECONDS);
-                            } catch (TimeoutException te) {
-                                ToastMessageTask tmtask = new ToastMessageTask(maContext, "Connection to CI Server failed. Check" +
-                                        "CI Connection Profile under Settings.");
-                                tmtask.execute();
-                            }
-                            xobj.parseXMLfunc(reqobj4.getResult());
-                            String xidresults = xobj.findTagText("xid",reqobj4.getResult());
-                            String nameresults = xobj.findTagText("name",reqobj4.getResult());
-                            Log.d("Variable", "xidresults value: " + xidresults);
-                            Log.d("Variable", "nameresults value: " + nameresults);
-                            xidList = stringSplitter(xidresults);
-                            nameList = stringSplitter(nameresults);
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    sp1 = (Spinner) rootView.findViewById(R.id.spinner);
-                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(maContext, android.R.layout.simple_spinner_item, nameList);
-                                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                    sp1.setAdapter(adapter);
-                                }
-                            });
-
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-    */
     public ArrayList<String> stringSplitter(String splitee){
         ArrayList<String> arrList = new ArrayList<String>();
         String[] strArr = splitee.split(",");
