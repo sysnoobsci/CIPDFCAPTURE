@@ -21,30 +21,37 @@ public class QueryFormer {
                         Log.d("argList", "value of argList[" + i + "]: " + piece);
                         i++;
                     }
-                    if(argList[1] != null && !argList[1].equals("null")) {// if the value in the argument is empty(not null), leave it like this: argname.
-                        if(argList.length > 2){//if arg contains multiple key-value pairs
-                            int j = 0;
-                            int k = 1;
-                            for(String piece : argList){
-                                Log.d("Variable", "argList[" + j + "] is " + argList[j]);
-                                Log.d("Variable", "argList[" + k + "] is " + argList[k]);
+                    if(argList.length > 2){//if arg contains multiple key-value pairs
+                        int k = 0;
+                        for(int j = 0;j < argList.length-1; j++){
+                            k = j + 1;
+                            Log.d("Variable","Value of j: " + j + " Value of k: " + k);
+                            Log.d("Variable", "argList[" + j + "] is " + argList[j]);
+                            Log.d("Variable", "argList[" + k + "] is " + argList[k]);
+                            if(argList[k] != null && !argList[k].equals("null")){// if the value in the argument is empty(not null), leave it like this: argname.
                                 appender.append("&" + argList[j] + "=" + argList[k]);
-                                Log.d("Variable", "appender value: " + appender);
-                                j+=2;
-                                k+=2;
                             }
-                        }
-                        else if(argList.length < 3) {//if arg contains a single key-value pair
-                            // Split it.
-                            Log.d("Message","argList.length < 3");
-                            Log.d("Variable", "argList[0] is " + argList[0]);
-                            Log.d("Variable", "argList[1] is " + argList[1]);
-                            appender.append("&" + argList[0] + "=" + argList[1]);
+                            else{
+                                //do nothing, don't append null valued keys
+                                Log.d("Message", arg + " omitted since value of variable was null");
+                            }
                             Log.d("Variable", "appender value: " + appender);
+                            j+=2;
                         }
                     }
-                    else{
-                        Log.d("Message", arg + " omitted since value of variable was null");
+                    else if(argList.length < 3) {//if arg contains a single key-value pair
+                        // Split it.
+                        Log.d("Message","argList.length < 3");
+                        Log.d("Variable", "argList[0] is " + argList[0]);
+                        Log.d("Variable", "argList[1] is " + argList[1]);
+                        if(argList[1] != null && !argList[1].equals("null")){// if the value in the argument is empty(not null), leave it like this: argname.
+                            appender.append("&" + argList[0] + "=" + argList[1]);
+                        }
+                        else{
+                            //do nothing, don't append null valued keys
+                            Log.d("Message", arg + " omitted since value of variable was null");
+                        }
+                        Log.d("Variable", "appender value: " + appender);
                     }
                 }
                 else {

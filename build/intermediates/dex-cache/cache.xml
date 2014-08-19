@@ -2,46 +2,28 @@
 <pre-dex-items>
 
     <item
-        dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\itextpdf-5.5.1-52a700fd604080bc8e72a5d37d31a388d8c45c6f.jar"
-        jar="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\libs\itextpdf-5.5.1.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="081fee01fb0d7da7665261ac0e005f583985087d"/>
-    <item
-        dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\httpcore-4.3.2-cd2b2b563bdd75b966462718a88c5a0822779dfd.jar"
-        jar="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\libs\httpcore-4.3.2.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="31fbbff1ddbf98f3aa7377c94d33b0447c646b6e"/>
-    <item
-        dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\httpclient-4.3.5-c3b11af765bb7c04a10da030a4f71e171de799c0.jar"
-        jar="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\libs\httpclient-4.3.5.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="9783d89b8eea20a517a4afc5f979bd2882b54c44"/>
-    <item
-        dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\support-v4-19.1.0-e311e493b238b75da4095bd5ee7b69d76d73dc42.jar"
-        jar="C:\Program Files (x86)\Android\android-studio\sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
-    <item
-        dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\httpmime-4.3.5-2462a0663e644ce1937939bae9c3ff43e4f832c5.jar"
-        jar="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\libs\httpmime-4.3.5.jar"
+        dex="C:\Users\The Bat Cave\Documents\GitHub\CIPDFCAPTURE2\app\build\intermediates\pre-dexed\debug\httpmime-4.3.5-fbda722e77c0ecba65decc21dbf2591fd980ce60.jar"
+        jar="C:\Users\The Bat Cave\Documents\GitHub\CIPDFCAPTURE2\app\libs\httpmime-4.3.5.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="1dd0d38df9c6d21e893f2e52403f1cd99e91cd81"/>
     <item
-        dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\classes-fe7247a4690d3e896ddc973f9d88637393da6fdb.jar"
-        jar="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\build\intermediates\exploded-aar\com.android.support\appcompat-v7\19.1.0\classes.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28"/>
-    <item
-        dex="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\build\intermediates\pre-dexed\debug\apache-mime4j-core-0.7.2-15d5aed40e4d2b6c51e5d30363fefcba7fc79a49.jar"
-        jar="C:\Users\adrian.meraz\Dropbox\Systemware\MobileCI\CIPDFCAPTURE3\app\libs\apache-mime4j-core-0.7.2.jar"
+        dex="C:\Users\The Bat Cave\Documents\GitHub\CIPDFCAPTURE2\app\build\intermediates\pre-dexed\debug\apache-mime4j-core-0.7.2-5fc8a9494ec8edacbdebe415422556972e5fe142.jar"
+        jar="C:\Users\The Bat Cave\Documents\GitHub\CIPDFCAPTURE2\app\libs\apache-mime4j-core-0.7.2.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="a81264fe0265ebe8fd1d8128aad06dc320de6eef"/>
+    <item
+        dex="C:\Users\The Bat Cave\Documents\GitHub\CIPDFCAPTURE2\app\build\intermediates\pre-dexed\debug\httpclient-4.3.5-d19f423e0ae1e14ae4c04c7b0ac06fe148afb8d4.jar"
+        jar="C:\Users\The Bat Cave\Documents\GitHub\CIPDFCAPTURE2\app\libs\httpclient-4.3.5.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="9783d89b8eea20a517a4afc5f979bd2882b54c44"/>
+    <item
+        dex="C:\Users\The Bat Cave\Documents\GitHub\CIPDFCAPTURE2\app\build\intermediates\pre-dexed\debug\httpcore-4.3.2-faf6bf7722eccdc5798933b61645290e3624e670.jar"
+        jar="C:\Users\The Bat Cave\Documents\GitHub\CIPDFCAPTURE2\app\libs\httpcore-4.3.2.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="31fbbff1ddbf98f3aa7377c94d33b0447c646b6e"/>
 
 </pre-dex-items>

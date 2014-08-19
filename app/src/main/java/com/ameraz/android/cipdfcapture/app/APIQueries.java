@@ -63,23 +63,22 @@ public class APIQueries {
         Log.d("Variable","createtopicQuery() value of appender: " + appender.toString());
         String createtopicQuery = "?action=createtopic" + qf.formQuery("tplid,"+tplid,appender.toString(),"detail,"+ detail,"sid," + sid);
         String fullQuery = targetCIQuery() + createtopicQuery;
+        Log.d("Variable","fullQuery value: " + fullQuery);
         final HttpResponse[] response = new HttpResponse[1];
         final HttpClient httpclient = new DefaultHttpClient();
         final HttpPost httppost = new HttpPost(fullQuery);
         final File newImage = new File(FileChooser.getFullFilePath());
-        new Thread(new Runnable() {//run http transaction in a background thread
-            public void run() {
-                try {
-                    MultipartEntity entity = new MultipartEntity();
-                    entity.addPart("type", new StringBody("pdf"));
-                    entity.addPart("file", new FileBody(newImage));
-                    httppost.setEntity(entity);
-                    response[0] = httpclient.execute(httppost);
-                } catch (ClientProtocolException e) {
-                } catch (IOException e) {
-                }
-            }
-        }).start();
+        //run http transaction in a background thread
+        //try making a ASync class that does this
+        try {
+            MultipartEntity entity = new MultipartEntity();
+            entity.addPart("type", new StringBody("pdf"));
+            entity.addPart("file", new FileBody(newImage));
+            httppost.setEntity(entity);
+            response[0] = httpclient.execute(httppost);
+        } catch (ClientProtocolException e) {
+        } catch (IOException e) {
+        }
         return response[0].toString();
     }
 
