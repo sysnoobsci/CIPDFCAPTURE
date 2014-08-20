@@ -59,8 +59,6 @@ public class APIQueries {
     //createtopic
     String createtopicQuery(String tplid,String[] nvpairs,String detail,String sid) throws IOException {
         StringBuilder appender = new StringBuilder();
-        final HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://www.yoursite.com/");
         int j = 0;
         for(String nvp : nvpairs){
             appender.append(nvp);
@@ -71,9 +69,9 @@ public class APIQueries {
         }
         Log.d("Variable","createtopicQuery() value of appender: " + appender.toString());
         //String createtopicQuery = "?action=createtopic" + qf.formQuery("tplid,"+tplid,appender.toString(),"detail,"+ detail,"sid," + sid);
-        final StringBuilder total = new StringBuilder();
+        StringBuilder total = new StringBuilder();
         File newImage = new File(FileChooser.getFullFilePath());
-        httppost = new HttpPost(targetCIQuery());
+        HttpPost httppost = new HttpPost(targetCIQuery());
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.addPart("action", new StringBody("createtopic"));
         builder.addPart("tplid", new StringBody(tplid));
@@ -83,31 +81,9 @@ public class APIQueries {
         builder.addPart("detail", new StringBody(detail));
         builder.addPart("sid", new StringBody(sid));
         builder.addPart("file", new FileBody(newImage));
-
-
         HttpEntity entity = builder.build();
-        httppost.setEntity(entity);
-        final HttpPost finalHttppost = httppost;
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    HttpResponse response = httpclient.execute(finalHttppost);
-                    HttpEntity ht = response.getEntity();
-                    BufferedHttpEntity buf = new BufferedHttpEntity(ht);
-                    InputStream is = buf.getContent();
-                    BufferedReader r = new BufferedReader(new InputStreamReader(is));
-                    String line;
-                    while ((line = r.readLine()) != null) {
-                        total.append(line);
-                    }
-                } catch (ClientProtocolException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+        APITasks apitaskobj = new APITasks(targetCIQuery(),entity,mContext);
+
         return total.toString();
     }
 
