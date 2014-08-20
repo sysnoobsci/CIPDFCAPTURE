@@ -142,7 +142,7 @@ public class APIQueries {
             return false;
         }
     }
-    //ping check
+    //action return code check
     protected void isActionSuccessful(ArrayList<String> larray) {
         if(larray.size()==0){//if the array is of size 0, nothing was returned from the ciserver
             Log.d("Message", "Nothing returned from CI server.");

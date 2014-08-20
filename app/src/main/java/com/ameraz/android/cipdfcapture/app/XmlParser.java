@@ -63,21 +63,12 @@ public class XmlParser {
         xpp.setInput( new StringReader ( xmlstring ) );
         int eventType = xpp.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
-            if(eventType == XmlPullParser.START_DOCUMENT) {
-                //total.append("Start document\n");
-            } else if(eventType == XmlPullParser.START_TAG) {
-
-                //total.append("Start tag "+xpp.getName()+"\n");
-            } else if(eventType == XmlPullParser.END_TAG) {
-                //total.append("End tag "+xpp.getName()+"\n");
-            } else if(eventType == XmlPullParser.TEXT) {
+            if(eventType == XmlPullParser.TEXT) {
                 listOfTextTags.add(xpp.getText());
                 total.append(xpp.getText() + ",");
-                //total.append("Text "+xpp.getText()+"\n");
             }
             eventType = xpp.next();
         }
-        //total.append("End document\n");
         setTextTag(listOfTextTags);
         setXmlstring(total.toString());
         Log.d("XML", "Contents of XML Response: " + getXmlstring());
@@ -128,16 +119,5 @@ public class XmlParser {
         setIs_xml(xmlstring.toLowerCase().contains(str2.toLowerCase()));
         return getIs_xml();
     }
-
-    /*public Boolean isGoodRC(String xml){
-        if(xml.contains("<rc>0</rc><xrc>0</xrc><xsrc>0</xsrc>")){
-            Log.d("Message","XML contains good return codes...");
-            return true;
-        }
-        else{
-            Log.d("Message","XML contains bad return codes...");
-            return false;
-        }
-    }*/
 
 }
