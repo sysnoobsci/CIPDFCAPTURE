@@ -32,10 +32,10 @@ public class APITasks extends AsyncTask<String, Void, String> {
     HttpClient httpclient = new DefaultHttpClient();
     HttpPost httppost;
 
-    static private String result;
-    static private String query;
-    private Context mContext;
-    static private HttpEntity entity;
+    private static String result;
+    private static String query;
+    private static Context mContext;
+    private static HttpEntity entity;
     private static int taskID = 0;
 
 
@@ -113,11 +113,10 @@ public class APITasks extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
         setResult(total.toString());
-        Log.d("Variable", "getResult() value : " + getResult());
         return total.toString();
     }
 
     protected void onPostExecute(String result) {
-        Log.d("Variable", "onPostExecute result: " + result);
+        Log.d("Variable", "APITasks[" + getTaskID() + "].onPostExecute result: " + getResult());
     }
 }//end of ReqTask

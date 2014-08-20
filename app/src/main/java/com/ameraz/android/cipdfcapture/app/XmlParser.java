@@ -19,7 +19,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
  */
 public class XmlParser {
     private Boolean is_xml = false;
-    private String xmlstring = "";
+    private static String xmlstring = "";
 
     private final static String EMPTY_STRING = "";
 
@@ -32,25 +32,6 @@ public class XmlParser {
     public void setXmlstring(String xmlstring) {
         this.xmlstring = xmlstring;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     StringBuilder total = new StringBuilder();
 
@@ -72,13 +53,13 @@ public class XmlParser {
 
     public String parseXMLfunc(String xmlstring)
             throws XmlPullParserException, IOException{
+        Log.d("Variable","parseXMLfunc() xmlstring value: " + xmlstring);
         clearXMLString();//clear the String before adding a new XMLString
         clearXMLTags();
         ArrayList<String> listOfTextTags = new ArrayList<String>();//a list contain all the text inside XML tags
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
         XmlPullParser xpp = factory.newPullParser();
-
         xpp.setInput( new StringReader ( xmlstring ) );
         int eventType = xpp.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -148,7 +129,7 @@ public class XmlParser {
         return getIs_xml();
     }
 
-    public Boolean goodRC(String xml){
+    /*public Boolean isGoodRC(String xml){
         if(xml.contains("<rc>0</rc><xrc>0</xrc><xsrc>0</xsrc>")){
             Log.d("Message","XML contains good return codes...");
             return true;
@@ -157,6 +138,6 @@ public class XmlParser {
             Log.d("Message","XML contains bad return codes...");
             return false;
         }
-    }
+    }*/
 
 }

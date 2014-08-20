@@ -2,8 +2,6 @@ package com.ameraz.android.cipdfcapture.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -180,7 +178,7 @@ public class loginlogoff {
         setCiLoginInfo();
         //try a ping first, if successful, don't try logging in again
         APIQueries apiobj2 = new APIQueries(mContext);
-        if(apiobj2.pingserver()){
+        if(apiobj2.pingQuery()){
             Log.d("Message","Logon session already established. Ping Successful.");
             return true;//if ping is successful, return true
         }
@@ -200,18 +198,15 @@ public class loginlogoff {
                     e.printStackTrace();
                 }
                 try {
-                    Log.d("Variable","reqobj.getResult() value: " + reqobj.getResult());
                     xobj3.parseXMLfunc(reqobj.getResult());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Log.d("Variable", "reqobj.getResult() value is: " + reqobj.getResult());
                 Upload_Fragment.setLogonXmlTextTags(xobj3.getTextTag());
                 //check if login worked
                 isLoginSuccessful(Upload_Fragment.getLogonXmlTextTags());//check if login was successful
                 logonMessage();//show status of login
                 if (getLogin_successful()){
-                    Log.d("Variable","reqobj.getResult(): " + reqobj.getResult());
                     setSid(reqobj.getResult());//get the session id if the login was successful
                     return true;
                 }

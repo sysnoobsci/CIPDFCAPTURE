@@ -28,8 +28,8 @@ public class ReqTask extends AsyncTask<String, Void, String> {
 
     HttpClient httpclient = new DefaultHttpClient();
     HttpPost httppost;
-    private String result;
-    private String query;
+    static private String result;
+    static private String query;
     private Context mContext;
     private static int taskID = 0;
 

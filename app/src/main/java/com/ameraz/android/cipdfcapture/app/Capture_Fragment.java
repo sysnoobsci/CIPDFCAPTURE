@@ -4,9 +4,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -18,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -36,7 +35,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -51,6 +49,7 @@ public class Capture_Fragment extends Fragment {
     private ImageButton navFileSystem;
     private ImageButton savePDF;
     private ImageButton sharePDF;
+    private EditText descriptionText1;
     private Uri imageUri;
     private String incImage;
     private File newImage;
@@ -71,6 +70,7 @@ public class Capture_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.capture_fragment, container, false);
+        descriptionText1 = (EditText) rootView.findViewById(R.id.description_text);
         initializeViews(rootView);
         takePicButtonListener();
         searchGalleryListener();
@@ -382,35 +382,15 @@ public class Capture_Fragment extends Fragment {
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        XmlParser xobj = new XmlParser();
         loginlogoff liloobj = new loginlogoff(getActivity());
         APIQueries apiobj = new APIQueries(getActivity());
-        if (apiobj.pingserver()) {//if the ping is successful(i.e. user logged in)
+        if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
             if(imageUri != null) {
-
                 String[] nvpairsarr = new String[NVPAIRS];
-                nvpairsarr[0] = "file,"+imageUri;
-                nvpairsarr[1] = "name,"+"hi";
-                ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y",loginlogoff.getSid()),getActivity());
-                try {
-                    reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
-                } catch (TimeoutException te) {
-                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Create topic call failed. Check" +
-                            "CI Connection Profile under Settings.");
-                    tmtask.execute();
-                }
-                xobj.parseXMLfunc(reqobj4.getResult());
-                if(xobj.goodRC(xobj.getXmlstring())){//if return codes are good, it was successful
-                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"File was successfully Uploaded.");
-                    tmtask.execute();
-                }
-                else{
-                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"File upload failed.");
-                    tmtask.execute();
-                }
+                nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
+                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
             }
             else{
                 ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");
@@ -423,35 +403,14 @@ public class Capture_Fragment extends Fragment {
             if(liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
                 if(imageUri != null) {
-                    //tiobj = new TopicInstance(reportnametext.getText().toString(),FileChooser.getFullFilePath());
                     String[] nvpairsarr = new String[NVPAIRS];
-                    nvpairsarr[0] = "file,"+ imageUri;
-                    Log.d("Variable","Value of nvpairsarr[0]: " + nvpairsarr[0]);
-                    nvpairsarr[1] = "name,"+ "hi";
-                    Log.d("Variable","Value of nvpairsarr[1]: " + nvpairsarr[1]);
-                    ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()),getActivity());
-                    try {
-                        reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
-                    } catch (TimeoutException te) {
-                        ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Create topic call failed. Check" +
-                                "CI Connection Profile under Settings.");
-                        tmtask.execute();
-                    }
-                    xobj.parseXMLfunc(reqobj4.getResult());
-                    if(xobj.goodRC(xobj.getXmlstring())){//if return codes are good, it was successful
-                        ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"File was successfully Uploaded.");
-                        tmtask.execute();
-                    }
-                    else{
-                        ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"File upload failed.");
-                        tmtask.execute();
-                    }
+                    nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
+                    apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
                 }
                 else{
                     ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");
                     tmtask.execute();
                 }
-                //********put in code for uploading file here***********
             }
             else{//if login attempt fails from trying the CI server profile, prompt user to check profile
                 ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Connection to CI Server failed. Check" +

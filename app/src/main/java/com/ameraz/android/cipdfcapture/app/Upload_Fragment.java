@@ -18,11 +18,8 @@ import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class Upload_Fragment extends Fragment {
@@ -35,13 +32,8 @@ public class Upload_Fragment extends Fragment {
     EditText descriptiontext;
     Context maContext;
     static ArrayList<String> logonXmlTextTags;
-    ArrayList<String> xidList;
-    ArrayList<String> nameList;
     SharedPreferences preferences;
 
-
-    final static private int LOGIN_TIMEOUT = 500;//time in milliseconds for login attempt to timeout
-    final static private int CT_TIMEOUT = 500;//time in milliseconds for createtopic attempt to timeout
     final static private int NVPAIRS = 1;//number of nvpairs in createtopic api call
     final static private String tplid1 = "create.redmine1625";//time in milliseconds for createtopic attempt to timeout
 
@@ -80,18 +72,6 @@ public class Upload_Fragment extends Fragment {
         return rootView;
     }
 
-    public ArrayList<String> stringSplitter(String splitee){
-        ArrayList<String> arrList = new ArrayList<String>();
-        String[] strArr = splitee.split(",");
-        for(String element : strArr){
-            if(!element.equals("")){//if the element is not empty, add it
-                arrList.add(element);
-                Log.d("Arrlist", "element value: " + element);
-            }
-        }
-        return arrList;
-    }
-
     public void getfile(View view){
         Intent intent1 = new Intent(getActivity(), FileChooser.class);
         startActivityForResult(intent1, REQUEST_PATH);
@@ -100,25 +80,15 @@ public class Upload_Fragment extends Fragment {
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        XmlParser xobj = new XmlParser();
         loginlogoff liloobj = new loginlogoff(maContext);
         APIQueries apiobj = new APIQueries(maContext);
-        if (apiobj.pingserver()) {//if the ping is successful(i.e. user logged in)
+        if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
             if(!filenametext.getText().toString().isEmpty() || !descriptiontext.getText().toString().isEmpty()) {
                 String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "name,"+ descriptiontext.getText().toString();
-                xobj.parseXMLfunc(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()));
-                if(xobj.goodRC(xobj.getXmlstring())){//if return codes are good, it was successful
-                    ToastMessageTask tmtask = new ToastMessageTask(maContext,"File was successfully Uploaded.");
-                    tmtask.execute();
-                }
-                else{
-                    ToastMessageTask tmtask = new ToastMessageTask(maContext,"File upload failed.");
-                    tmtask.execute();
-                }
+                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
             }
             else{
                 ToastMessageTask tmtask = new ToastMessageTask(maContext,"Error. Fill out all the fields.");
@@ -127,28 +97,18 @@ public class Upload_Fragment extends Fragment {
 
         }
         else {//if ping fails, selected ci profile will be used to log back in
-            Log.d("Message", "Ping to CI server indicated no login session.");
+            Log.d("Message", "Ping to CI server  indicated no login session.");
             if(liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
                 if(!filenametext.getText().toString().isEmpty() || !descriptiontext.getText().toString().isEmpty()) {
                     String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "name,"+ descriptiontext.getText().toString();
-                    Log.d("Variable","Value of nvpairsarr[0]: " + nvpairsarr[0]);
-                    xobj.parseXMLfunc(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()));
-                    if(xobj.goodRC(xobj.getXmlstring())){//if return codes are good, it was successful
-                        ToastMessageTask tmtask = new ToastMessageTask(maContext,"File was successfully Uploaded.");
-                        tmtask.execute();
-                    }
-                    else{
-                        ToastMessageTask tmtask = new ToastMessageTask(maContext,"File upload failed.");
-                        tmtask.execute();
-                    }
+                    apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
                 }
                 else{
                     ToastMessageTask tmtask = new ToastMessageTask(maContext,"Error. Fill out all the fields.");
                     tmtask.execute();
                 }
-                //********put in code for uploading file here***********
             }
             else{//if login attempt fails from trying the CI server profile, prompt user to check profile
                 ToastMessageTask tmtask = new ToastMessageTask(maContext,"Connection to CI Server failed. Check" +

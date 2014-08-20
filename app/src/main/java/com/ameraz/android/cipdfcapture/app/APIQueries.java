@@ -6,23 +6,13 @@ import android.util.Log;
 import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -36,17 +26,17 @@ public class APIQueries {
     QueryFormer qf = new QueryFormer();
     Boolean pingresult = false;
     final static int PING_TIMEOUT = 500;//time in milliseconds for ping attempt to timeout
-    final static private int CT_TIMEOUT = 500;//time in milliseconds for createtopic attempt to timeout
+    final static private int CT_TIMEOUT = 30000;//time in milliseconds for createtopic attempt to timeout
 
     public APIQueries(Context mContext){
         this.mContext = mContext;
     }
 
-    public Boolean getPingresult() {
+    public Boolean getActionresult() {
         return pingresult;
     }
 
-    public void setPingresult(Boolean pingresult) {
+    public void setActionresult(Boolean pingresult) {
         this.pingresult = pingresult;
     }
 
@@ -57,9 +47,10 @@ public class APIQueries {
         return targetCIQuery;
     }
     //createtopic
-    String createtopicQuery(String tplid,String[] nvpairs,String detail,String sid) throws IOException {
+    void createtopicQuery(String tplid,String[] nvpairs,String detail,String sid) throws IOException, XmlPullParserException {
         File newImage = new File(FileChooser.getFullFilePath());
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        XmlParser xobj = new XmlParser();
         builder.addPart("action", new StringBody("createtopic"));
         builder.addPart("tplid", new StringBody(tplid));
         if(nvpairs.length > 0){//check if array has at least one element
@@ -87,7 +78,16 @@ public class APIQueries {
             e.printStackTrace();
         }
         Log.d("Variable","apitaskobj.getResult() value: " + apitaskobj.getResult());
-        return apitaskobj.getResult();
+        xobj.parseXMLfunc(apitaskobj.getResult());
+        isActionSuccessful(xobj.getTextTag());
+        if(getActionresult()){//if return codes are good, it was successful
+            ToastMessageTask tmtask = new ToastMessageTask(mContext,"File was successfully Uploaded.");
+            tmtask.execute();
+        }
+        else{
+            ToastMessageTask tmtask = new ToastMessageTask(mContext,"File upload failed.");
+            tmtask.execute();
+        }
     }
 
     //listnode - add &sid to the string for it to work properly
@@ -108,31 +108,32 @@ public class APIQueries {
     }
 
     //ping
-    String pingQuery(String sid){
-        String pingQuery = "?action=ping" + qf.formQuery("sid," + sid);
-        return targetCIQuery() + pingQuery;
-    }
-    public Boolean pingserver() throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
-        XmlParser xobj = new XmlParser();
-        APIQueries apiobj = new APIQueries(mContext);
-        //check if there is an sid (i.e. a session established)
-        if(loginlogoff.getSid() == ("") || loginlogoff.getSid() == null){
+    public Boolean pingQuery() throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
+        if(loginlogoff.getSid() == ("") || loginlogoff.getSid() == null){//check if there is an sid (i.e. a session established)
             Log.d("Message", "CI Server ping failed.");
             return false;//if no session established, return false
         }
-        ReqTask reqobj4 = new ReqTask(apiobj.pingQuery(loginlogoff.getSid()), mContext);
-        try{
-            reqobj4.execute().get(PING_TIMEOUT, TimeUnit.MILLISECONDS);
-        }
-        catch(TimeoutException te){
-            Log.e("Error", te.toString());
-            ToastMessageTask tmtask = new ToastMessageTask(mContext,"Connection to CI Server timed out. Check" +
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        XmlParser xobj = new XmlParser();
+        builder.addPart("action", new StringBody("ping"));
+        builder.addPart("sid", new StringBody(loginlogoff.getSid()));
+        HttpEntity entity = builder.build();
+        APITasks apitaskobj = new APITasks(targetCIQuery(),entity,mContext);
+        try {
+            apitaskobj.execute().get(PING_TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException te) {
+            ToastMessageTask tmtask = new ToastMessageTask(mContext, "Ping failed. Check" +
                     "CI Connection Profile under Settings.");
             tmtask.execute();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
-        xobj.parseXMLfunc(reqobj4.getResult());
-        apiobj.isPingSuccessful(xobj.getTextTag());
-        if (apiobj.getPingresult()) {//if the ping is successful(i.e. user logged in)
+        Log.d("Variable","apitaskobj.getResult() value: " + apitaskobj.getResult());
+        xobj.parseXMLfunc(apitaskobj.getResult());
+        isActionSuccessful(xobj.getTextTag());
+        if (getActionresult()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Server ping successful.");
             return true;
         }
@@ -142,17 +143,17 @@ public class APIQueries {
         }
     }
     //ping check
-    protected void isPingSuccessful(ArrayList<String> larray) {
+    protected void isActionSuccessful(ArrayList<String> larray) {
         if(larray.size()==0){//if the array is of size 0, nothing was returned from the ciserver
             Log.d("Message", "Nothing returned from CI server.");
-            setPingresult(false);
+            setActionresult(false);
         }
         else {
             try {
                 if (larray.get(0).equals("0") && larray.get(1).equals("0") && larray.get(2).equals("0")) {
-                    setPingresult(true);
+                    setActionresult(true);
                 } else {
-                    setPingresult(false);
+                    setActionresult(false);
                 }
             }
             catch(Exception e){
