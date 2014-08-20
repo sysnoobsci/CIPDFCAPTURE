@@ -23,13 +23,12 @@ package com.ameraz.android.cipdfcapture.app;
         import java.net.UnknownHostException;
 
 
-class ReqTask extends AsyncTask<String, Void, String> {
+public class ReqTask extends AsyncTask<String, Void, String> {
 
-    String result = "No result";
 
     HttpClient httpclient = new DefaultHttpClient();
-    HttpPost httppost = new HttpPost("http://www.yoursite.com/");
-
+    HttpPost httppost;
+    private String result;
     private String query;
     private Context mContext;
     private static int taskID = 0;
@@ -84,9 +83,8 @@ class ReqTask extends AsyncTask<String, Void, String> {
         XmlParser xmlobj = new XmlParser();
         StringBuilder total = new StringBuilder();
         try {
-            HttpPost httptemp = new HttpPost(getQuery());//form http req string and assign to httppost
             Log.d("Variable", "query input value: " + getQuery());
-            httppost = httptemp;
+            httppost  = new HttpPost(getQuery());//form http req string and assign to httppost
             // Execute HTTP Post Request
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity ht = response.getEntity();
@@ -98,9 +96,7 @@ class ReqTask extends AsyncTask<String, Void, String> {
                 total.append(line);
             }
         } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         Log.d("Variable", "total.toString() result: " + total.toString());

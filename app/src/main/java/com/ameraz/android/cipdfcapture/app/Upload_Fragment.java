@@ -97,12 +97,6 @@ public class Upload_Fragment extends Fragment {
         startActivityForResult(intent1, REQUEST_PATH);
     }
 
-    public String getTime(){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String currentTimeStamp = dateFormat.format(new Date()); // Find todays date
-        return currentTimeStamp;
-    }
-
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -117,7 +111,7 @@ public class Upload_Fragment extends Fragment {
                 String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "file,"+ filenametext.getText().toString();
                 nvpairsarr[1] = "name,"+ descriptiontext.getText().toString();
-                ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y",loginlogoff.getSid()),maContext);
+                /*ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y",loginlogoff.getSid()),maContext);
                 try {
                     reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
                 } catch (TimeoutException te) {
@@ -125,7 +119,8 @@ public class Upload_Fragment extends Fragment {
                             "CI Connection Profile under Settings.");
                     tmtask.execute();
                 }
-                xobj.parseXMLfunc(reqobj4.getResult());
+                xobj.parseXMLfunc(reqobj4.getResult());*/
+                xobj.parseXMLfunc(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()));
                 if(xobj.goodRC(xobj.getXmlstring())){//if return codes are good, it was successful
                     ToastMessageTask tmtask = new ToastMessageTask(maContext,"File was successfully Uploaded.");
                     tmtask.execute();
@@ -151,7 +146,7 @@ public class Upload_Fragment extends Fragment {
                     Log.d("Variable","Value of nvpairsarr[0]: " + nvpairsarr[0]);
                     nvpairsarr[1] = "name,"+ descriptiontext.getText().toString();
                     Log.d("Variable","Value of nvpairsarr[1]: " + nvpairsarr[1]);
-                    ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()),maContext);
+                    /*ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()),maContext);
                     try {
                         reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
                     } catch (TimeoutException te) {
@@ -159,7 +154,8 @@ public class Upload_Fragment extends Fragment {
                                 "CI Connection Profile under Settings.");
                         tmtask.execute();
                     }
-                    xobj.parseXMLfunc(reqobj4.getResult());
+                    xobj.parseXMLfunc(reqobj4.getResult());*/
+                    xobj.parseXMLfunc(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()));
                     if(xobj.goodRC(xobj.getXmlstring())){//if return codes are good, it was successful
                         ToastMessageTask tmtask = new ToastMessageTask(maContext,"File was successfully Uploaded.");
                         tmtask.execute();

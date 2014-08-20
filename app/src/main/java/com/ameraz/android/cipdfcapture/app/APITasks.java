@@ -28,11 +28,11 @@ import java.io.InputStreamReader;
  */
 public class APITasks extends AsyncTask<String, Void, String> {
 
-    String result = "No result";
 
     HttpClient httpclient = new DefaultHttpClient();
-    HttpPost httppost = new HttpPost("http://www.yoursite.com/");
+    HttpPost httppost;
 
+    private String result;
     private String query;
     private Context mContext;
     private HttpEntity entity;
@@ -95,7 +95,7 @@ public class APITasks extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... args) {
         StringBuilder total = new StringBuilder();
-        HttpPost httppost = new HttpPost(getQuery());
+        httppost = new HttpPost(getQuery());
         httppost.setEntity(getEntity());
         try {
             HttpResponse response = httpclient.execute(httppost);
@@ -112,6 +112,7 @@ public class APITasks extends AsyncTask<String, Void, String> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        setResult(total.toString());
         return total.toString();
     }
 

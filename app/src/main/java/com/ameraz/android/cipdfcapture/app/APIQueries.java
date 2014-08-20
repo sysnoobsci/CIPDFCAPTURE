@@ -83,8 +83,18 @@ public class APIQueries {
         builder.addPart("file", new FileBody(newImage));
         HttpEntity entity = builder.build();
         APITasks apitaskobj = new APITasks(targetCIQuery(),entity,mContext);
-
-        return total.toString();
+        try {
+            apitaskobj.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException te) {
+            ToastMessageTask tmtask = new ToastMessageTask(mContext, "Create topic call failed. Check" +
+                    "CI Connection Profile under Settings.");
+            tmtask.execute();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return apitaskobj.getResult();
     }
 
     //listnode - add &sid to the string for it to work properly
