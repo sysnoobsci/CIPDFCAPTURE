@@ -42,7 +42,7 @@ public class Upload_Fragment extends Fragment {
 
     final static private int LOGIN_TIMEOUT = 500;//time in milliseconds for login attempt to timeout
     final static private int CT_TIMEOUT = 500;//time in milliseconds for createtopic attempt to timeout
-    final static private int NVPAIRS = 2;//number of nvpairs in createtopic api call
+    final static private int NVPAIRS = 1;//number of nvpairs in createtopic api call
     final static private String tplid1 = "create.redmine1625";//time in milliseconds for createtopic attempt to timeout
 
 
@@ -109,17 +109,7 @@ public class Upload_Fragment extends Fragment {
             //create a topic instance object
             if(!filenametext.getText().toString().isEmpty() || !descriptiontext.getText().toString().isEmpty()) {
                 String[] nvpairsarr = new String[NVPAIRS];
-                nvpairsarr[0] = "file,"+ filenametext.getText().toString();
-                nvpairsarr[1] = "name,"+ descriptiontext.getText().toString();
-                /*ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y",loginlogoff.getSid()),maContext);
-                try {
-                    reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
-                } catch (TimeoutException te) {
-                    ToastMessageTask tmtask = new ToastMessageTask(maContext, "Create topic call failed. Check" +
-                            "CI Connection Profile under Settings.");
-                    tmtask.execute();
-                }
-                xobj.parseXMLfunc(reqobj4.getResult());*/
+                nvpairsarr[0] = "name,"+ descriptiontext.getText().toString();
                 xobj.parseXMLfunc(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()));
                 if(xobj.goodRC(xobj.getXmlstring())){//if return codes are good, it was successful
                     ToastMessageTask tmtask = new ToastMessageTask(maContext,"File was successfully Uploaded.");
@@ -142,19 +132,8 @@ public class Upload_Fragment extends Fragment {
                 Log.d("Message", "CI Login successful and ready to upload file.");
                 if(!filenametext.getText().toString().isEmpty() || !descriptiontext.getText().toString().isEmpty()) {
                     String[] nvpairsarr = new String[NVPAIRS];
-                    nvpairsarr[0] = "file,"+ filenametext.getText().toString();
+                    nvpairsarr[0] = "name,"+ descriptiontext.getText().toString();
                     Log.d("Variable","Value of nvpairsarr[0]: " + nvpairsarr[0]);
-                    nvpairsarr[1] = "name,"+ descriptiontext.getText().toString();
-                    Log.d("Variable","Value of nvpairsarr[1]: " + nvpairsarr[1]);
-                    /*ReqTask reqobj4 = new ReqTask(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()),maContext);
-                    try {
-                        reqobj4.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
-                    } catch (TimeoutException te) {
-                        ToastMessageTask tmtask = new ToastMessageTask(maContext, "Create topic call failed. Check" +
-                                "CI Connection Profile under Settings.");
-                        tmtask.execute();
-                    }
-                    xobj.parseXMLfunc(reqobj4.getResult());*/
                     xobj.parseXMLfunc(apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid()));
                     if(xobj.goodRC(xobj.getXmlstring())){//if return codes are good, it was successful
                         ToastMessageTask tmtask = new ToastMessageTask(maContext,"File was successfully Uploaded.");

@@ -58,26 +58,18 @@ public class APIQueries {
     }
     //createtopic
     String createtopicQuery(String tplid,String[] nvpairs,String detail,String sid) throws IOException {
-        StringBuilder appender = new StringBuilder();
-        int j = 0;
-        for(String nvp : nvpairs){
-            appender.append(nvp);
-            if(j!=nvpairs.length-1){//if not at end of array, put commas between all the key-value pairs
-                appender.append(",");
-            }
-            j++;
-        }
-        Log.d("Variable","createtopicQuery() value of appender: " + appender.toString());
-        //String createtopicQuery = "?action=createtopic" + qf.formQuery("tplid,"+tplid,appender.toString(),"detail,"+ detail,"sid," + sid);
-        StringBuilder total = new StringBuilder();
         File newImage = new File(FileChooser.getFullFilePath());
-        HttpPost httppost = new HttpPost(targetCIQuery());
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.addPart("action", new StringBody("createtopic"));
         builder.addPart("tplid", new StringBody(tplid));
-        //just dummy values
-        builder.addPart("name", new StringBody("ag2001"));
-        //
+        if(nvpairs.length > 0){//check if array has at least one element
+            for(String nvp : nvpairs){
+                if (nvp!="" || nvp!=null) {//check if element is empty or null
+                    String[] parts = nvp.split(",");
+                    builder.addPart(parts[0], new StringBody(parts[1]));
+                }
+            }
+        }
         builder.addPart("detail", new StringBody(detail));
         builder.addPart("sid", new StringBody(sid));
         builder.addPart("file", new FileBody(newImage));
@@ -94,6 +86,7 @@ public class APIQueries {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+        Log.d("Variable","apitaskobj.getResult() value: " + apitaskobj.getResult());
         return apitaskobj.getResult();
     }
 

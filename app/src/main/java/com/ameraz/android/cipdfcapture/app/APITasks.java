@@ -32,10 +32,10 @@ public class APITasks extends AsyncTask<String, Void, String> {
     HttpClient httpclient = new DefaultHttpClient();
     HttpPost httppost;
 
-    private String result;
-    private String query;
+    static private String result;
+    static private String query;
     private Context mContext;
-    private HttpEntity entity;
+    static private HttpEntity entity;
     private static int taskID = 0;
 
 
@@ -113,6 +113,7 @@ public class APITasks extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
         setResult(total.toString());
+        Log.d("Variable", "getResult() value : " + getResult());
         return total.toString();
     }
 
