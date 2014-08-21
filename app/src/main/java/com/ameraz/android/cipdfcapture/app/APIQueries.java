@@ -1,6 +1,7 @@
 package com.ameraz.android.cipdfcapture.app;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
@@ -56,14 +57,24 @@ public class APIQueries {
         return targetCIQuery;
     }
     //createtopic
-    void createtopicQuery(String tplid,String[] nvpairs,String detail,String sid,File file) throws IOException, XmlPullParserException, InterruptedException, ExecutionException {
+    void createtopicQuery(String tplid,String[] nvpairs,String detail,String sid, Uri imageUri) throws IOException, XmlPullParserException, InterruptedException, ExecutionException {
+        Log.d("asdf", imageUri.toString());
+        File newImage;
+        if(imageUri == null){
+            newImage = new File(FileChooser.getFullFilePath());
+            //Log.d("asdf", imageUri.toString());
+        }else{
+            newImage = new File(imageUri.getPath());
+            Log.d("asdf", imageUri.getPath().toString());
+        }
+        //File newImage = new File(FileChooser.getFullFilePath());
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         XmlParser xobj = new XmlParser();
         builder.addPart("action", new StringBody("createtopic"));
         builder.addPart("tplid", new StringBody(tplid));
         if(nvpairs.length > 0){//check if array has at least one element
             for(String nvp : nvpairs){
-                if (nvp!="" || nvp!=null || nvp!="null") {//check if element is empty or null
+                if (nvp!="" || nvp!=null) {//check if element is empty or null
                     String[] parts = nvp.split(",");
                     builder.addPart(parts[0], new StringBody(parts[1]));
                 }
@@ -71,7 +82,7 @@ public class APIQueries {
         }
         builder.addPart("detail", new StringBody(detail));
         builder.addPart("sid", new StringBody(sid));
-        builder.addPart("file", new FileBody(file));
+        builder.addPart("file", new FileBody(newImage));
         HttpEntity entity = builder.build();
         APITask apitaskobj = new APITask(targetCIQuery(),entity,mContext);
         try {

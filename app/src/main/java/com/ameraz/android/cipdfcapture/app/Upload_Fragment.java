@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -18,7 +19,6 @@ import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +36,7 @@ public class Upload_Fragment extends Fragment {
     static ArrayList<String> logonXmlTextTags;
     SharedPreferences preferences;
     ProgressDialog pd;
+    Uri imageUri;
 
     final static private int NVPAIRS = 1;//number of nvpairs in createtopic api call
     final static private String tplid1 = "create.redmine1625";//time in milliseconds for createtopic attempt to timeout
@@ -54,6 +55,7 @@ public class Upload_Fragment extends Fragment {
         maContext = getActivity();//get context from activity
         filenametext = (EditText) rootView.findViewById(R.id.editText);
         descriptiontext = (EditText) rootView.findViewById(R.id.editText2);
+        imageUri = null;
 
         rootView.findViewById(R.id.browseButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,11 +93,10 @@ public class Upload_Fragment extends Fragment {
             if(!filenametext.getText().toString().isEmpty() || !descriptiontext.getText().toString().isEmpty()) {
                 final String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "name,"+ descriptiontext.getText().toString();
-                final File newImage = new File(FileChooser.getFullFilePath());
                 new Thread(){
                     public void run(){
                         try {
-                            apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(),newImage);
+                            apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), imageUri);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -117,11 +118,10 @@ public class Upload_Fragment extends Fragment {
                 if(!filenametext.getText().toString().isEmpty() || !descriptiontext.getText().toString().isEmpty()) {
                     final String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "name,"+ descriptiontext.getText().toString();
-                    final File newImage = new File(FileChooser.getFullFilePath());
                     new Thread(){
                         public void run(){
                             try {
-                                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(),newImage);
+                                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), imageUri);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

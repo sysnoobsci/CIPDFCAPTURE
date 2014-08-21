@@ -2,8 +2,11 @@ package com.ameraz.android.cipdfcapture.app;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -57,16 +60,11 @@ public class Capture_Fragment extends Fragment {
     private Bitmap bm;
     private int width;
     private int height;
-
-    private String locHolder;
+    Context maContext;
 
     SharedPreferences preferences;
 
-
-
-    final static private int LOGIN_TIMEOUT = 500;//time in milliseconds for login attempt to timeout
-    final static private int CT_TIMEOUT = 500;//time in milliseconds for createtopic attempt to timeout
-    final static private int NVPAIRS = 2;//number of nvpairs in createtopic api call
+    final static private int NVPAIRS = 1;//number of nvpairs in createtopic api call
     final static private String tplid1 = "create.redmine1625";//time in milliseconds for createtopic attempt to timeout
 
     @Override
@@ -80,6 +78,7 @@ public class Capture_Fragment extends Fragment {
         savePDFListener();
         sharePDFListener();
         imageViewListener();
+        maContext = getActivity();
 
         return rootView;
     }
@@ -196,24 +195,19 @@ public class Capture_Fragment extends Fragment {
                     break;
                 case 1:
                     Log.d("onActivityResult ", "case 1");
+                    Log.d("asdf", "case 1");
                     imageUri = data.getData();
+                    String case1Loc = "file://" + getRealPathFromURI(imageUri);
+                    imageUri = Uri.parse(case1Loc);
+                    Log.d("asdf", imageUri.toString());
                     //getImageOrientation();
                     scaleAndDisplayBitmap();
                     break;
                 case 2:
                     Log.d("onActivityResult ", "case 2");
                     String loc = "file://" + data.getStringExtra("GetPath") + "/" + data.getStringExtra("GetFileName");
-                    locHolder = loc;
                     imageUri = Uri.parse(loc);
-                    try {
-                        scaleAndDisplayBitmap();
-                    }
-                    catch(Exception e){
-                        e.printStackTrace();
-                        ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Bad file type." +
-                                "Reselect a different file.");
-                        tmtask.execute();
-                    }
+                    scaleAndDisplayBitmap();
                     break;
                 default:
                     break;
@@ -255,7 +249,7 @@ public class Capture_Fragment extends Fragment {
     private void scaleAndDisplayBitmap() {
         try {
             myImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-        } catch (Exception e) {//catches exceptions, including wrong file type
+        } catch (IOException e) {
             e.printStackTrace();
         }
         //rotateImage();
@@ -287,7 +281,7 @@ public class Capture_Fragment extends Fragment {
             height = maxHeight;
             width = maxWidth;
         }
-        Log.d("width = " + Integer.toString(width), "height = " + Integer.toString(height)+ "ratio = " + Integer.toString(ratio));
+        Log.d("width = " + Integer.toString(width), "height = " + Integer.toString(height) + "ratio = " + Integer.toString(ratio));
     }
 
     //stuff was changed
@@ -396,18 +390,10 @@ public class Capture_Fragment extends Fragment {
         if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
-            if(imageUri != null) {
+            if(imageUri != null || !descriptionText1.getText().toString().isEmpty()) {
                 String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
-                Log.d("Variable","Value of String.valueOf(imageUri): " + String.valueOf(imageUri));
-                //File file = new File(String.valueOf(imageUri));
-                File file = new File(locHolder);
-                try {
-                    apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), file);
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                }
+                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), imageUri);
             }
             else{
                 ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");
@@ -419,18 +405,10 @@ public class Capture_Fragment extends Fragment {
             Log.d("Message", "Ping to CI server indicated no login session.");
             if(liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
-                if(imageUri != null) {
+                if(imageUri != null || !descriptionText1.getText().toString().isEmpty()) {
                     String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
-                    Log.d("Variable","Value of String.valueOf(imageUri): " + String.valueOf(imageUri));
-                    //File file = new File(String.valueOf(imageUri));
-                    File file = new File(locHolder);
-                    try {
-                        apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), file);
-                    }
-                    catch(Exception e){
-                        e.printStackTrace();
-                    }
+                    apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), imageUri);
                 }
                 else{
                     ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");
@@ -443,5 +421,14 @@ public class Capture_Fragment extends Fragment {
                 tmtask.execute();
             }
         }
+    }
+
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        CursorLoader loader = new CursorLoader(maContext, contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
 }
