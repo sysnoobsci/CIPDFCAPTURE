@@ -7,7 +7,6 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -17,17 +16,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends Activity
     implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -211,28 +202,15 @@ public class MainActivity extends Activity
             return true;
         }
         if(id == R.id.action_logoff) {
-            final loginlogoff liloobj2 = new loginlogoff(maContext);
             new Thread(new Runnable() {
                 public void run() {
                     APIQueries apiobj = new APIQueries(maContext);
-                    ReqTask reqobj4 = new ReqTask(apiobj.logoffQuery(loginlogoff.getSid()), maContext);
-                    XmlParser xobj4 = new XmlParser();
                     try {
-                        reqobj4.execute().get(LOGOFF_TIMEOUT,TimeUnit.MILLISECONDS);
-                        xobj4.parseXMLfunc(reqobj4.getResult());
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (TimeoutException e) {
-                        e.printStackTrace();
-                    } catch (XmlPullParserException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
+                        apiobj.logoffQuery(LoginLogoff.getSid());
+                    }
+                    catch (Exception e) {
                         e.printStackTrace();
                     }
-                    liloobj2.isLogoffSuccessful(xobj4.getTextTag());
-                    liloobj2.logoffMessage();
                 }
             }).start();
         }

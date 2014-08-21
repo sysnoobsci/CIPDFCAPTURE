@@ -1,11 +1,8 @@
 package com.ameraz.android.cipdfcapture.app;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-
-import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -13,13 +10,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,24 +20,24 @@ import java.io.InputStreamReader;
 /**
  * Created by The Bat Cave on 8/19/2014.
  */
-public class APITasks extends AsyncTask<String, Void, String> {
+public class APITask extends AsyncTask<String, Void, String> {
 
 
     HttpClient httpclient = new DefaultHttpClient();
     HttpPost httppost;
 
-    private static String result;
+    private static String response;
     private static String query;
     private static Context mContext;
     private static HttpEntity entity;
     private static int taskID = 0;
 
-    public String getResult() {
-        return result;
+    public String getResponse() {
+        return response;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setResponse(String result) {
+        this.response = result;
     }
 
     public String getQuery() {
@@ -79,7 +72,7 @@ public class APITasks extends AsyncTask<String, Void, String> {
         this.taskID = taskID;
     }
 
-    public APITasks(String query, HttpEntity entity,Context context){
+    public APITask(String query, HttpEntity entity, Context context){
         setTaskID(this.taskID);//set unique ID for task
         setQuery(query);
         setEntity(entity);
@@ -112,12 +105,11 @@ public class APITasks extends AsyncTask<String, Void, String> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        setResult(total.toString());
+        setResponse(total.toString());
         return total.toString();
     }
 
     protected void onPostExecute(String result) {
-
-        Log.d("Variable", "APITasks[" + getTaskID() + "].onPostExecute result: " + getResult());
+        Log.d("Variable", "APITasks[" + getTaskID() + "].onPostExecute response: " + getResponse());
     }
 }//end of ReqTask

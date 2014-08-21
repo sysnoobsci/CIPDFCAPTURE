@@ -380,7 +380,7 @@ public class Capture_Fragment extends Fragment {
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        loginlogoff liloobj = new loginlogoff(getActivity());
+        LoginLogoff liloobj = new LoginLogoff(getActivity());
         APIQueries apiobj = new APIQueries(getActivity());
         if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
@@ -388,7 +388,7 @@ public class Capture_Fragment extends Fragment {
             if(imageUri != null) {
                 String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
-                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
+                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid());
             }
             else{
                 ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");
@@ -403,7 +403,7 @@ public class Capture_Fragment extends Fragment {
                 if(imageUri != null) {
                     String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
-                    apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
+                    apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid());
                 }
                 else{
                     ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");

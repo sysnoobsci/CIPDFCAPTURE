@@ -95,7 +95,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<String> list = new ArrayList<String>();
         try {
             String listciserversQuery = "SELECT " + CICONFIG_COLUMN_NAME + " FROM " + TABLE_NAME;
-            Log.d("Variable", "listciserversQuery: " + listciserversQuery);
+            //Log.d("Variable", "listciserversQuery: " + listciserversQuery);
             Cursor cursor = db.rawQuery(listciserversQuery, null);
             while (cursor.moveToNext()) {
                 result = result.concat(cursor.getString(cursor.getColumnIndex(CICONFIG_COLUMN_NAME)) + ",");
@@ -106,7 +106,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         } catch (SQLiteException e) {
             Log.d("Error", e.toString());
         }
-        Log.d("Variable", "Value of list_ci_servers() result: " + result);
+        //Log.d("Variable", "Value of list_ci_servers() result: " + result);
         String[] ciserversArr = new String[list.size()];
         ciserversArr = list.toArray(ciserversArr);//convert List<String> to String[]
         return ciserversArr;

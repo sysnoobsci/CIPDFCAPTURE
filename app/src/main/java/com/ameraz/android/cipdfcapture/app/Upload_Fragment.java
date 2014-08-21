@@ -70,7 +70,6 @@ public class Upload_Fragment extends Fragment {
                 }
             }
         });
-
         return rootView;
     }
 
@@ -82,7 +81,7 @@ public class Upload_Fragment extends Fragment {
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        loginlogoff liloobj = new loginlogoff(maContext);
+        LoginLogoff liloobj = new LoginLogoff(maContext);
         final APIQueries apiobj = new APIQueries(maContext);
         final ProgressDialog ringProgressDialog = ProgressDialog.show(maContext, "Performing Action ...", "Uploading file ...", true);
         if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
@@ -94,10 +93,8 @@ public class Upload_Fragment extends Fragment {
                 new Thread(){
                     public void run(){
                         try {
-                            apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (XmlPullParserException e) {
+                            apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid());
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                         ringProgressDialog.dismiss();
@@ -121,10 +118,8 @@ public class Upload_Fragment extends Fragment {
                     new Thread(){
                         public void run(){
                             try {
-                                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (XmlPullParserException e) {
+                                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid());
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                             ringProgressDialog.dismiss();
