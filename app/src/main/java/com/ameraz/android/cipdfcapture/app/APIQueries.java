@@ -28,7 +28,7 @@ public class APIQueries {
     Boolean pingresult = false;
     final static int PING_TIMEOUT = 500;//time in milliseconds for ping attempt to timeout
     final static private int CT_TIMEOUT = 30000;//time in milliseconds for createtopic attempt to timeout
-    ProgressDialog pd;
+
 
     public APIQueries(Context mContext){
         this.mContext = mContext;
@@ -76,7 +76,7 @@ public class APIQueries {
         builder.addPart("file", new FileBody(newImage));
         HttpEntity entity = builder.build();
         APITasks apitaskobj = new APITasks(targetCIQuery(),entity,mContext);
-        pd = ProgressDialog.show(getmContext(), "", "Performing Action...", false);
+
         try {
 
             apitaskobj.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -89,7 +89,7 @@ public class APIQueries {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        pd.dismiss();
+
         Log.d("Variable","apitaskobj.getResult() value: " + apitaskobj.getResult());
         xobj.parseXMLfunc(apitaskobj.getResult());
         isActionSuccessful(xobj.getTextTag());

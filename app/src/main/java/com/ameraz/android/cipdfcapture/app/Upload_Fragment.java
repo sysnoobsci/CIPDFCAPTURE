@@ -83,16 +83,26 @@ public class Upload_Fragment extends Fragment {
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         loginlogoff liloobj = new loginlogoff(maContext);
-        APIQueries apiobj = new APIQueries(maContext);
-        final ProgressDialog ringProgressDialog = ProgressDialog.show(maContext, "Please wait ...", "Downloading Image ...", true);
+        final APIQueries apiobj = new APIQueries(maContext);
+        final ProgressDialog ringProgressDialog = ProgressDialog.show(maContext, "Performing Action ...", "Uploading file ...", true);
         if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
             if(!filenametext.getText().toString().isEmpty() || !descriptiontext.getText().toString().isEmpty()) {
-                String[] nvpairsarr = new String[NVPAIRS];
+                final String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "name,"+ descriptiontext.getText().toString();
-                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
-                ringProgressDialog.dismiss();
+                new Thread(){
+                    public void run(){
+                        try {
+                            apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (XmlPullParserException e) {
+                            e.printStackTrace();
+                        }
+                        ringProgressDialog.dismiss();
+                    }
+                }.start();
             }
             else{
                 ringProgressDialog.dismiss();
@@ -106,10 +116,20 @@ public class Upload_Fragment extends Fragment {
             if(liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
                 if(!filenametext.getText().toString().isEmpty() || !descriptiontext.getText().toString().isEmpty()) {
-                    String[] nvpairsarr = new String[NVPAIRS];
+                    final String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "name,"+ descriptiontext.getText().toString();
-                    apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
-                    ringProgressDialog.dismiss();
+                    new Thread(){
+                        public void run(){
+                            try {
+                                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (XmlPullParserException e) {
+                                e.printStackTrace();
+                            }
+                            ringProgressDialog.dismiss();
+                        }
+                    }.start();
                 }
                 else{
                     ringProgressDialog.dismiss();
