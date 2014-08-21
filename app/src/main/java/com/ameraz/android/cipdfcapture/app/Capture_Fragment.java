@@ -58,6 +58,8 @@ public class Capture_Fragment extends Fragment {
     private int width;
     private int height;
 
+    private String locHolder;
+
     SharedPreferences preferences;
 
 
@@ -201,6 +203,7 @@ public class Capture_Fragment extends Fragment {
                 case 2:
                     Log.d("onActivityResult ", "case 2");
                     String loc = "file://" + data.getStringExtra("GetPath") + "/" + data.getStringExtra("GetFileName");
+                    locHolder = loc;
                     imageUri = Uri.parse(loc);
                     try {
                         scaleAndDisplayBitmap();
@@ -397,7 +400,8 @@ public class Capture_Fragment extends Fragment {
                 String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
                 Log.d("Variable","Value of String.valueOf(imageUri): " + String.valueOf(imageUri));
-                File file = new File(String.valueOf(imageUri));
+                //File file = new File(String.valueOf(imageUri));
+                File file = new File(locHolder);
                 try {
                     apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), file);
                 }
@@ -419,7 +423,8 @@ public class Capture_Fragment extends Fragment {
                     String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
                     Log.d("Variable","Value of String.valueOf(imageUri): " + String.valueOf(imageUri));
-                    File file = new File(String.valueOf(imageUri));
+                    //File file = new File(String.valueOf(imageUri));
+                    File file = new File(locHolder);
                     try {
                         apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), file);
                     }

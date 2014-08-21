@@ -63,7 +63,7 @@ public class APIQueries {
         builder.addPart("tplid", new StringBody(tplid));
         if(nvpairs.length > 0){//check if array has at least one element
             for(String nvp : nvpairs){
-                if (nvp!="" || nvp!=null) {//check if element is empty or null
+                if (nvp!="" || nvp!=null || nvp!="null") {//check if element is empty or null
                     String[] parts = nvp.split(",");
                     builder.addPart(parts[0], new StringBody(parts[1]));
                 }
