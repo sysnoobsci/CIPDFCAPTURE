@@ -56,8 +56,7 @@ public class APIQueries {
         return targetCIQuery;
     }
     //createtopic
-    void createtopicQuery(String tplid,String[] nvpairs,String detail,String sid) throws IOException, XmlPullParserException, InterruptedException, ExecutionException {
-        File newImage = new File(FileChooser.getFullFilePath());
+    void createtopicQuery(String tplid,String[] nvpairs,String detail,String sid,File file) throws IOException, XmlPullParserException, InterruptedException, ExecutionException {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         XmlParser xobj = new XmlParser();
         builder.addPart("action", new StringBody("createtopic"));
@@ -72,7 +71,7 @@ public class APIQueries {
         }
         builder.addPart("detail", new StringBody(detail));
         builder.addPart("sid", new StringBody(sid));
-        builder.addPart("file", new FileBody(newImage));
+        builder.addPart("file", new FileBody(file));
         HttpEntity entity = builder.build();
         APITask apitaskobj = new APITask(targetCIQuery(),entity,mContext);
         try {

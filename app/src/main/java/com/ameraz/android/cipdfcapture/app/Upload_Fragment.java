@@ -18,6 +18,7 @@ import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -90,10 +91,11 @@ public class Upload_Fragment extends Fragment {
             if(!filenametext.getText().toString().isEmpty() || !descriptiontext.getText().toString().isEmpty()) {
                 final String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "name,"+ descriptiontext.getText().toString();
+                final File newImage = new File(FileChooser.getFullFilePath());
                 new Thread(){
                     public void run(){
                         try {
-                            apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid());
+                            apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(),newImage);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -115,10 +117,11 @@ public class Upload_Fragment extends Fragment {
                 if(!filenametext.getText().toString().isEmpty() || !descriptiontext.getText().toString().isEmpty()) {
                     final String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "name,"+ descriptiontext.getText().toString();
+                    final File newImage = new File(FileChooser.getFullFilePath());
                     new Thread(){
                         public void run(){
                             try {
-                                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid());
+                                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(),newImage);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
