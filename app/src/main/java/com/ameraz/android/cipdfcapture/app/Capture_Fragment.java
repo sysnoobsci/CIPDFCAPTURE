@@ -323,8 +323,6 @@ public class Capture_Fragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
             return null;
         }
 

@@ -1,5 +1,6 @@
 package com.ameraz.android.cipdfcapture.app;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -37,7 +38,6 @@ public class APITasks extends AsyncTask<String, Void, String> {
     private static Context mContext;
     private static HttpEntity entity;
     private static int taskID = 0;
-
 
     public String getResult() {
         return result;
@@ -117,6 +117,7 @@ public class APITasks extends AsyncTask<String, Void, String> {
     }
 
     protected void onPostExecute(String result) {
+
         Log.d("Variable", "APITasks[" + getTaskID() + "].onPostExecute result: " + getResult());
     }
 }//end of ReqTask

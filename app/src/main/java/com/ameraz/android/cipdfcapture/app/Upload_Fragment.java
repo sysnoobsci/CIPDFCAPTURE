@@ -2,6 +2,7 @@ package com.ameraz.android.cipdfcapture.app;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,6 +34,7 @@ public class Upload_Fragment extends Fragment {
     Context maContext;
     static ArrayList<String> logonXmlTextTags;
     SharedPreferences preferences;
+    ProgressDialog pd;
 
     final static private int NVPAIRS = 1;//number of nvpairs in createtopic api call
     final static private String tplid1 = "create.redmine1625";//time in milliseconds for createtopic attempt to timeout
@@ -82,6 +84,7 @@ public class Upload_Fragment extends Fragment {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         loginlogoff liloobj = new loginlogoff(maContext);
         APIQueries apiobj = new APIQueries(maContext);
+        final ProgressDialog ringProgressDialog = ProgressDialog.show(maContext, "Please wait ...", "Downloading Image ...", true);
         if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
@@ -89,8 +92,10 @@ public class Upload_Fragment extends Fragment {
                 String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "name,"+ descriptiontext.getText().toString();
                 apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
+                ringProgressDialog.dismiss();
             }
             else{
+                ringProgressDialog.dismiss();
                 ToastMessageTask tmtask = new ToastMessageTask(maContext,"Error. Fill out all the fields.");
                 tmtask.execute();
             }
@@ -104,13 +109,16 @@ public class Upload_Fragment extends Fragment {
                     String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "name,"+ descriptiontext.getText().toString();
                     apiobj.createtopicQuery(tplid1, nvpairsarr, "y", loginlogoff.getSid());
+                    ringProgressDialog.dismiss();
                 }
                 else{
+                    ringProgressDialog.dismiss();
                     ToastMessageTask tmtask = new ToastMessageTask(maContext,"Error. Fill out all the fields.");
                     tmtask.execute();
                 }
             }
             else{//if login attempt fails from trying the CI server profile, prompt user to check profile
+                ringProgressDialog.dismiss();
                 ToastMessageTask tmtask = new ToastMessageTask(maContext,"Connection to CI Server failed. Check" +
                         "CI Connection Profile under Settings.");
                 tmtask.execute();

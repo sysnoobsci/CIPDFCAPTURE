@@ -1,5 +1,6 @@
 package com.ameraz.android.cipdfcapture.app;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 
@@ -27,6 +28,7 @@ public class APIQueries {
     Boolean pingresult = false;
     final static int PING_TIMEOUT = 500;//time in milliseconds for ping attempt to timeout
     final static private int CT_TIMEOUT = 30000;//time in milliseconds for createtopic attempt to timeout
+    ProgressDialog pd;
 
     public APIQueries(Context mContext){
         this.mContext = mContext;
@@ -38,6 +40,14 @@ public class APIQueries {
 
     public void setActionresult(Boolean pingresult) {
         this.pingresult = pingresult;
+    }
+
+    public Context getmContext() {
+        return mContext;
+    }
+
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
     }
 
     String targetCIQuery(){
@@ -66,7 +76,9 @@ public class APIQueries {
         builder.addPart("file", new FileBody(newImage));
         HttpEntity entity = builder.build();
         APITasks apitaskobj = new APITasks(targetCIQuery(),entity,mContext);
+        pd = ProgressDialog.show(getmContext(), "", "Performing Action...", false);
         try {
+
             apitaskobj.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask tmtask = new ToastMessageTask(mContext, "Create topic call failed. Check" +
@@ -77,6 +89,7 @@ public class APIQueries {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+        pd.dismiss();
         Log.d("Variable","apitaskobj.getResult() value: " + apitaskobj.getResult());
         xobj.parseXMLfunc(apitaskobj.getResult());
         isActionSuccessful(xobj.getTextTag());
@@ -142,6 +155,17 @@ public class APIQueries {
             return false;
         }
     }
+
+    //retrieve
+    String retrieveQuery(String mode, String tid, String DSID, String xid, String tplid,String fmt,
+                         String combtype,String maxseg,String offset,String axvs,String label,
+                         String inline,String tq,String sln,String sid){
+        String retrieveQuery = "?action=retrieve" + qf.formQuery("mode,"+mode,"tid,"+tid,"DSID"+DSID,
+                "xid,"+xid,"tplid,"+tplid,"fmt,"+fmt,"combtype,"+combtype,"maxseg,"+maxseg,"offset,"+offset,
+                "axvs,"+axvs,"label,"+label,"inline,"+inline,"tq,"+tq,"sln,"+sln,"sid,"+sid);
+        return targetCIQuery() + retrieveQuery;
+    }
+
     //action return code check
     protected void isActionSuccessful(ArrayList<String> larray) {
         if(larray.size()==0){//if the array is of size 0, nothing was returned from the ciserver
@@ -158,20 +182,11 @@ public class APIQueries {
             }
             catch(Exception e){
                 ToastMessageTask tmtask = new ToastMessageTask(mContext,"Error. Connection to CI Server failed. Check " +
-                                                "CI Connection Profile under Settings.");
+                        "CI Connection Profile under Settings.");
                 Log.e("Error",e.toString());
                 tmtask.execute();
             }
         }
-    }
-    //retrieve
-    String retrieveQuery(String mode, String tid, String DSID, String xid, String tplid,String fmt,
-                         String combtype,String maxseg,String offset,String axvs,String label,
-                         String inline,String tq,String sln,String sid){
-        String retrieveQuery = "?action=retrieve" + qf.formQuery("mode,"+mode,"tid,"+tid,"DSID"+DSID,
-                "xid,"+xid,"tplid,"+tplid,"fmt,"+fmt,"combtype,"+combtype,"maxseg,"+maxseg,"offset,"+offset,
-                "axvs,"+axvs,"label,"+label,"inline,"+inline,"tq,"+tq,"sln,"+sln,"sid,"+sid);
-        return targetCIQuery() + retrieveQuery;
     }
 
 
