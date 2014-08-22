@@ -111,7 +111,8 @@ public class XmlParser {
             }
             eventType = xpp.next();
         }
-        return tagText.toString();
+        String cutComma = tagText.toString().substring(0,tagText.toString().length()-2);//remove stray commas from the end
+        return cutComma;
     }
 
     protected Boolean isXMLformat(String xmlstring){

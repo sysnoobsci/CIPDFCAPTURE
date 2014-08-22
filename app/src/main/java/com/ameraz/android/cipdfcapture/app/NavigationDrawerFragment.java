@@ -142,23 +142,6 @@ public class NavigationDrawerFragment extends Fragment {
                                 break;
                         }
                         break;
-                    case 1:
-                        switch (childPosition) {
-                            case 0://only one choice
-                                fragment = new Upload_Fragment();
-                                break;
-                        }
-                        break;
-                    case 2:
-                        switch (childPosition) {
-                            case 0:
-                                fragment = new Download_Fragment();
-                                break;
-                            case 1:
-                                fragment = new Download_Fragment();
-                                break;
-                        }
-                        break;
                 }
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, fragment)
@@ -178,24 +161,12 @@ public class NavigationDrawerFragment extends Fragment {
 
         //Header like Find, about...etc.  Call command and put it here
         listDataHeader.add(getString(R.string.navdrawer1));
-        listDataHeader.add(getString(R.string.navdrawer2));
-        listDataHeader.add(getString(R.string.navdrawer3));
 
         //Populate Find here with the submenu
         List<String> capture_pdf = new ArrayList<String>();
-        capture_pdf.add("Capture and Upload");
-
-        //Populate Tools here with the submenu
-        List<String> upload_pdf = new ArrayList<String>();
-        upload_pdf.add("Find and Upload");
-        //Populate Admin here with the submenu
-        List<String> download_pdf = new ArrayList<String>();
-        download_pdf.add("fawk");
-        download_pdf.add("man");
+        capture_pdf.add("Capture/Upload");
 
         listDataChild.put(listDataHeader.get(0), capture_pdf);
-        listDataChild.put(listDataHeader.get(1), upload_pdf);
-        listDataChild.put(listDataHeader.get(2), download_pdf);
     }
 
     public boolean isDrawerOpen() {

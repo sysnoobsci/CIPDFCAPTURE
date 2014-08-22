@@ -38,12 +38,7 @@ public class MainActivity extends Activity
 
     DatabaseHandler db;
 
-    final static private int LOGOFF_TIMEOUT = 500;//time in milliseconds for logoff attempt to timeout
-    final static private int REQUEST_TIMEOUT = 500;
-
     private Boolean first_open = true;//keeps track of if the app is opening for the first time to show the home screen
-
-    ProgressDialog progress;
 
     public Boolean getFirst_open() {
         return first_open;
@@ -135,15 +130,15 @@ public class MainActivity extends Activity
             case 0:
                 fragment = new Capture_Fragment();
                 break;
-            case 1:
+            /*case 1:
                 fragment = new Upload_Fragment();
                 break;
             case 2:
                 fragment = new Download_Fragment();
                 break;
+            */
             default:
                 fragment = new Home_Fragment();
-
                 break;
         }
         fragmentManager.beginTransaction()
@@ -154,14 +149,15 @@ public class MainActivity extends Activity
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section2);
+                mTitle = getString(R.string.title_sectionalt);
                 break;
-            case 2:
+            /*case 2:
                 mTitle = getString(R.string.title_section3);
                 break;
             case 3:
                 mTitle = getString(R.string.title_section4);
                 break;
+            */
         }
     }
     @Override
@@ -214,7 +210,6 @@ public class MainActivity extends Activity
                 }
             }).start();
         }
-
         return super.onOptionsItemSelected(item);
     }
 

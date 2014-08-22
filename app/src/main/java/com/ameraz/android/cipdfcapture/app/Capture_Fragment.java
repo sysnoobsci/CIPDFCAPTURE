@@ -386,14 +386,25 @@ public class Capture_Fragment extends Fragment {
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         LoginLogoff liloobj = new LoginLogoff(getActivity());
-        APIQueries apiobj = new APIQueries(getActivity());
+        final APIQueries apiobj = new APIQueries(getActivity());
+        final ProgressDialog ringProgressDialog = ProgressDialog.show(maContext, "Performing Action ...",
+                "Uploading file ...", true);
         if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
             if(imageUri != null || !descriptionText1.getText().toString().isEmpty()) {
-                String[] nvpairsarr = new String[NVPAIRS];
+                final String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
-                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), imageUri);
+                new Thread() {
+                    public void run() {
+                        try {
+                            apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), imageUri);
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        ringProgressDialog.dismiss();
+                    }
+                }.start();
             }
             else{
                 ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");
@@ -406,9 +417,18 @@ public class Capture_Fragment extends Fragment {
             if(liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
                 if(imageUri != null || !descriptionText1.getText().toString().isEmpty()) {
-                    String[] nvpairsarr = new String[NVPAIRS];
+                    final String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
-                    apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), imageUri);
+                    new Thread() {
+                        public void run() {
+                            try {
+                                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), imageUri);
+                            }catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            ringProgressDialog.dismiss();
+                        }
+                    }.start();
                 }
                 else{
                     ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");

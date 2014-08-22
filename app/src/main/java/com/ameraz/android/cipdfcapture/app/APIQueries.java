@@ -31,7 +31,7 @@ public class APIQueries {
 
 
     public APIQueries(Context mContext){
-        this.mContext = mContext;
+        setmContext(mContext);
     }
 
     public Boolean getActionresult() {
@@ -104,9 +104,36 @@ public class APIQueries {
     }
 
     //listnode - add &sid to the string for it to work properly
-    String listnodeQuery(String sid){
-        String listnodeQuery = "?action=listnode" + qf.formQuery("sid," + sid);
-        return targetCIQuery() + listnodeQuery;
+    String[] listnodeQuery(String sid) throws ExecutionException,
+            InterruptedException, IOException, XmlPullParserException{
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        XmlParser xobj = new XmlParser();
+        builder.addPart("action", new StringBody("listnode"));
+        builder.addPart("sid", new StringBody(sid));
+        HttpEntity entity = builder.build();
+        APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
+        try {
+            apitaskobj.execute().get(ACTION_TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException te) {
+            ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Login failed. Check" +
+                    "CI Connection Profile under Settings.");
+            tmtask.execute();
+        }
+        Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
+        xobj.parseXMLfunc(apitaskobj.getResponse());
+        isActionSuccessful(xobj.getTextTag());
+        LoginLogoff.logonMessage(getActionresult(), getmContext());//show status of logon action
+        if (getActionresult()) {//if the ping is successful(i.e. user logged in)
+            LoginLogoff.setSid(apitaskobj.getResponse());
+            Log.d("Message", "CI Server listnode successful.");
+        }
+        else{
+            Log.d("Message", "CI Server listnode failed.");
+        }
+        String[] listnodeArray = new String[2];
+        listnodeArray[0] =  xobj.findTagText("xid",apitaskobj.getResponse());
+        listnodeArray[1] = xobj.findTagText("name",apitaskobj.getResponse());
+        return listnodeArray;
     }
     //logon
     Boolean logonQuery(String user,String password,String newpwd) throws ExecutionException,
