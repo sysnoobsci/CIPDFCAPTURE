@@ -58,16 +58,14 @@ public class APIQueries {
     }
     //createtopic
     void createtopicQuery(String tplid,String[] nvpairs,String detail,String sid, Uri imageUri) throws IOException, XmlPullParserException, InterruptedException, ExecutionException {
-        Log.d("asdf", imageUri.toString());
         File newImage;
         if(imageUri == null){
             newImage = new File(FileChooser.getFullFilePath());
             //Log.d("asdf", imageUri.toString());
         }else{
             newImage = new File(imageUri.getPath());
-            Log.d("asdf", imageUri.getPath().toString());
+            Log.d("Variable", "imageUri.getPath().toString() value: " + imageUri.getPath().toString());
         }
-        //File newImage = new File(FileChooser.getFullFilePath());
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         XmlParser xobj = new XmlParser();
         builder.addPart("action", new StringBody("createtopic"));
