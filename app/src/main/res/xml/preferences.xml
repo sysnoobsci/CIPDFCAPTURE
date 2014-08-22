@@ -48,6 +48,7 @@
                 android:key="port_preference"
                 android:title="@string/title_next_screen_port_preference"
                 android:summary="@string/summary_next_screen_port_preference"
+                android:numeric="integer"
                 android:dialogTitle="@string/dialog_title_port_preference" />
 
             <EditTextPreference
@@ -69,18 +70,52 @@
         </PreferenceScreen>
 
     </PreferenceCategory>
+
+        <!-- You can place more preferences here that will be shown on the next screen. -->
+        <PreferenceCategory
+            android:title="@string/client_config_preferences">
+
+            <PreferenceScreen
+                android:key="timeout_preference"
+                android:title="@string/CI_timeout_screen_preference"
+                android:summary="@string/CI_timeout_summary_screen_preference">
+
+                <EditTextPreference
+                    android:key="actiontimeout_preference"
+                    android:title="@string/title_next_screen_actiontimeout_preference"
+                    android:summary="@string/summary_next_screen_actiontimeout_preference"
+                    android:numeric="integer"
+                    android:dialogTitle="@string/dialog_title_actiontimeout_preference" />
+
+                <EditTextPreference
+                    android:key="lilotimeout_preference"
+                    android:title="@string/title_next_screen_lilotimeout_preference"
+                    android:summary="@string/summary_next_screen_lilotimeout_preference"
+                    android:numeric="integer"
+                    android:dialogTitle="@string/dialog_title_lilotimeout_preference" />
+
+                <EditTextPreference
+                    android:key="uploadtimeout_preference"
+                    android:title="@string/title_next_screen_uploadtimeout_preference"
+                    android:summary="@string/summary_next_screen_uploadtimeout_preference"
+                    android:numeric="integer"
+                    android:dialogTitle="@string/dialog_title_uploadtimeout_preference" />
+
+            </PreferenceScreen>
+        </PreferenceCategory>
+
     
-    <PreferenceCategory
-            android:title="@string/oresources_attributes">
+<PreferenceCategory
+    android:title="@string/oresources_attributes">
 
-        <PreferenceScreen
-            android:title="@string/title_intent_preference"
-            android:summary="@string/summary_intent_preference">
+    <PreferenceScreen
+        android:title="@string/title_intent_preference"
+        android:summary="@string/summary_intent_preference">
 
-            <intent android:action="android.intent.action.VIEW"
-                android:data="http://systemware.com/" />
+        <intent android:action="android.intent.action.VIEW"
+            android:data="http://systemware.com/" />
 
-        </PreferenceScreen>
-    </PreferenceCategory>
+    </PreferenceScreen>
+</PreferenceCategory>
     
 </PreferenceScreen>

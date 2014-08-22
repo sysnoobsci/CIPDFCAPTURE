@@ -39,6 +39,9 @@ public class MainActivity extends Activity
     DatabaseHandler db;
 
     private Boolean first_open = true;//keeps track of if the app is opening for the first time to show the home screen
+    private static int action_timeout = 1000;//action timeout - default 1 sec
+    private static int lilo_timeout = 1000;//login/logout timeout - default 1 sec
+    private static int upload_timeout = 30000;//upload timeout - default 30 secs
 
     public Boolean getFirst_open() {
         return first_open;
@@ -46,6 +49,30 @@ public class MainActivity extends Activity
 
     public void setFirst_open(Boolean first_open) {
         this.first_open = first_open;
+    }
+
+    public static int getAction_timeout() {
+        return action_timeout;
+    }
+
+    public static void setAction_timeout(int action_timeout) {
+        MainActivity.action_timeout = action_timeout * 1000;
+    }
+
+    public static int getLilo_timeout() {
+        return lilo_timeout;
+    }
+
+    public static void setLilo_timeout(int lilo_timeout) {
+        MainActivity.lilo_timeout = lilo_timeout * 1000;
+    }
+
+    public static int getUpload_timeout() {
+        return upload_timeout;
+    }
+
+    public static void setUpload_timeout(int upload_timeout) {
+        MainActivity.upload_timeout = upload_timeout * 1000;
     }
 
     public void saveTimestamp(){//save current timestamp
@@ -58,6 +85,12 @@ public class MainActivity extends Activity
         SharedPreferences.Editor edit = preferences.edit();
         edit.putString("pref_date", currentTimeStamp);//added date to preferences for next app open
         edit.commit();
+    }
+
+    public void setTimeouts(){
+        setAction_timeout(Integer.parseInt(preferences.getString("actiontimeout_preference", null)));
+        setAction_timeout(Integer.parseInt(preferences.getString("actiontimeout_preference", null)));
+        setAction_timeout(Integer.parseInt(preferences.getString("actiontimeout_preference", null)));
     }
 
     public static class PrefsFragment extends PreferenceFragment {//saves prefs when save connection is pressed
@@ -102,6 +135,7 @@ public class MainActivity extends Activity
 
         super.onCreate(savedInstanceState);
         // Create loginDialog Dialog
+        setTimeouts();
         setContentView(R.layout.activity_main);
         db = new DatabaseHandler(getApplicationContext());//create a db if one doesn't exist
         //navigation drawer stuff
