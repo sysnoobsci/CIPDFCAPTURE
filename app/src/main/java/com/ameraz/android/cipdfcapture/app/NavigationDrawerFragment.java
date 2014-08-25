@@ -161,12 +161,24 @@ public class NavigationDrawerFragment extends Fragment {
 
         //Header like Find, about...etc.  Call command and put it here
         listDataHeader.add(getString(R.string.navdrawer1));
+        listDataHeader.add("Device Explorer");
+        listDataHeader.add("Content Server Explorer");
 
         //Populate Find here with the submenu
         List<String> capture_pdf = new ArrayList<String>();
         capture_pdf.add("Capture/Upload");
 
+        List<String> view_images = new ArrayList<String>();
+        view_images.add("Gallery");
+        view_images.add("File Explorer");
+
+        List<String> content_server = new ArrayList<String>();
+        content_server.add("Images");
+        content_server.add("Documents");
+
         listDataChild.put(listDataHeader.get(0), capture_pdf);
+        listDataChild.put(listDataHeader.get(1), view_images);
+        listDataChild.put(listDataHeader.get(2), content_server);
     }
 
     public boolean isDrawerOpen() {

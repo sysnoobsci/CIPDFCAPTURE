@@ -74,9 +74,6 @@ public class Capture_Fragment extends Fragment {
         descriptionText1 = (EditText) rootView.findViewById(R.id.description_text);
         initializeViews(rootView);
         takePicButtonListener();
-        searchGalleryListener();
-        navFileSystemListener();
-        savePDFListener();
         sharePDFListener();
         imageViewListener();
         bm=null;
@@ -123,40 +120,6 @@ public class Capture_Fragment extends Fragment {
         });
     }
 
-    private void savePDFListener() {
-        savePDF.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (imageView == null || imageUri == null) {
-                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Nothing to save.");
-                    tmtask.execute();
-                } else {
-                    new saveImageAsPDF().execute();
-                }
-            }
-        });
-    }
-
-    private void navFileSystemListener() {
-        navFileSystem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), FileChooser.class);
-                startActivityForResult(intent, 2);
-            }
-        });
-    }
-
-    private void searchGalleryListener() {
-        searchGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, 1);
-            }
-        });
-    }
-
     private void takePicButtonListener() {
         takePic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,22 +157,6 @@ public class Capture_Fragment extends Fragment {
                 case 0:
                     Log.d("onActivityResult ", "case 0");
                     scaleAndDisplayBitmap();
-                    break;
-                case 1:
-                    Log.d("onActivityResult ", "case 1");
-                    Log.d("asdf", "case 1");
-                    imageUri = data.getData();
-                    String case1Loc = "file://" + getRealPathFromURI(imageUri);
-                    imageUri = Uri.parse(case1Loc);
-                    Log.d("asdf", imageUri.toString());
-                    //getImageOrientation();
-                    //scaleAndDisplayBitmap();
-                    break;
-                case 2:
-                    Log.d("onActivityResult ", "case 2");
-                    String loc = "file://" + data.getStringExtra("GetPath") + "/" + data.getStringExtra("GetFileName");
-                    imageUri = Uri.parse(loc);
-                    //scaleAndDisplayBitmap();
                     break;
                 default:
                     break;
@@ -292,9 +239,6 @@ public class Capture_Fragment extends Fragment {
     private void initializeViews(View rootView) {
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
         takePic = (ImageButton) rootView.findViewById(R.id.capture_new_pic);
-        searchGallery = (ImageButton) rootView.findViewById(R.id.capture_gallery);
-        navFileSystem = (ImageButton) rootView.findViewById(R.id.capture_nav);
-        savePDF = (ImageButton) rootView.findViewById(R.id.capture_save);
         sharePDF = (ImageButton) rootView.findViewById(R.id.capture_share);
     }
 
