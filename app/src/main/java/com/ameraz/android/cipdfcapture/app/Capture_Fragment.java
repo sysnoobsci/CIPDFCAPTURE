@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -65,7 +66,7 @@ public class Capture_Fragment extends Fragment {
     SharedPreferences preferences;
 
     final static private int NVPAIRS = 1;//number of nvpairs in createtopic api call
-    final static private String tplid1 = "create.redmine1625";//time in milliseconds for createtopic attempt to timeout
+    final static private String tplid1 = "create.phonecapture";//time in milliseconds for createtopic attempt to timeout
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,6 +79,7 @@ public class Capture_Fragment extends Fragment {
         savePDFListener();
         sharePDFListener();
         imageViewListener();
+        bm=null;
         maContext = getActivity();
 
         return rootView;
@@ -201,13 +203,13 @@ public class Capture_Fragment extends Fragment {
                     imageUri = Uri.parse(case1Loc);
                     Log.d("asdf", imageUri.toString());
                     //getImageOrientation();
-                    scaleAndDisplayBitmap();
+                    //scaleAndDisplayBitmap();
                     break;
                 case 2:
                     Log.d("onActivityResult ", "case 2");
                     String loc = "file://" + data.getStringExtra("GetPath") + "/" + data.getStringExtra("GetFileName");
                     imageUri = Uri.parse(loc);
-                    scaleAndDisplayBitmap();
+                    //scaleAndDisplayBitmap();
                     break;
                 default:
                     break;
@@ -215,35 +217,40 @@ public class Capture_Fragment extends Fragment {
         }
     }
 
-    private void rotateImage() {
-        File imageFile = new File(imageUri.toString());
-        ExifInterface exif = null;
+    private void rotateImage(int rotate) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(rotate);
+        getImageDimensions();
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(myImage, width, height, true);
+        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(), scaledBitmap .getHeight(), matrix, true);
+        imageView.setImageBitmap(rotatedBitmap);
+
+    }
+    public int getImageRotation(){
+        int rotate = 0;
         try {
-            exif = new ExifInterface(imageFile.getAbsolutePath());
+            ExifInterface exif = new ExifInterface(
+                    imageUri.getPath());
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
         } catch (IOException e) {
-            Log.d("nope ", "nope 1");
             e.printStackTrace();
         }
-        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-        int rotate = 0;
-        switch(orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                rotate-=90;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                rotate-=90;
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                rotate-=90;
-        }
-        Log.d("rotate = ", Integer.toString(rotate));
-        Log.d("orientation = ", Integer.toString(orientation));
-/*        bm = myImage;
-        Bitmap workingBitmap = Bitmap.createBitmap(bm);
-        Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(mutableBitmap);
-        canvas.rotate(rotate);
-        getImageDimensions();*/
-        //bm = mutableBitmap.createScaledBitmap(mutableBitmap, width, height, true);
-
+        Log.d("Rotate = ", String.valueOf(rotate));
+        return rotate;
     }
 
     private void scaleAndDisplayBitmap() {
@@ -252,11 +259,8 @@ public class Capture_Fragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //rotateImage();
-        getImageDimensions();
-        bm = myImage.createScaledBitmap(myImage, width, height, true);
+        rotateImage(getImageRotation());
         destroyBitmap();
-        imageView.setImageBitmap(bm);
     }
 
     private void getImageDimensions() {
