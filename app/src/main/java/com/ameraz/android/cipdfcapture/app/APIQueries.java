@@ -24,11 +24,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class APIQueries {
     Context mContext;
-    QueryFormer qf = new QueryFormer();
     Boolean actionresult = false;
-    final static int ACTION_TIMEOUT = 1000;//time in milliseconds for ping attempt to timeout
-    final static private int CT_TIMEOUT = 30000;//time in milliseconds for createtopic attempt to timeout
-
 
     public APIQueries(Context mContext){
         setmContext(mContext);
@@ -84,7 +80,7 @@ public class APIQueries {
         HttpEntity entity = builder.build();
         APITask apitaskobj = new APITask(targetCIQuery(),entity,mContext);
         try {
-            apitaskobj.execute().get(CT_TIMEOUT, TimeUnit.MILLISECONDS);
+            apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Create topic call failed. Check" +
                     "CI Connection Profile under Settings.");
@@ -113,7 +109,7 @@ public class APIQueries {
         HttpEntity entity = builder.build();
         APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
         try {
-            apitaskobj.execute().get(ACTION_TIMEOUT, TimeUnit.MILLISECONDS);
+            apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Login failed. Check" +
                     "CI Connection Profile under Settings.");
@@ -150,7 +146,7 @@ public class APIQueries {
         HttpEntity entity = builder.build();
         APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
         try {
-            apitaskobj.execute().get(ACTION_TIMEOUT, TimeUnit.MILLISECONDS);
+            apitaskobj.execute().get(MainActivity.getLilo_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Login failed. Check" +
                     "CI Connection Profile under Settings.");
@@ -180,7 +176,7 @@ public class APIQueries {
         HttpEntity entity = builder.build();
         APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
         try {
-            apitaskobj.execute().get(ACTION_TIMEOUT, TimeUnit.MILLISECONDS);
+            apitaskobj.execute().get(MainActivity.getLilo_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Login failed. Check" +
                     "CI Connection Profile under Settings.");
@@ -214,7 +210,7 @@ public class APIQueries {
         HttpEntity entity = builder.build();
         APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
         try {
-            apitaskobj.execute().get(ACTION_TIMEOUT, TimeUnit.MILLISECONDS);
+            apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Ping failed. Check" +
                     "CI Connection Profile under Settings.");
