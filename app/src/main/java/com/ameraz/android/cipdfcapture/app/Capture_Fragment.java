@@ -91,7 +91,7 @@ public class Capture_Fragment extends Fragment {
             public void onClick(View v) {
                 if(imageUri!=null){
                     Intent intent = new Intent();
-                    intent.setAction(android.content.Intent.ACTION_VIEW);
+                    intent.setAction(Intent.ACTION_VIEW);
                     intent.setDataAndType(imageUri, "image/png");
                     startActivity(intent);
                 }else{
@@ -151,7 +151,7 @@ public class Capture_Fragment extends Fragment {
         searchGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, 1);
             }
         });

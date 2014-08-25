@@ -2,7 +2,14 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="false">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView2"
+        android:src="@drawable/clouds_parlx_bg1" />
 
     <ImageView
         android:layout_width="300dp"
@@ -26,11 +33,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="WELCOME TO PHONE CAPTURE"
+            android:text="Welcome to Phone Capture"
             android:typeface="serif"
             android:id="@+id/textView"
             android:layout_gravity="center_horizontal"
             android:textSize="23sp"
+            android:textColor="#0078c9"
             android:layout_centerHorizontal="true" />
     </LinearLayout>
 
@@ -39,10 +47,9 @@
         android:layout_width="fill_parent"
         android:layout_height="65dp"
         android:id="@+id/linearLayout2"
-        android:layout_below="@+id/linearLayout"
+        android:layout_below="@+id/imageView"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="94dp">
+        android:layout_alignParentStart="true">
 
         <TextView
             android:layout_width="wrap_content"
@@ -51,6 +58,7 @@
             android:typeface="serif"
             android:id="@+id/textView2"
             android:textSize="22sp"
+            android:textColor="#0078c9"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>
 
