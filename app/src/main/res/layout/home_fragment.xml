@@ -4,6 +4,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:id="@+id/imageView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:src= "@drawable/sw_background"/>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
@@ -19,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="WELCOME TO PHONE CAPTURE"
-            android:typeface="sans"
+            android:typeface="serif"
             android:id="@+id/textView"
             android:layout_gravity="center_horizontal"
             android:textSize="23sp"
@@ -40,10 +48,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="You were last here time/date"
-            android:typeface="sans"
+            android:typeface="serif"
             android:id="@+id/textView2"
             android:textSize="22sp"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>
+
+
 
 </RelativeLayout>

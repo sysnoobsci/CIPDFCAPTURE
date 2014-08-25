@@ -65,7 +65,7 @@ public class Capture_Fragment extends Fragment {
     SharedPreferences preferences;
 
     final static private int NVPAIRS = 1;//number of nvpairs in createtopic api call
-    final static private String tplid1 = "create.redmine1625";//time in milliseconds for createtopic attempt to timeout
+    final static private String tplid1 = "create.phonecapture";//time in milliseconds for createtopic attempt to timeout
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -253,10 +253,17 @@ public class Capture_Fragment extends Fragment {
             e.printStackTrace();
         }
         //rotateImage();
-        getImageDimensions();
-        bm = myImage.createScaledBitmap(myImage, width, height, true);
-        destroyBitmap();
-        imageView.setImageBitmap(bm);
+        try {
+            getImageDimensions();
+            bm = myImage.createScaledBitmap(myImage, width, height, true);
+            destroyBitmap();
+            imageView.setImageBitmap(bm);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            ToastMessageTask tmtask = new ToastMessageTask(maContext,"Creating scaled bitmap failed. Check input file.");
+            tmtask.execute();
+        }
     }
 
     private void getImageDimensions() {
@@ -407,6 +414,7 @@ public class Capture_Fragment extends Fragment {
                 }.start();
             }
             else{
+                ringProgressDialog.dismiss();
                 ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");
                 tmtask.execute();
             }
@@ -431,11 +439,13 @@ public class Capture_Fragment extends Fragment {
                     }.start();
                 }
                 else{
+                    ringProgressDialog.dismiss();
                     ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");
                     tmtask.execute();
                 }
             }
             else{//if login attempt fails from trying the CI server profile, prompt user to check profile
+                ringProgressDialog.dismiss();
                 ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Connection to CI Server failed. Check" +
                         "CI Connection Profile under Settings.");
                 tmtask.execute();
