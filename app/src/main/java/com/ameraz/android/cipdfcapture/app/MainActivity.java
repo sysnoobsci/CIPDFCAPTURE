@@ -55,24 +55,39 @@ public class MainActivity extends Activity
         return action_timeout;
     }
 
-    public static void setAction_timeout(int action_timeout) {
-        MainActivity.action_timeout = action_timeout * 1000;
+    public static void setAction_timeout(String action_timeout) {
+        if(action_timeout != null){
+            MainActivity.action_timeout = Integer.parseInt(action_timeout) * 1000;
+        }
+        else{
+            Log.d("Message","No action timeout in preferences. Default set to " + getAction_timeout() + " seconds");
+        }
     }
 
     public static int getLilo_timeout() {
         return lilo_timeout;
     }
 
-    public static void setLilo_timeout(int lilo_timeout) {
-        MainActivity.lilo_timeout = lilo_timeout * 1000;
+    public static void setLilo_timeout(String lilo_timeout) {
+        if(lilo_timeout != null){
+            MainActivity.lilo_timeout = Integer.parseInt(lilo_timeout) * 1000;
+        }
+        else{
+            Log.d("Message","No login/logoff timeout in preferences. Default set to " + getLilo_timeout() + " seconds");
+        }
     }
 
     public static int getUpload_timeout() {
         return upload_timeout;
     }
 
-    public static void setUpload_timeout(int upload_timeout) {
-        MainActivity.upload_timeout = upload_timeout * 1000;
+    public static void setUpload_timeout(String upload_timeout) {
+        if(upload_timeout != null){
+            MainActivity.upload_timeout = Integer.parseInt(upload_timeout) * 1000;
+        }
+        else{
+            Log.d("Message","No upload timeout in preferences. Default set to " + getUpload_timeout() + " seconds");
+        }
     }
 
     public void saveTimestamp(){//save current timestamp
@@ -88,9 +103,9 @@ public class MainActivity extends Activity
     }
 
     public void setTimeouts(){
-        setAction_timeout(Integer.parseInt(preferences.getString("actiontimeout_preference", null)));
-        setAction_timeout(Integer.parseInt(preferences.getString("actiontimeout_preference", null)));
-        setAction_timeout(Integer.parseInt(preferences.getString("actiontimeout_preference", null)));
+        setAction_timeout(preferences.getString("actiontimeout_preference", null));
+        setLilo_timeout(preferences.getString("lilotimeout_preference", null));
+        setUpload_timeout(preferences.getString("uploadtimeout_preference", null));
     }
 
     public static class PrefsFragment extends PreferenceFragment {//saves prefs when save connection is pressed
@@ -164,13 +179,6 @@ public class MainActivity extends Activity
             case 0:
                 fragment = new Capture_Fragment();
                 break;
-            /*case 1:
-                fragment = new Upload_Fragment();
-                break;
-            case 2:
-                fragment = new Download_Fragment();
-                break;
-            */
             default:
                 fragment = new Home_Fragment();
                 break;
