@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
+import com.itextpdf.text.BadElementException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -227,6 +228,48 @@ public class APIQueries {
             Log.d("Message", "CI Server ping failed.");
             return false;
         }
+    }
+    //retrieve
+    public com.itextpdf.text.Image retrieveQuery(String mode,String tid,String dsid,int xid,int tplid,
+                                 String fmt,String combtype,int maxseg,int offset,String axvs,
+                                 String label,String inline,String tq,int sln,int lns) throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.addPart("action", new StringBody("retrieve"));
+        builder.addPart("mode", new StringBody(mode));
+        builder.addPart("tid", new StringBody(tid));
+        builder.addPart("dsid", new StringBody(dsid));
+        builder.addPart("xid", new StringBody(String.valueOf(xid)));
+        builder.addPart("tplid", new StringBody(String.valueOf(tplid)));
+        builder.addPart("fmt", new StringBody(fmt));
+        builder.addPart("combtype", new StringBody(combtype));
+        builder.addPart("maxseg", new StringBody(String.valueOf(maxseg)));
+        builder.addPart("offset", new StringBody(String.valueOf(offset)));
+        builder.addPart("axvs", new StringBody(axvs));
+        builder.addPart("label", new StringBody(label));
+        builder.addPart("inline", new StringBody(inline));
+        builder.addPart("tq", new StringBody(tq));
+        builder.addPart("sln", new StringBody(String.valueOf(sln)));
+        builder.addPart("lns", new StringBody(String.valueOf(lns)));
+        HttpEntity entity = builder.build();
+        APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
+        try {
+            apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
+        } catch (TimeoutException te) {
+            ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Download failed. Check" +
+                    "CI Connection Profile under Settings.");
+            tmtask.execute();
+        }
+        //the content is returned. Handle the response and set it to an object of the correct filetype
+        com.itextpdf.text.Image image = null;
+        try {
+            image = com.itextpdf.text.Image.getInstance(apitaskobj.getResponse());
+        } catch (BadElementException e) {
+            ToastMessageTask tmtask = new ToastMessageTask(mContext,"Bad Filetype returned. Download Failed");
+            tmtask.execute();
+            e.printStackTrace();
+        }
+
+        return image;
     }
 
     //action return code check
