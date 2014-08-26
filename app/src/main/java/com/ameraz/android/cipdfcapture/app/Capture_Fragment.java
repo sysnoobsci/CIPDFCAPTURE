@@ -355,6 +355,7 @@ public class Capture_Fragment extends Fragment {
                 }.start();
             }
             else{
+                ringProgressDialog.dismiss();
                 ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");
                 tmtask.execute();
             }
@@ -379,11 +380,13 @@ public class Capture_Fragment extends Fragment {
                     }.start();
                 }
                 else{
+                    ringProgressDialog.dismiss();
                     ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Error. Fill out all the fields.");
                     tmtask.execute();
                 }
             }
             else{//if login attempt fails from trying the CI server profile, prompt user to check profile
+                ringProgressDialog.dismiss();
                 ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Connection to CI Server failed. Check" +
                         "CI Connection Profile under Settings.");
                 tmtask.execute();
