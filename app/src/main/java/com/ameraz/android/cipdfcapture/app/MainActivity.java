@@ -244,7 +244,8 @@ public class MainActivity extends Activity
                 public void run() {
                     APIQueries apiobj = new APIQueries(maContext);
                     try {
-                        apiobj.logoffQuery(LoginLogoff.getSid());
+                        Capture_Fragment.argslist.add(LoginLogoff.getSid());
+                        apiobj.logoffQuery(Capture_Fragment.argslist);
                     }
                     catch (Exception e) {
                         e.printStackTrace();

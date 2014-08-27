@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -62,6 +63,8 @@ public class Capture_Fragment extends Fragment {
     private int width;
     private int height;
     Context maContext;
+
+    final static ArrayList<Object> argslist = new ArrayList<Object>();
 
     SharedPreferences preferences;
 
@@ -337,16 +340,23 @@ public class Capture_Fragment extends Fragment {
         final APIQueries apiobj = new APIQueries(getActivity());
         final ProgressDialog ringProgressDialog = ProgressDialog.show(maContext, "Performing Action ...",
                 "Uploading file ...", true);
-        if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
+        argslist.add(LoginLogoff.getSid());
+        if (apiobj.pingQuery(argslist)) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
             if(imageUri != null || !descriptionText1.getText().toString().isEmpty()) {
-                final String[] nvpairsarr = new String[NVPAIRS];
+                String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
+
+                argslist.add("tplid," + tplid1);
+                argslist.add(nvpairsarr[0]);
+                argslist.add("detail,y");
+                argslist.add("sid,"+ LoginLogoff.getSid());
+                argslist.add(imageUri);
                 new Thread() {
                     public void run() {
                         try {
-                            apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), imageUri);
+                            apiobj.createtopicQuery(argslist);
                         }catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -368,10 +378,15 @@ public class Capture_Fragment extends Fragment {
                 if(imageUri != null || !descriptionText1.getText().toString().isEmpty()) {
                     final String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
+                    argslist.add("tplid," + tplid1);
+                    argslist.add(nvpairsarr[0]);
+                    argslist.add("detail,y");
+                    argslist.add("sid," + LoginLogoff.getSid());
+                    argslist.add(imageUri);
                     new Thread() {
                         public void run() {
                             try {
-                                apiobj.createtopicQuery(tplid1, nvpairsarr, "y", LoginLogoff.getSid(), imageUri);
+                                apiobj.createtopicQuery(argslist);
                             }catch (Exception e) {
                                 e.printStackTrace();
                             }

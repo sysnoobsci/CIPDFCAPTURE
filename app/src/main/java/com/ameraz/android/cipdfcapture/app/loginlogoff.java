@@ -8,6 +8,7 @@ import android.util.Log;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -130,13 +131,16 @@ public class LoginLogoff {
         APIQueries apiobj = new APIQueries(mContext);
         Boolean login_result = false;
         //try a ping first, if successful, don't try logging in again
-        if(apiobj.pingQuery()){
+        Capture_Fragment.argslist.add("sid," + LoginLogoff.getSid());
+        if(apiobj.pingQuery(Capture_Fragment.argslist)){
             Log.d("Message","Logon session already established. Ping Successful.");
             return true;//if ping is successful, return true
         }
         Log.d("Variable","preferences.getString() value: " + preferences.getString("list_preference_ci_servers", "n/a"));
         if(!preferences.getString("list_preference_ci_servers", "n/a").equals("n/a")) {//check if profile has been chosen
-            login_result = apiobj.logonQuery(getUsername(), getPassword(), null);//send login query to CI via asynctask
+            Capture_Fragment.argslist.add("user," + getUsername());
+            Capture_Fragment.argslist.add("password," + getPassword());
+            login_result = apiobj.logonQuery(Capture_Fragment.argslist);//send login query to CI via asynctask
         }
         return login_result;
     }
