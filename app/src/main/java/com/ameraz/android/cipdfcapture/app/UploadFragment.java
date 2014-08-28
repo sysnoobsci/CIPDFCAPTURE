@@ -3,17 +3,11 @@ package com.ameraz.android.cipdfcapture.app;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -23,40 +17,31 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.pdf.PdfWriter;
+
 import com.squareup.picasso.Picasso;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Created by John Williams on 6/2/2014.
+ * Created by john.williams on 8/27/2014.
+ * UploadFragment gets the image path from InternalGalleryFragment and displays it on the screen.
+ * It then allows you to upload the document to the Content Server.
  */
-public class Capture_Fragment extends Fragment {
-    private ImageView imageView;
-    private ImageButton takePic;
-    private ImageButton sharePDF;
-    private EditText descriptionText1;
+
+public class UploadFragment extends Fragment {
+
+    private Context maContext;
     private Uri imageUri;
-    private String incImage;
-    private File newImage;
-    private Bitmap myImage;
-    //private Bitmap bm;
+    private ImageView imageView;
+    private ImageButton imageButton;
+    private EditText description;
     private int width;
     private int height;
-    Context maContext;
 
     final static ArrayList<Object> argslist = new ArrayList<Object>();
     SharedPreferences preferences;
@@ -65,37 +50,28 @@ public class Capture_Fragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.capture_fragment, container, false);
-        descriptionText1 = (EditText) rootView.findViewById(R.id.description_text);
+        View rootView = inflater.inflate(R.layout.gallery_single_layout, container, false);
         initializeViews(rootView);
-        takePicButtonListener();
-        sharePDFListener();
-        imageViewListener();
-        //bm=null;
         maContext = getActivity();
 
+        setImageButtonListener();
+
+        //gets the data passed to it from InternalGalleryFragment and creates the uri.
+        Bundle bundle = this.getArguments();
+        String imageUriString = bundle.getString("inc_string");
+        imageUri = Uri.parse(imageUriString);
+
+        //gets the width of the display, since imageView is set to match_parent...works for now, need to change
+        width = getActivity().getWindowManager().getDefaultDisplay().getWidth();
+        height = getActivity().getWindowManager().getDefaultDisplay().getHeight();
+
+        //Using the Picasso library, loads the image onto the screen.
+        setImage();
         return rootView;
     }
 
-    private void imageViewListener() {
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(imageUri!=null){
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.setDataAndType(imageUri, "image/png");
-                    startActivity(intent);
-                }else{
-                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Nothing to view.");
-                    tmtask.execute();
-                }
-            }
-        });
-    }
-
-    private void sharePDFListener() {
-        sharePDF.setOnClickListener(new View.OnClickListener() {
+    private void setImageButtonListener() {
+        imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -115,75 +91,21 @@ public class Capture_Fragment extends Fragment {
         });
     }
 
-    private void takePicButtonListener() {
-        takePic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //FilePath fp = new FilePath();
-                //String storageState = Environment.getExternalStorageState();
-/*                if (storageState.equals(Environment.MEDIA_MOUNTED)) {
-                    incImage = fp.getFilePath()+"sys_original_image" + System.currentTimeMillis() + ".jpg";
-                    newImage = new File(incImage);
-                    try {
-                        if (!newImage.exists()) {
-                            newImage.getParentFile().mkdirs();
-                            newImage.createNewFile();
-                        }
-
-                    } catch (IOException e) {
-                        Log.e("File: ", "Could not create file.", e);
-                    }
-                    Log.i("File: ", incImage);*/
-
-
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                    startActivityForResult(intent, 0);
-                //}
-            }
-        });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == getActivity().RESULT_OK) {
-            //imageUri = Uri.fromFile(newImage);
-            imageUri = data.getData();
-            FilePath fp = new FilePath();
-            String storageState = Environment.getExternalStorageState();
-            if (storageState.equals(Environment.MEDIA_MOUNTED)) {
-                incImage = fp.getFilePath()+"sys_original_image" + System.currentTimeMillis() + ".jpg";
-                newImage = new File(incImage);
-                try {
-                    if (!newImage.exists()) {
-                        newImage.getParentFile().mkdirs();
-                        newImage.createNewFile();
-                    }
-
-                } catch (IOException e) {
-                    Log.e("File: ", "Could not create file.", e);
-                }
-                Log.i("File: ", incImage);
-            }
-             Log.d("onActivityResult ", imageUri.toString());
-             setImage();
-        }
+    private void initializeViews(View rootView) {
+        imageView = (ImageView)rootView.findViewById(R.id.gallery_single_image_view);
+        imageButton = (ImageButton)rootView.findViewById(R.id.gallery_single_image_upload_button);
+        description = (EditText)rootView.findViewById(R.id.gallery_single_image_description_text);
     }
 
     private void setImage() {
         Picasso.with(maContext)
                 .load(imageUri)
-                .resize(imageView.getWidth(), imageView.getHeight())
-                .centerInside()
+                .resize(width, height)
+                .centerCrop()
                 .into(imageView);
     }
 
-    //stuff was changed
-    private void initializeViews(View rootView) {
-        imageView = (ImageView) rootView.findViewById(R.id.imageView);
-        takePic = (ImageButton) rootView.findViewById(R.id.capture_new_pic);
-        sharePDF = (ImageButton) rootView.findViewById(R.id.capture_share);
-    }
+
 
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
@@ -196,9 +118,9 @@ public class Capture_Fragment extends Fragment {
         if (apiobj.pingQuery(argslist)) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
-            if(imageUri != null || !descriptionText1.getText().toString().isEmpty()) {
+            if(imageUri != null || !description.getText().toString().isEmpty()) {
                 String[] nvpairsarr = new String[NVPAIRS];
-                nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
+                nvpairsarr[0] = "name,"+ description.getText().toString();
 
                 argslist.add("tplid," + tplid1);
                 argslist.add(nvpairsarr[0]);
@@ -236,9 +158,9 @@ public class Capture_Fragment extends Fragment {
             }
             if(login) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
-                if(imageUri != null || !descriptionText1.getText().toString().isEmpty()) {
+                if(imageUri != null || !description.getText().toString().isEmpty()) {
                     final String[] nvpairsarr = new String[NVPAIRS];
-                    nvpairsarr[0] = "name,"+ descriptionText1.getText().toString();
+                    nvpairsarr[0] = "name,"+ description.getText().toString();
                     argslist.add("tplid," + tplid1);
                     argslist.add(nvpairsarr[0]);
                     argslist.add("detail,y");
@@ -269,13 +191,4 @@ public class Capture_Fragment extends Fragment {
             }
         }
     }
-
-/*    private String getRealPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        CursorLoader loader = new CursorLoader(maContext, contentUri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }*/
 }

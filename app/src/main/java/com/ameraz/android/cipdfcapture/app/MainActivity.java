@@ -4,8 +4,10 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -167,7 +169,7 @@ public class MainActivity extends Activity
         // update the main content by replacing fragments
         Log.d("Variable", "Value of argument position: " + position);
         Fragment fragment;
-
+        Log.d("Navigation Position: ", String.valueOf(position));
         if(getFirst_open()){//if first time opening app, show home screen fragment
             position = -1;
             setFirst_open(false);
@@ -184,21 +186,6 @@ public class MainActivity extends Activity
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
-    }
-
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_sectionalt);
-                break;
-            /*case 2:
-                mTitle = getString(R.string.title_section3);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section4);
-                break;
-            */
-        }
     }
     @Override
      public void onStop(){
@@ -225,6 +212,9 @@ public class MainActivity extends Activity
         }
         return super.onCreateOptionsMenu(menu);
     }
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {

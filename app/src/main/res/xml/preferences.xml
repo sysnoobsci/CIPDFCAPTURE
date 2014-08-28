@@ -102,6 +102,18 @@
                     android:dialogTitle="@string/dialog_title_uploadtimeout_preference" />
 
             </PreferenceScreen>
+            <PreferenceScreen
+                android:key="gallery_preference"
+                android:title="Gallery Settings">
+
+                <EditTextPreference
+                    android:key="column_preference"
+                    android:title="Number of columns in the gallery"
+                    android:numeric="integer"
+                    android:dialogTitle="Number of columns"/>
+
+
+            </PreferenceScreen>
         </PreferenceCategory>
 
     

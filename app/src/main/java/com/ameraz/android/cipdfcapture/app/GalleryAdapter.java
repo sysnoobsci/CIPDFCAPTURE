@@ -1,0 +1,93 @@
+package com.ameraz.android.cipdfcapture.app;
+
+import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.io.FilenameFilter;
+
+/**
+ * Created by john.williams on 8/26/2014.
+ */
+public class GalleryAdapter extends BaseAdapter {
+    Context maContext;
+    private File FILE_DIR;
+    String[] names;
+    FilePath fp;
+    int width;
+
+    public void GalleryAdapter(Context c){
+    }
+
+    public void setUriArray(){
+        fp = new FilePath();
+        FILE_DIR = new File(fp.getFilePath());
+        Log.d("File name: ", FILE_DIR.toString());
+        names = FILE_DIR.list(
+                new FilenameFilter()
+                {
+                    public boolean accept(File FILE_DIR, String name)
+                    {
+                        return name.endsWith(".jpg");
+                    }
+                });
+    }
+    public void setWidth(int maWidth){
+        width = maWidth;
+    }
+
+    public String getNames(Integer position){
+        return names[position];
+    }
+
+    public void setContext(Context context){
+        maContext = context;
+    }
+
+    @Override
+    public int getCount() {
+        return names.length;
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return null;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        Log.d("position: ", Integer.toString(position));
+        Log.d("Loading images...", Uri.parse("file://" + fp.getFilePath() + names[position]).toString());
+        ImageView imageView;
+        if (convertView == null) {  // if it's not recycled, initialize some attributes
+            LayoutInflater in = (LayoutInflater) maContext
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = in.inflate(R.layout.thumbnail, null);
+            imageView = (ImageView)convertView.findViewById(R.id.thumbnail_image);
+        } else {
+            imageView = (ImageView) convertView;
+        }
+        Log.d("Loading images...", Uri.parse("file://" + fp.getFilePath() + names[position]).toString());
+        Picasso.with(maContext)
+                .load(Uri.parse("file://" + fp.getFilePath() + names[position]))
+                .resize(width,width)
+                .placeholder(R.drawable.sw_placeholder)
+                .centerCrop()
+                .into(imageView);
+
+        return imageView;
+    }
+}

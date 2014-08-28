@@ -102,22 +102,6 @@ public class NavigationDrawerFragment extends Fragment {
 
         mDrawerListView = (ExpandableListView) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
-/*        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position);
-            }
-        });*/
-/*        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
-                        getString(R.string.title_section4),
-                }));
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);*/
 
         // preparing list data
         prepareListData();
@@ -145,7 +129,7 @@ public class NavigationDrawerFragment extends Fragment {
                     case 1://placeholder until Device Explorer Fragments get added
                         switch (childPosition) {
                             case 0:
-                                fragment = new Capture_Fragment();
+                                fragment = new InternalGalleryFragment();
                                 break;
                             case 1:
                                 fragment = new Capture_Fragment();
@@ -165,11 +149,12 @@ public class NavigationDrawerFragment extends Fragment {
                 }
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, fragment)
-                                //.replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                        .addToBackStack(null)
                         .commit();
                 return false;
             }
         });
+
 
         return mDrawerListView;
     }
