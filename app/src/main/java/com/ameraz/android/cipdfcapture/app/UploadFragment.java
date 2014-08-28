@@ -61,10 +61,6 @@ public class UploadFragment extends Fragment {
         String imageUriString = bundle.getString("inc_string");
         imageUri = Uri.parse(imageUriString);
 
-        //gets the width of the display, since imageView is set to match_parent...works for now, need to change
-        width = getActivity().getWindowManager().getDefaultDisplay().getWidth();
-        height = getActivity().getWindowManager().getDefaultDisplay().getHeight();
-
         //Using the Picasso library, loads the image onto the screen.
         setImage();
         return rootView;
@@ -100,7 +96,7 @@ public class UploadFragment extends Fragment {
     private void setImage() {
         Picasso.with(maContext)
                 .load(imageUri)
-                .resize(width, height)
+                .fit()
                 .centerCrop()
                 .into(imageView);
     }

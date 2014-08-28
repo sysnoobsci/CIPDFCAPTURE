@@ -224,7 +224,7 @@ public class MainActivity extends Activity
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.container, new PrefsFragment()).commit();
+                    .replace(R.id.container, new PrefsFragment()).addToBackStack(null).commit();
             return true;
         }
         if(id == R.id.action_logoff) {
