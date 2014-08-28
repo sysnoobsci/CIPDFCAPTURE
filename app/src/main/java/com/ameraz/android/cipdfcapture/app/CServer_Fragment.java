@@ -29,10 +29,14 @@ public class CServer_Fragment extends Fragment {
     }
 
     public void setFonts(){
-        TextView txt = (TextView) rootView.findViewById(R.id.textView);
-        TextView txt1 = (TextView) rootView.findViewById(R.id.textView2);
+        TextView txt1 = (TextView) rootView.findViewById(R.id.textView);
+        TextView txt2 = (TextView) rootView.findViewById(R.id.textView2);
+        TextView txt3 = (TextView) rootView.findViewById(R.id.textView3);
+        TextView txt4 = (TextView) rootView.findViewById(R.id.textView4);
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
-        txt.setTypeface(font);
         txt1.setTypeface(font);
+        txt2.setTypeface(font);
+        txt3.setTypeface(font);
+        txt4.setTypeface(font);
     }
 }

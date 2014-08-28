@@ -31,12 +31,10 @@ public class MainActivity extends Activity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     SharedPreferences preferences;
-
     private CharSequence mTitle;
-
     Context maContext = MainActivity.this;
-
     DatabaseHandler db;
+    final static ArrayList<Object> argslist = new ArrayList<Object>();
 
     private Boolean first_open = true;//keeps track of if the app is opening for the first time to show the home screen
     private static int action_timeout = 1000;//action timeout - default 1 sec

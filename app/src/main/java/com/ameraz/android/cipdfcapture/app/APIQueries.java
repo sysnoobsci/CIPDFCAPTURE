@@ -72,10 +72,12 @@ public class APIQueries {
         xobj.parseXMLfunc(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
         if(getActionresult()){//if return codes are good, it was successful
+           Log.d("Message","File was successfully Uploaded.");
             ToastMessageTask tmtask = new ToastMessageTask(getmContext(),"File was successfully Uploaded.");
             tmtask.execute();
         }
         else{
+            Log.d("Message","File upload failed.");
             ToastMessageTask tmtask = new ToastMessageTask(getmContext(),"File upload failed.");
             tmtask.execute();
         }
@@ -115,15 +117,16 @@ public class APIQueries {
         return listnodeArray;
     }
     //listversion
-    /*String[] listversionQuery(ArrayList<Object> args) throws ExecutionException,
+    ArrayList<String> listversionQuery(ArrayList<Object> args) throws ExecutionException,
             InterruptedException, IOException, XmlPullParserException {
+        ArrayList<String> versions = new ArrayList<String>();
         ArrayList<Object> actionargs = args;
         actionargs.add("act,listversion");
         HttpEntity entity = mebBuilder(actionargs);
         XmlParser xobj = new XmlParser();
         APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
         try {
-            apitaskobj.execute().get(MainActivity.getLilo_timeout(), TimeUnit.MILLISECONDS);
+            apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Login failed. Check" +
                     "CI Connection Profile under Settings.");
@@ -132,18 +135,29 @@ public class APIQueries {
         Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         xobj.parseXMLfunc(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        LoginLogoff.logonMessage(getActionresult(), getmContext());//show status of logon action
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
-            LoginLogoff.setSid(apitaskobj.getResponse());
-            Log.d("Variable", "loginlogoff.getSid() value: " + LoginLogoff.getSid());
-            Log.d("Message", "CI Server logon successful.");
+            Log.d("Message", "CI Server listversion successful.");
         }
         else{
-            Log.d("Message", "CI Server logon failed.");
+            Log.d("Message", "CI Server listversion failed.");
+        }
+        String dsids = xobj.findTagText("dsid",xobj.getXmlstring());//get the DSIDs
+        String bytes = xobj.findTagText("bytes",xobj.getXmlstring());//get the bytes
+        String fmt = xobj.findTagText("fmt",xobj.getXmlstring());//get the format
+        String ver = xobj.findTagText("v",xobj.getXmlstring());//get the version number
+        String[] dsidsarr = dsids.split(",");//arrays should all be the same size
+        String[] bytesarr = bytes.split(",");
+        String[] fmtarr = fmt.split(",");
+        String[] verarr = ver.split(",");
+        for(int i = 0; i < dsidsarr.length ; i++){
+            StringBuilder sbuild = new StringBuilder();
+            sbuild.append(dsidsarr[i] + ",").append(bytesarr[i] + ",").append(fmtarr[i] + ",")
+                    .append(verarr[i]);
+            versions.add(sbuild.toString());
         }
         Capture_Fragment.argslist.clear();//clear argslist after query
-        return getActionresult();
-    }*/
+        return versions;
+    }
     //logon
     Boolean logonQuery(ArrayList<Object> args) throws ExecutionException,
             InterruptedException, IOException, XmlPullParserException {
