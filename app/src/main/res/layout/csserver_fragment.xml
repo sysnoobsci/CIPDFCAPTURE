@@ -34,6 +34,12 @@
                 android:id="@+id/editText"
                 android:layout_marginLeft="25dp"
                 android:hint="Fully Qualified Report Name" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/imageButton2"
+                android:src="@android:drawable/ic_menu_search" />
         </TableRow>
 
         <TableRow
@@ -98,7 +104,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Format Value"
+                android:text="Bytes Value"
                 android:id="@+id/textView7"
                 android:singleLine="false" />
         </TableRow>

@@ -81,7 +81,7 @@ public class APIQueries {
             ToastMessageTask tmtask = new ToastMessageTask(getmContext(),"File upload failed.");
             tmtask.execute();
         }
-        Capture_Fragment.argslist.clear();//clear argslist after query
+        MainActivity.argslist.clear();//clear argslist after query
     }
 
     //listnode - add &sid to the string for it to work properly
@@ -113,7 +113,7 @@ public class APIQueries {
         String[] listnodeArray = new String[2];
         listnodeArray[0] =  xobj.findTagText("xid",apitaskobj.getResponse());
         listnodeArray[1] = xobj.findTagText("name",apitaskobj.getResponse());
-        Capture_Fragment.argslist.clear();//clear argslist after query
+        MainActivity.argslist.clear();//clear argslist after query
         return listnodeArray;
     }
     //listversion
@@ -155,7 +155,7 @@ public class APIQueries {
                     .append(verarr[i]);
             versions.add(sbuild.toString());
         }
-        Capture_Fragment.argslist.clear();//clear argslist after query
+        MainActivity.argslist.clear();//clear argslist after query
         return versions;
     }
     //logon
@@ -185,7 +185,7 @@ public class APIQueries {
         else{
             Log.d("Message", "CI Server logon failed.");
         }
-        Capture_Fragment.argslist.clear();//clear argslist after query
+        MainActivity.argslist.clear();//clear argslist after query
         return getActionresult();
     }
     //logoff
@@ -216,7 +216,7 @@ public class APIQueries {
         else{
             Log.d("Message", "CI Server logoff failed.");
         }
-        Capture_Fragment.argslist.clear();//clear argslist after query
+        MainActivity.argslist.clear();//clear argslist after query
         return getActionresult();
     }
     //ping
@@ -240,7 +240,7 @@ public class APIQueries {
         Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         xobj.parseXMLfunc(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        Capture_Fragment.argslist.clear();//clear argslist after query
+        MainActivity.argslist.clear();//clear argslist after query
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Server ping successful.");
             return true;
@@ -273,7 +273,7 @@ public class APIQueries {
             tmtask.execute();
             e.printStackTrace();
         }
-        Capture_Fragment.argslist.clear();//clear argslist after query
+        MainActivity.argslist.clear();//clear argslist after query
         return image;
     }
 

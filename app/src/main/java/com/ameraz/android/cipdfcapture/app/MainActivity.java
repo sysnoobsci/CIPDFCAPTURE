@@ -232,8 +232,8 @@ public class MainActivity extends Activity
                 public void run() {
                     APIQueries apiobj = new APIQueries(maContext);
                     try {
-                        Capture_Fragment.argslist.add(LoginLogoff.getSid());
-                        apiobj.logoffQuery(Capture_Fragment.argslist);
+                        MainActivity.argslist.add(LoginLogoff.getSid());
+                        apiobj.logoffQuery(MainActivity.argslist);
                     }
                     catch (Exception e) {
                         e.printStackTrace();

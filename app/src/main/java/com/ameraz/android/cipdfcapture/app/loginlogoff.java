@@ -131,16 +131,16 @@ public class LoginLogoff {
         APIQueries apiobj = new APIQueries(mContext);
         Boolean login_result = false;
         //try a ping first, if successful, don't try logging in again
-        Capture_Fragment.argslist.add("sid," + LoginLogoff.getSid());
-        if(apiobj.pingQuery(Capture_Fragment.argslist)){
+        MainActivity.argslist.add("sid," + LoginLogoff.getSid());
+        if(apiobj.pingQuery(MainActivity.argslist)){
             Log.d("Message","Logon session already established. Ping Successful.");
             return true;//if ping is successful, return true
         }
         Log.d("Variable","preferences.getString() value: " + preferences.getString("list_preference_ci_servers", "n/a"));
         if(!preferences.getString("list_preference_ci_servers", "n/a").equals("n/a")) {//check if profile has been chosen
-            Capture_Fragment.argslist.add("user," + getUsername());
-            Capture_Fragment.argslist.add("password," + getPassword());
-            login_result = apiobj.logonQuery(Capture_Fragment.argslist);//send login query to CI via asynctask
+            MainActivity.argslist.add("user," + getUsername());
+            MainActivity.argslist.add("password," + getPassword());
+            login_result = apiobj.logonQuery(MainActivity.argslist);//send login query to CI via asynctask
         }
         return login_result;
     }
