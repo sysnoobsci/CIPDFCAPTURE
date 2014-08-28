@@ -268,9 +268,7 @@ public class APIQueries {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         for(Object larg : args){//check each argument for class type and act accordingly
             if(larg != null) {//make sure arg isn't null
-                Log.d("Variable", "larg class type: " + larg.getClass().getName());
                 if (larg.getClass().equals(String.class)) {//if type of arg is String, do this
-                    Log.d("Variable", "Object larg value: " + larg.toString());
                     int i = 0;
                     int j = 1;
                     String[] parts = larg.toString().split(",");
@@ -283,7 +281,7 @@ public class APIQueries {
                 if (larg.getClass().equals(File.class)) {//if type of arg is File, do this
                     builder.addPart("file", new FileBody((File) larg));
                 }
-                if (larg.getClass().equals(Uri.class)) {//if type of arg is Uri, do this
+                if (larg.getClass().getName().equals("android.net.Uri$HierarchicalUri")) {//if type of arg is Uri, do this
                     Uri imageUri = (Uri) larg;
                     File newImage = new File(imageUri.getPath());
                     Log.d("Variable", "imageUri.getPath().toString() value: " + imageUri.getPath());
