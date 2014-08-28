@@ -142,6 +142,26 @@ public class NavigationDrawerFragment extends Fragment {
                                 break;
                         }
                         break;
+                    case 1://placeholder until Device Explorer Fragments get added
+                        switch (childPosition) {
+                            case 0:
+                                fragment = new Capture_Fragment();
+                                break;
+                            case 1:
+                                fragment = new Capture_Fragment();
+                                break;
+                        }
+                        break;
+                    case 2://need to flesh out fragments that go under Content Server
+                        switch (childPosition) {
+                            case 0:
+                                fragment = new CServer_Fragment();
+                                break;
+                            case 1:
+                                fragment = new CServer_Fragment();
+                                break;
+                        }
+                        break;
                 }
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, fragment)

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by adrian.meraz on 8/26/2014.
@@ -39,4 +40,6 @@ public class CServer_Fragment extends Fragment {
         txt3.setTypeface(font);
         txt4.setTypeface(font);
     }
+
+    List<String> spinnerArray =  new ArrayList<String>();
 }

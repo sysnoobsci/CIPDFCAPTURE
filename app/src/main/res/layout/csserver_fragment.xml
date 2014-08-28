@@ -6,7 +6,7 @@
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/">
+        android:id="@+id/tableLayout">
 
         <TableRow
             android:layout_width="fill_parent"
@@ -17,7 +17,10 @@
                 android:layout_height="wrap_content"
                 android:text="Versions Available"
                 android:id="@+id/textView"
-                android:layout_marginRight="50dp" />
+                android:layout_marginRight="50dp"
+                android:layout_marginLeft="25dp"
+                android:textSize="18sp"
+                android:textColor="#0078c9"/>
 
             <Spinner
                 android:layout_width="wrap_content"
@@ -38,7 +41,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="DSID"
-                android:id="@+id/textView2" />
+                android:id="@+id/textView2"
+                android:layout_marginLeft="25dp"
+                android:textSize="18sp"
+                android:textColor="#0078c9"/>
         </TableRow>
 
         <TableRow
@@ -50,7 +56,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Bytes"
-                android:id="@+id/textView3" />
+                android:id="@+id/textView3"
+                android:layout_marginLeft="25dp"
+                android:textSize="18sp"
+                android:textColor="#0078c9"/>
         </TableRow>
 
         <TableRow
@@ -63,7 +72,10 @@
                 android:layout_height="wrap_content"
                 android:text="Format"
                 android:id="@+id/textView4"
-                android:singleLine="false" />
+                android:singleLine="false"
+                android:layout_marginLeft="25dp"
+                android:textSize="18sp"
+                android:textColor="#0078c9"/>
         </TableRow>
     </TableLayout>
 
