@@ -136,6 +136,24 @@ public class Capture_Fragment extends Fragment {
 
 
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                FilePath fp = new FilePath();
+                String storageState = Environment.getExternalStorageState();
+                if (storageState.equals(Environment.MEDIA_MOUNTED)) {
+                    incImage = fp.getFilePath()+"sys_original_image" + System.currentTimeMillis() + ".jpg";
+                    newImage = new File(incImage);
+                    try {
+                        if (!newImage.exists()) {
+                            newImage.getParentFile().mkdirs();
+                            newImage.createNewFile();
+                        }
+
+                    } catch (IOException e) {
+                        Log.e("File: ", "Could not create file.", e);
+                    }
+                    Log.i("File: ", incImage);
+                }
+                    imageUri = Uri.fromFile(newImage);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(intent, 0);
                 //}
@@ -146,24 +164,6 @@ public class Capture_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == getActivity().RESULT_OK) {
-            //imageUri = Uri.fromFile(newImage);
-            imageUri = data.getData();
-            FilePath fp = new FilePath();
-            String storageState = Environment.getExternalStorageState();
-            if (storageState.equals(Environment.MEDIA_MOUNTED)) {
-                incImage = fp.getFilePath()+"sys_original_image" + System.currentTimeMillis() + ".jpg";
-                newImage = new File(incImage);
-                try {
-                    if (!newImage.exists()) {
-                        newImage.getParentFile().mkdirs();
-                        newImage.createNewFile();
-                    }
-
-                } catch (IOException e) {
-                    Log.e("File: ", "Could not create file.", e);
-                }
-                Log.i("File: ", incImage);
-            }
              Log.d("onActivityResult ", imageUri.toString());
              setImage();
         }
@@ -172,8 +172,7 @@ public class Capture_Fragment extends Fragment {
     private void setImage() {
         Picasso.with(maContext)
                 .load(imageUri)
-                .resize(imageView.getWidth(), imageView.getHeight())
-                .centerInside()
+                .fit().centerCrop()
                 .into(imageView);
     }
 
