@@ -5,25 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/gallery_single_image_view"
-        android:src="@drawable/clouds_parlx_bg1"/>
+        android:layout_above="@+id/upload_input_button_layout"
+        android:id="@+id/gallery_single_image_view"/>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#80009dd9"
+        android:background="#009dd9"
+        android:id="@+id/upload_input_button_layout"
         android:layout_centerHorizontal="true">
 
         <EditText
             android:layout_margin="4dp"
             android:inputType="textMultiLine"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="5"
             android:id="@+id/gallery_single_image_description_text"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
@@ -33,7 +35,7 @@
             android:hint="Description- limited to 80 characters"
             android:gravity="top"
             android:layout_gravity="center"
-            android:background="#80ffffff"
+            android:background="#ffffff"
             android:maxLength="80" />
 
         <ImageButton

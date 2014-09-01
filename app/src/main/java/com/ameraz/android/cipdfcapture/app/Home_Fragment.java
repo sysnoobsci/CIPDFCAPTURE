@@ -1,14 +1,19 @@
 package com.ameraz.android.cipdfcapture.app;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -18,15 +23,29 @@ import java.util.ArrayList;
 public class Home_Fragment extends Fragment {
     static View rootView;
     SharedPreferences preferences;
+    ImageView cloudBackground;
+    Context maContext;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         rootView = inflater .inflate(R.layout.home_fragment, container, false);
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        cloudBackground = (ImageView)rootView.findViewById(R.id.imageView2);
+        maContext = getActivity();
+        setCloudBackground();
         setFonts();
         setText(preferences.getString("pref_date", "n/a"));
         return rootView;
     }
+
+    private void setCloudBackground() {
+        Picasso.with(maContext)
+                .load(R.drawable.clouds_parlx_bg1)
+                .fit()
+                .centerInside()
+                .into(cloudBackground);
+    }
+
     public void setText(String date){
         TextView textView = (TextView) rootView.findViewById(R.id.textView2);
         textView.setText("You were last here\n" + date);

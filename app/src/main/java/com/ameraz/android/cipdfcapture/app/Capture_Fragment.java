@@ -23,6 +23,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
+import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -45,17 +47,14 @@ import java.util.concurrent.TimeoutException;
  * Created by John Williams on 6/2/2014.
  */
 public class Capture_Fragment extends Fragment {
-    private ImageView imageView;
+    private GestureImageView imageView;
+    private ImageView background;
     private ImageButton takePic;
     private ImageButton sharePDF;
     private EditText descriptionText1;
     private Uri imageUri;
     private String incImage;
     private File newImage;
-    private Bitmap myImage;
-    //private Bitmap bm;
-    private int width;
-    private int height;
     Context maContext;
 
     SharedPreferences preferences;
@@ -65,32 +64,20 @@ public class Capture_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.capture_fragment, container, false);
-        descriptionText1 = (EditText) rootView.findViewById(R.id.description_text);
+        maContext = getActivity();
         initializeViews(rootView);
+        setCaptureBackground();
         takePicButtonListener();
         sharePDFListener();
-        imageViewListener();
-        //bm=null;
-        maContext = getActivity();
-
         return rootView;
     }
 
-    private void imageViewListener() {
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(imageUri!=null){
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.setDataAndType(imageUri, "image/png");
-                    startActivity(intent);
-                }else{
-                    ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Nothing to view.");
-                    tmtask.execute();
-                }
-            }
-        });
+    private void setCaptureBackground() {
+        Picasso.with(maContext)
+                .load(R.drawable.clouds_parlx_bg1)
+                .fit()
+                .centerInside()
+                .into(background);
     }
 
     private void sharePDFListener() {
@@ -118,25 +105,6 @@ public class Capture_Fragment extends Fragment {
         takePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //FilePath fp = new FilePath();
-                //String storageState = Environment.getExternalStorageState();
-/*                if (storageState.equals(Environment.MEDIA_MOUNTED)) {
-                    incImage = fp.getFilePath()+"sys_original_image" + System.currentTimeMillis() + ".jpg";
-                    newImage = new File(incImage);
-                    try {
-                        if (!newImage.exists()) {
-                            newImage.getParentFile().mkdirs();
-                            newImage.createNewFile();
-                        }
-
-                    } catch (IOException e) {
-                        Log.e("File: ", "Could not create file.", e);
-                    }
-                    Log.i("File: ", incImage);*/
-
-
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
                 FilePath fp = new FilePath();
                 String storageState = Environment.getExternalStorageState();
                 if (storageState.equals(Environment.MEDIA_MOUNTED)) {
@@ -154,9 +122,9 @@ public class Capture_Fragment extends Fragment {
                     Log.i("File: ", incImage);
                 }
                     imageUri = Uri.fromFile(newImage);
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(intent, 0);
-                //}
             }
         });
     }
@@ -165,22 +133,25 @@ public class Capture_Fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == getActivity().RESULT_OK) {
              Log.d("onActivityResult ", imageUri.toString());
-             setImage();
+             setCapturedImage();
         }
     }
 
-    private void setImage() {
+    private void setCapturedImage() {
         Picasso.with(maContext)
                 .load(imageUri)
-                .fit().centerCrop()
+                .fit()
+                .centerInside()
                 .into(imageView);
     }
 
     //stuff was changed
     private void initializeViews(View rootView) {
-        imageView = (ImageView) rootView.findViewById(R.id.imageView);
+        background = (ImageView) rootView.findViewById(R.id.capture_background);
+        imageView = (GestureImageView) rootView.findViewById(R.id.imageView);
         takePic = (ImageButton) rootView.findViewById(R.id.capture_new_pic);
         sharePDF = (ImageButton) rootView.findViewById(R.id.capture_share);
+        descriptionText1 = (EditText) rootView.findViewById(R.id.description_text);
     }
 
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,

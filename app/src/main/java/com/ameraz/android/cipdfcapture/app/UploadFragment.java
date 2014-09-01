@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.squareup.picasso.Picasso;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -37,11 +38,9 @@ public class UploadFragment extends Fragment {
 
     private Context maContext;
     private Uri imageUri;
-    private ImageView imageView;
+    private GestureImageView imageView;
     private ImageButton imageButton;
     private EditText description;
-    private int width;
-    private int height;
 
     final static ArrayList<Object> argslist = new ArrayList<Object>();
     SharedPreferences preferences;
@@ -88,7 +87,7 @@ public class UploadFragment extends Fragment {
     }
 
     private void initializeViews(View rootView) {
-        imageView = (ImageView)rootView.findViewById(R.id.gallery_single_image_view);
+        imageView = (GestureImageView)rootView.findViewById(R.id.gallery_single_image_view);
         imageButton = (ImageButton)rootView.findViewById(R.id.gallery_single_image_upload_button);
         description = (EditText)rootView.findViewById(R.id.gallery_single_image_description_text);
     }
