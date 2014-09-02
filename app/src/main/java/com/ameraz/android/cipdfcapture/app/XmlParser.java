@@ -6,8 +6,13 @@ package com.ameraz.android.cipdfcapture.app;
 import android.util.Log;
 import android.util.Xml;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,31 +93,20 @@ public class XmlParser {
             Log.d("Variable","No tag being searched for.");
             return getXmlstring();
         }
-        Log.d("SearchTag","Value of tag: " + tag);
-        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-        factory.setNamespaceAware(true);
-        XmlPullParser xpp = factory.newPullParser();
-        xpp.setInput( new StringReader ( xmlstring ) );//get the XML string that was created from parsing the query response
-        int eventType = xpp.getEventType();
-        StringBuilder tagText = new StringBuilder();
-        String matcher = "";
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            if(eventType == XmlPullParser.START_TAG) {
-                //Log.d("xpp", "xpp.getName() value: " + xpp.getName());
-                matcher = xpp.getName();
-            }
-            else if(eventType == XmlPullParser.TEXT) {
-                //Log.d("matcher", "matcher value: " + matcher);
-                if(matcher.equals(tag)){//if the tag name matches what you're searching for, append the contents
-                    //Log.d("xpp","xpp.getText() value: " + xpp.getText());
-                    tagText.append(xpp.getText()).append(",");
-                    matcher = "";//clear out the String again
-                }
-            }
-            eventType = xpp.next();
+        StringBuilder tagcontents = new StringBuilder();
+        StringBuffer line = new StringBuffer();
+        String startTag = "<" + tag + ">";
+        String endTag = "<" + tag + "/>";
+        int start = xmlstring.indexOf(startTag) + startTag.length()-1;
+        int end = xmlstring.indexOf(endTag);
+        //InputStream stream = new ByteArrayInputStream(xmlstring.getBytes(StandardCharsets.UTF_8));
+        InputStream stream = new ByteArrayInputStream(xmlstring.getBytes());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        while(line.append(reader.readLine()) != null){
+            tagcontents.append(xmlstring.substring(start,end) + ",");
         }
-        String cutComma = tagText.toString().substring(0,tagText.toString().length()-2);//remove stray commas from the end
-        return cutComma;
+        Log.d("Variable","tagcontents.toString(): " + tagcontents.toString());
+        return tagcontents.toString();
     }
 
     protected Boolean isXMLformat(String xmlstring){
