@@ -33,11 +33,21 @@ public class GalleryAdapter extends BaseAdapter {
         FILE_DIR = new File(fp.getFilePath());
         Log.d("File name: ", FILE_DIR.toString());
         names = FILE_DIR.list(
-                new FilenameFilter()
-                {
-                    public boolean accept(File FILE_DIR, String name)
-                    {
-                        return name.endsWith(".jpg");
+                new FilenameFilter() {
+                    public boolean accept(File FILE_DIR, String name){
+                        if(name.endsWith(".jpg")){
+                            return name.endsWith(".jpg");
+                        }
+                        if(name.endsWith(".jpeg")){
+                            return name.endsWith(".jpeg");
+                        }
+                        if(name.endsWith(".png")){
+                            return name.endsWith(".png");
+                        }
+                        if(name.endsWith(".gif")){
+                            return name.endsWith(".gif");
+                        }
+                        return false;
                     }
                 });
     }

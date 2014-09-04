@@ -1,62 +1,63 @@
 package com.ameraz.android.cipdfcapture.app;
 
-
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FilenameFilter;
 
 /**
  * Created by john.williams on 8/26/2014.
  */
 public class InternalGalleryFragment extends Fragment {
 
+    Context maContext;
     GridView gridView;
-    GalleryAdapter ga = null;
+    GalleryAdapter ga;
     int width;
     LinearLayout galleryProgress;
     SharedPreferences pref;
-    int numColumns = 0;
-    private static final int TABLET_COLUMNS = 10;
-    private static final int PHONE_COLUMNS = 3;
+    int numColumns;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.gallery, container, false);
+        maContext = getActivity();
         gridView = (GridView)rootView.findViewById(R.id.gridView);
-        ga = new GalleryAdapter(getActivity());
+        ga = new GalleryAdapter();
         galleryProgress = (LinearLayout)rootView.findViewById(R.id.gallery_progress_layout);
-        pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        pref = PreferenceManager.getDefaultSharedPreferences(maContext);
         int width = rootView.getWidth();
+        Log.d("width: ", Integer.toString(width));
         setColumnWidth();
-        Log.d("Variable", "value of width: " + String.valueOf(width));
-        try {
-            new setGrid().execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new setGrid().execute();
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Image Uri: " + ga.getNames(position));
-                tmtask.execute();
-                FilePath fp = new FilePath();
-                String imageUriString = "file://" + fp.getFilePath() + ga.getNames(position);
                 Fragment fragment = new UploadFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("inc_string", imageUriString);
+                bundle.putString("fileName", ga.getNames(position));
                 fragment.setArguments(bundle);
                 FragmentManager fm = getFragmentManager();
                 fm.beginTransaction()
@@ -76,21 +77,23 @@ public class InternalGalleryFragment extends Fragment {
     }
 
     public void setColumnWidth(){
-        if (isTablet(getActivity())) {
+
+        if(isTablet(maContext)){
             numColumns = pref.getInt("gallery_preference", 0);
             if(numColumns == 0){
-                numColumns = TABLET_COLUMNS;
+                numColumns = 10;
             }
         }else{
             numColumns = pref.getInt("gallery_preference", 0);
             if(numColumns == 0){
-                numColumns = PHONE_COLUMNS;
+                numColumns = 3;
             }
         }
         int iDisplayWidth = getResources().getDisplayMetrics().widthPixels;
-        width = iDisplayWidth / numColumns;
+
+        width = iDisplayWidth
+                / numColumns ;
         gridView.setColumnWidth(width);
-        Log.d("Variable", "Value of width: " + width);
         ga.setWidth(width);
     }
 
@@ -103,7 +106,7 @@ public class InternalGalleryFragment extends Fragment {
 
         @Override
         protected Object doInBackground(Object[] params) {
-            ga.setMaContext(getActivity());
+            ga.setContext(maContext);
             ga.setUriArray();
             return null;
         }
