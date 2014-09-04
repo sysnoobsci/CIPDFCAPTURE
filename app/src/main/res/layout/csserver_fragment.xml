@@ -169,6 +169,7 @@
         android:layout_height="200dp"
         android:id="@+id/imageView"
         android:layout_below="@+id/tableLayout2"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/sw_background" />
 
 </RelativeLayout>

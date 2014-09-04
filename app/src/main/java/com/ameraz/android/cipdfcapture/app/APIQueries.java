@@ -239,28 +239,9 @@ public class APIQueries {
 
     }
     //retrieve
-    public HttpPost retrieveQuery(ArrayList<Object> args) throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
-
-        /*
-        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream((int)entity.getContentLength());
-        entity.writeTo(out);
-        String entityContentAsString = new String(out.toByteArray());
-        */
-        /*
-        APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
-        try {
-            apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
-        } catch (TimeoutException te) {
-            ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Download failed. Check" +
-                    "CI Connection Profile under Settings.");
-            tmtask.execute();
-
-        MainActivity.argslist.clear();//clear argslist after query
-        apitaskobj.getBufhttpEntity();
-        */
-
-        //return entityContentAsString;
-        return poster;
+    public String retrieveQuery(String tid){//pings the CI server, returns true if ping successful
+        String retrieveQuery = targetCIQuery() + "?act=retrieve&tid="+ tid + "&sid=" + LoginLogoff.getSid();
+        return retrieveQuery;
     }
 
     //build MultiPartEntity after checking type of the args
@@ -296,27 +277,36 @@ public class APIQueries {
     ArrayList<String> getVersionInfo(String xmlResponse) throws IOException, XmlPullParserException {
         XmlParser xobj = new XmlParser(xmlResponse);
         ArrayList<String> versionInfo = new ArrayList<String>();
+        String path = xobj.findTagText("path");//get the path name
+        String xid = xobj.findTagText("xid");//get the xid
         String dsids = xobj.findTagText("dsid");//get the DSIDs
         String bytes = xobj.findTagText("bytes");//get the bytes
         String fmt = xobj.findTagText("fmt");//get the format
         String ver = xobj.findTagText("v");//get the version number
-        String[] dsidsarr = dsids.split(",");//arrays should all be the same size
+        String[] pathsarr = path.split(",");//arrays should all be the same size
+        String[] xidarr = xid.split(",");
+        String[] dsidsarr = dsids.split(",");
         String[] bytesarr = bytes.split(",");
         String[] fmtarr = fmt.split(",");
         String[] verarr = ver.split(",");
+        Log.d("Message", "pathsarr.length " + pathsarr.length);
+        Log.d("Message", "xidarr.length " + xidarr.length);
         Log.d("Message", "dsidarr.length " + dsidsarr.length);
         Log.d("Message", "bytesarr.length " + bytesarr.length);
         Log.d("Message", "fmtarr.length " + fmtarr.length);
         Log.d("Message", "verarr.length " + verarr.length);
+
         for(int i = 0; i < dsidsarr.length ; i++){
             StringBuilder sbuild = new StringBuilder();
             sbuild.append(dsidsarr[i] + ",").append(bytesarr[i] + ",").append(fmtarr[i] + ",")
-                    .append(verarr[i]);
+                    .append(verarr[i] + ",").append("V~" + xidarr[i] + "~" + dsidsarr[i] + "~" + pathsarr[i] +
+                    "~" + verarr[i]);
             Log.d("Variable", "sbuild value: " + sbuild.toString());
             versionInfo.add(sbuild.toString());
-        }
+    }
         return versionInfo;
     }
+
 
     //action return code check
     protected void isActionSuccessful(ArrayList<String> larray) {

@@ -71,7 +71,7 @@ public class XmlParser {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
         XmlPullParser xpp = factory.newPullParser();
-        xpp.setInput( new StringReader (xmlResponse) );
+        xpp.setInput( new StringReader (xresp) );
         int eventType = xpp.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if(eventType == XmlPullParser.TEXT) {
