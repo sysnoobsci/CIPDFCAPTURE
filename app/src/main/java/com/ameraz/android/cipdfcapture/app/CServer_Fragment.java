@@ -1,25 +1,36 @@
 package com.ameraz.android.cipdfcapture.app;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.HttpPost;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -36,22 +47,60 @@ public class CServer_Fragment extends Fragment {
     private TextView dsid;
     private TextView bytes;
     private TextView fmt;
-    private ImageButton imgb;
-    private ImageButton imgb2;
+    private ImageView imageView;
+    private ImageButton imageButton2;
+    Spinner sItems;
     List<String> spinnerVerArray =  new ArrayList<String>();
+    ArrayList<String> versInfo = new ArrayList<String>();
     ProgressDialog ringProgressDialog;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         rootView = inflater .inflate(R.layout.csserver_fragment, container, false);
+        final APIQueries apiobj = new APIQueries(getActivity());
         reportName = (EditText) rootView.findViewById(R.id.editText);
+        imageButton2 = (ImageButton) rootView.findViewById(R.id.imageButton2);
         dsid = (TextView) rootView.findViewById(R.id.textView6);
         bytes = (TextView) rootView.findViewById(R.id.textView7);
         fmt = (TextView) rootView.findViewById(R.id.textView8);
-        imgb = (ImageButton) rootView.findViewById(R.id.imageButton2);
+        imageView = (ImageView) rootView.findViewById(R.id.imageView);
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         setFonts();
         searchButtonListener();
+        sItems = (Spinner) rootView.findViewById(R.id.spinner);
+        sItems.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+                setText(pos);
+                //String urltosend = null;
+                HttpPost poster;
+                String convertPoster = null;
+                MainActivity.argslist.add("res," + reportName.getText().toString());
+                MainActivity.argslist.add("sid,"+ LoginLogoff.getSid());
+                try {
+                    //urltosend = apiobj.retrieveQuery(MainActivity.argslist);
+                    //Log.d("Variable", urltosend);
+                    poster = apiobj.retrieveQuery(MainActivity.argslist);
+                    convertPoster = convertStreamToString(poster.getEntity().getContent());
+                    Log.d("Variable","HTTP Entiry : " + convertPoster);
+                    //InputStream is = httpEntity.getContent();
+                    //String htmlContent = convertToString(is);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+                Picasso.with(getActivity())
+                        .load(convertPoster)
+                        .resize(500, 500)
+                        //.placeholder(R.drawable.sw_placeholder)
+                        .centerCrop()
+                        .into(imageView);
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+                //do nothing
+            }
+        });
         return rootView;
     }
 
@@ -66,6 +115,15 @@ public class CServer_Fragment extends Fragment {
         txt3.setTypeface(font);
         txt4.setTypeface(font);
     }
+
+    public void setText(int versionSelected){
+        String selection = versInfo.get(versionSelected);
+        String[] infoPieces = selection.split(",");//0=dsid,1=bytes,2=fmt,3=ver
+        dsid.setText(infoPieces[0]);
+        bytes.setText(infoPieces[1]);
+        fmt.setText(infoPieces[2]);
+    }
+
     public void searchButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -93,11 +151,25 @@ public class CServer_Fragment extends Fragment {
             }
         }
     }
+
+    private void searchButtonListener() {
+        imageButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    searchButton();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     public ArrayList<String> showItems(ArrayList<String> lvers, int sel){
         ArrayList<String> vers = new ArrayList<String>();
         for(String v : lvers){
             String[] pieces = v.split(",");
-            vers.add(pieces[sel]);//1=dsid,2=bytes,3=fmt,4=ver
+            vers.add(pieces[sel]);//0=dsid,1=bytes,2=fmt,3=ver
         }
         return vers;
     }
@@ -109,7 +181,8 @@ public class CServer_Fragment extends Fragment {
             new Thread() {
                 public void run() {
                     try {
-                        spinnerVerArray = showItems(apiobj.listversionQuery(MainActivity.argslist),4);
+                        versInfo = apiobj.getVersionInfo(apiobj.listversionQuery(MainActivity.argslist));
+                        spinnerVerArray = showItems(versInfo,3);//get version numbers via 3
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -132,25 +205,23 @@ public class CServer_Fragment extends Fragment {
         }
     }
 
+    private String convertStreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
+        }
+        is.close();
+        return sb.toString();
+    }
+
     public void createSpinner(){
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinnerVerArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner sItems = (Spinner) rootView.findViewById(R.id.spinner);
         sItems.setAdapter(adapter);
     }
 
-    private void searchButtonListener() {
-        imgb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    searchButton();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
 
 }
