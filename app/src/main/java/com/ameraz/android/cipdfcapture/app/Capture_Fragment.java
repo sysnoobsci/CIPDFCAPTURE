@@ -55,6 +55,7 @@ public class Capture_Fragment extends Fragment {
     private Uri imageUri;
     private String incImage;
     private File newImage;
+    String fileName;
     Context maContext;
 
     SharedPreferences preferences;
@@ -108,7 +109,8 @@ public class Capture_Fragment extends Fragment {
                 FilePath fp = new FilePath();
                 String storageState = Environment.getExternalStorageState();
                 if (storageState.equals(Environment.MEDIA_MOUNTED)) {
-                    incImage = fp.getFilePath()+"sys_original_image" + System.currentTimeMillis() + ".jpg";
+                    fileName = "systemware" + System.currentTimeMillis() + ".jpg";
+                    incImage = fp.getFilePath()+ fileName;
                     newImage = new File(incImage);
                     try {
                         if (!newImage.exists()) {
@@ -134,6 +136,7 @@ public class Capture_Fragment extends Fragment {
         if (resultCode == getActivity().RESULT_OK) {
              Log.d("onActivityResult ", imageUri.toString());
              setCapturedImage();
+            descriptionText1.setText(fileName);
         }
     }
 

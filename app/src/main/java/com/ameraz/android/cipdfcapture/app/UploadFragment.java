@@ -56,12 +56,14 @@ public class UploadFragment extends Fragment {
         setImageButtonListener();
 
         //gets the data passed to it from InternalGalleryFragment and creates the uri.
+        FilePath fp = new FilePath();
         Bundle bundle = this.getArguments();
-        String imageUriString = bundle.getString("inc_string");
-        imageUri = Uri.parse(imageUriString);
+        String fileName = bundle.getString("fileName");
+        imageUri = Uri.parse("file://" + fp.getFilePath() + fileName);
 
         //Using the Picasso library, loads the image onto the screen.
         setImage();
+        description.setText(fileName);
         return rootView;
     }
 
@@ -109,23 +111,23 @@ public class UploadFragment extends Fragment {
         final APIQueries apiobj = new APIQueries(getActivity());
         final ProgressDialog ringProgressDialog = ProgressDialog.show(maContext, "Performing Action ...",
                 "Uploading file ...", true);
-        argslist.add(LoginLogoff.getSid());
-        if (apiobj.pingQuery(argslist)) {//if the ping is successful(i.e. user logged in)
+        MainActivity.argslist.add(LoginLogoff.getSid());
+        if (apiobj.pingQuery(MainActivity.argslist)) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
             if(imageUri != null || !description.getText().toString().isEmpty()) {
                 String[] nvpairsarr = new String[NVPAIRS];
                 nvpairsarr[0] = "name,"+ description.getText().toString();
 
-                argslist.add("tplid," + tplid1);
-                argslist.add(nvpairsarr[0]);
-                argslist.add("detail,y");
-                argslist.add("sid,"+ LoginLogoff.getSid());
-                argslist.add(imageUri);
+                MainActivity.argslist.add("tplid," + tplid1);
+                MainActivity.argslist.add(nvpairsarr[0]);
+                MainActivity.argslist.add("detail,y");
+                MainActivity.argslist.add("sid,"+ LoginLogoff.getSid());
+                MainActivity.argslist.add(imageUri);
                 new Thread() {
                     public void run() {
                         try {
-                            apiobj.createtopicQuery(argslist);
+                            apiobj.createtopicQuery(MainActivity.argslist);
                         }catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -156,15 +158,15 @@ public class UploadFragment extends Fragment {
                 if(imageUri != null || !description.getText().toString().isEmpty()) {
                     final String[] nvpairsarr = new String[NVPAIRS];
                     nvpairsarr[0] = "name,"+ description.getText().toString();
-                    argslist.add("tplid," + tplid1);
-                    argslist.add(nvpairsarr[0]);
-                    argslist.add("detail,y");
-                    argslist.add("sid," + LoginLogoff.getSid());
-                    argslist.add(imageUri);
+                    MainActivity.argslist.add("tplid," + tplid1);
+                    MainActivity.argslist.add(nvpairsarr[0]);
+                    MainActivity.argslist.add("detail,y");
+                    MainActivity.argslist.add("sid," + LoginLogoff.getSid());
+                    MainActivity.argslist.add(imageUri);
                     new Thread() {
                         public void run() {
                             try {
-                                apiobj.createtopicQuery(argslist);
+                                apiobj.createtopicQuery(MainActivity.argslist);
                             }catch (Exception e) {
                                 e.printStackTrace();
                             }

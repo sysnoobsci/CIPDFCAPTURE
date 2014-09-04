@@ -39,7 +39,6 @@ public class InternalGalleryFragment extends Fragment {
     LinearLayout galleryProgress;
     SharedPreferences pref;
     int numColumns;
-    OnButtonPressListener buttonListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,13 +55,9 @@ public class InternalGalleryFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ToastMessageTask tmtask = new ToastMessageTask(getActivity(),"Image Uri: " + ga.getNames(position));
-                tmtask.execute();
-                FilePath fp = new FilePath();
-                String imageUriString = "file://" + fp.getFilePath() + ga.getNames(position);
                 Fragment fragment = new UploadFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("inc_string", imageUriString);
+                bundle.putString("fileName", ga.getNames(position));
                 fragment.setArguments(bundle);
                 FragmentManager fm = getFragmentManager();
                 fm.beginTransaction()
