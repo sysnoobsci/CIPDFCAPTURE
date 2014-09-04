@@ -104,6 +104,7 @@ public class APIQueries {
         isActionSuccessful(xobj.getTextTag());
         LoginLogoff.logonMessage(getActionresult(), getmContext());//show status of logon action
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
+            LoginLogoff.setJSid(apitaskobj.getResponse());
             LoginLogoff.setSid(apitaskobj.getResponse());
             Log.d("Message", "CI Server listnode successful.");
         }
@@ -165,6 +166,7 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,logon");
         HttpEntity entity = mebBuilder(actionargs);
+        Log.d("MEB = ", entity.toString());
         APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
         try {
             apitaskobj.execute().get(MainActivity.getLilo_timeout(), TimeUnit.MILLISECONDS);
@@ -179,6 +181,7 @@ public class APIQueries {
         LoginLogoff.logonMessage(getActionresult(), getmContext());//show status of logon action
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
             LoginLogoff.setSid(apitaskobj.getResponse());
+            LoginLogoff.setJSid(apitaskobj.getResponse());
             Log.d("Variable", "loginlogoff.getSid() value: " + LoginLogoff.getSid());
             Log.d("Message", "CI Server logon successful.");
         }
@@ -208,6 +211,7 @@ public class APIQueries {
         isActionSuccessful(xobj.getTextTag());
         if(getActionresult()){//if login successful, set sid
             LoginLogoff.setSid(xobj.getXmlstring());
+            LoginLogoff.setJSid(xobj.getXmlstring());
         }
         LoginLogoff.logoffMessage(getActionresult(), getmContext());//show status of logon action
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)

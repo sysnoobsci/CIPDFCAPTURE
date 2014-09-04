@@ -29,8 +29,10 @@ public class LoginLogoff {
     private static String username;
     private static String password;
     private static String sid;//session id
+    private static String jsid;//jsession id
     SharedPreferences preferences;
     final static int SIZE_OF_TARGET_SID = 40;//size of session ID
+    final static int SIZE_OF_TARGET_JSID = 32;//size of session ID
 
     public String getHostname() {
         return hostname;
@@ -76,6 +78,10 @@ public class LoginLogoff {
         return sid;
     }
 
+    public static String getJSid() {
+        return jsid;
+    }
+
     public static void setSid(String result) {
         Log.d("Variable","result value: " + result);
         String target = "session sid=\"";
@@ -83,6 +89,17 @@ public class LoginLogoff {
         int b = a + target.length();
         int c =  a + SIZE_OF_TARGET_SID + target.length();//54 is the size of the sid plus the "target" string size
         LoginLogoff.sid = result.substring(b,c);
+        Log.d("Sid = ", sid);
+    }
+
+    public static void setJSid(String result) {
+        Log.d("Variable","result value: " + result);
+        String target = "jsessionid=\"";
+        int a = result.indexOf(target);
+        int b = a + target.length();
+        int c =  a + SIZE_OF_TARGET_JSID + target.length();//47 is the size of the sid plus the "target" string size
+        LoginLogoff.jsid = result.substring(b,c);
+        Log.d("JSid = ", jsid);
     }
 
     static void logonMessage(Boolean success, Context context){

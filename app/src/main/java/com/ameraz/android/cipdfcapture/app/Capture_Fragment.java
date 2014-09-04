@@ -145,7 +145,6 @@ public class Capture_Fragment extends Fragment {
                 .into(imageView);
     }
 
-    //stuff was changed
     private void initializeViews(View rootView) {
         background = (ImageView) rootView.findViewById(R.id.capture_background);
         imageView = (GestureImageView) rootView.findViewById(R.id.imageView);

@@ -143,6 +143,9 @@ public class NavigationDrawerFragment extends Fragment {
                                 break;
                             case 1:
                                 fragment = new CServer_Fragment();
+
+                            case 2:
+                                fragment = new TestDownload();
                                 break;
                         }
                         break;
@@ -180,6 +183,7 @@ public class NavigationDrawerFragment extends Fragment {
         List<String> content_server = new ArrayList<String>();
         content_server.add("Images");
         content_server.add("Documents");
+        content_server.add("Test");
 
         listDataChild.put(listDataHeader.get(0), capture_pdf);
         listDataChild.put(listDataHeader.get(1), view_images);
