@@ -8,7 +8,7 @@ import android.widget.Toast;
  * Created by adrian.meraz on 5/29/2014.
  */
 // A class that will run Toast messages in the main GUI context
-    class ToastMessageTask extends AsyncTask<String, String, String> {
+public class ToastMessageTask extends AsyncTask<String, String, String> {
     static String toastMessage;
     static Context mContext;
 

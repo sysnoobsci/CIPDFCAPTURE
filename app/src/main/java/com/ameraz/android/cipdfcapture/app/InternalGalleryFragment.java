@@ -1,58 +1,52 @@
 package com.ameraz.android.cipdfcapture.app;
 
-import android.app.Activity;
+
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.FilenameFilter;
 
 /**
  * Created by john.williams on 8/26/2014.
  */
 public class InternalGalleryFragment extends Fragment {
 
-    Context maContext;
     GridView gridView;
-    GalleryAdapter ga;
+    GalleryAdapter ga = null;
     int width;
     LinearLayout galleryProgress;
     SharedPreferences pref;
-    int numColumns;
-    OnButtonPressListener buttonListener;
+    int numColumns = 0;
+    private static final int TABLET_COLUMNS = 10;
+    private static final int PHONE_COLUMNS = 3;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.gallery, container, false);
-        maContext = getActivity();
         gridView = (GridView)rootView.findViewById(R.id.gridView);
-        ga = new GalleryAdapter();
+        ga = new GalleryAdapter(getActivity());
         galleryProgress = (LinearLayout)rootView.findViewById(R.id.gallery_progress_layout);
-        pref = PreferenceManager.getDefaultSharedPreferences(maContext);
+        pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         int width = rootView.getWidth();
-        Log.d("width: ", Integer.toString(width));
         setColumnWidth();
-        new setGrid().execute();
+        Log.d("Variable", "value of width: " + String.valueOf(width));
+        try {
+            new setGrid().execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -82,23 +76,21 @@ public class InternalGalleryFragment extends Fragment {
     }
 
     public void setColumnWidth(){
-
-        if(isTablet(maContext)){
+        if (isTablet(getActivity())) {
             numColumns = pref.getInt("gallery_preference", 0);
             if(numColumns == 0){
-                numColumns = 10;
+                numColumns = TABLET_COLUMNS;
             }
         }else{
             numColumns = pref.getInt("gallery_preference", 0);
             if(numColumns == 0){
-                numColumns = 3;
+                numColumns = PHONE_COLUMNS;
             }
         }
         int iDisplayWidth = getResources().getDisplayMetrics().widthPixels;
-
-        width = iDisplayWidth
-                / numColumns ;
+        width = iDisplayWidth / numColumns;
         gridView.setColumnWidth(width);
+        Log.d("Variable", "Value of width: " + width);
         ga.setWidth(width);
     }
 
@@ -111,7 +103,7 @@ public class InternalGalleryFragment extends Fragment {
 
         @Override
         protected Object doInBackground(Object[] params) {
-            ga.setContext(maContext);
+            ga.setMaContext(getActivity());
             ga.setUriArray();
             return null;
         }

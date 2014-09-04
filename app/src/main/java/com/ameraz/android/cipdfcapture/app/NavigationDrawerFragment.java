@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,7 +89,7 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated (Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
@@ -98,7 +97,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
 
         mDrawerListView = (ExpandableListView) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
@@ -118,7 +117,7 @@ public class NavigationDrawerFragment extends Fragment {
                                         int groupPosition, int childPosition, long id) {
                 Fragment fragment = new Home_Fragment();
                 FragmentManager fragmentManager = getFragmentManager();
-                switch(groupPosition) {
+                switch (groupPosition) {
                     case 0:
                         switch (childPosition) {
                             case 0:
@@ -143,9 +142,6 @@ public class NavigationDrawerFragment extends Fragment {
                                 break;
                             case 1:
                                 fragment = new CServer_Fragment();
-
-                            case 2:
-                                fragment = new TestDownload();
                                 break;
                         }
                         break;
@@ -183,7 +179,6 @@ public class NavigationDrawerFragment extends Fragment {
         List<String> content_server = new ArrayList<String>();
         content_server.add("Images");
         content_server.add("Documents");
-        content_server.add("Test");
 
         listDataChild.put(listDataHeader.get(0), capture_pdf);
         listDataChild.put(listDataHeader.get(1), view_images);

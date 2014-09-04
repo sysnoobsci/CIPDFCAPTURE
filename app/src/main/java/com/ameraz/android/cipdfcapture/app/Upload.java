@@ -1,19 +1,15 @@
 package com.ameraz.android.cipdfcapture.app;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
+
 
 /**
  * Created by john.williams on 8/28/2014.
  */
 public class Upload extends Activity {
-    Uri imageUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,14 +25,4 @@ public class Upload extends Activity {
         }
     }//end of oncreate
 
-/*    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            imageUri = data.getData();
-            Log.d("Upload Fragment - onActivityResult ", imageUri.toString());
-        }
-    }
-    public Uri getImageUri(){
-        return imageUri;
-    }*/
 }

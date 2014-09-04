@@ -4,12 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.itextpdf.text.BadElementException;
-
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -280,25 +275,28 @@ public class APIQueries {
         String path = xobj.findTagText("path");//get the path name
         String xid = xobj.findTagText("xid");//get the xid
         String dsids = xobj.findTagText("dsid");//get the DSIDs
+        String cts = xobj.findTagText("cts");//get the DSIDs
         String bytes = xobj.findTagText("bytes");//get the bytes
         String fmt = xobj.findTagText("fmt");//get the format
         String ver = xobj.findTagText("v");//get the version number
         String[] pathsarr = path.split(",");//arrays should all be the same size
         String[] xidarr = xid.split(",");
         String[] dsidsarr = dsids.split(",");
+        String[] ctsarr = cts.split(",");
         String[] bytesarr = bytes.split(",");
         String[] fmtarr = fmt.split(",");
         String[] verarr = ver.split(",");
         Log.d("Message", "pathsarr.length " + pathsarr.length);
         Log.d("Message", "xidarr.length " + xidarr.length);
         Log.d("Message", "dsidarr.length " + dsidsarr.length);
+        Log.d("Message", "ctsarr.length " + ctsarr.length);
         Log.d("Message", "bytesarr.length " + bytesarr.length);
         Log.d("Message", "fmtarr.length " + fmtarr.length);
         Log.d("Message", "verarr.length " + verarr.length);
 
         for(int i = 0; i < dsidsarr.length ; i++){
             StringBuilder sbuild = new StringBuilder();
-            sbuild.append(dsidsarr[i] + ",").append(bytesarr[i] + ",").append(fmtarr[i] + ",")
+            sbuild.append(dsidsarr[i] + ",").append(ctsarr[i] + ",").append(bytesarr[i] + ",").append(fmtarr[i] + ",")
                     .append(verarr[i] + ",").append("V~" + xidarr[i] + "~" + dsidsarr[i] + "~" + pathsarr[i] +
                     "~" + verarr[i]);
             Log.d("Variable", "sbuild value: " + sbuild.toString());

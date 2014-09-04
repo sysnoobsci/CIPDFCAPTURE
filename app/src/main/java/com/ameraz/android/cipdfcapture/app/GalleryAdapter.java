@@ -18,13 +18,14 @@ import java.io.FilenameFilter;
  * Created by john.williams on 8/26/2014.
  */
 public class GalleryAdapter extends BaseAdapter {
-    Context maContext;
+    private Context maContext;
     private File FILE_DIR;
     String[] names;
     FilePath fp;
     int width;
 
-    public void GalleryAdapter(Context c){
+    public GalleryAdapter(Context context) {
+        setMaContext(context);
     }
 
     public void setUriArray(){
@@ -41,15 +42,19 @@ public class GalleryAdapter extends BaseAdapter {
                 });
     }
     public void setWidth(int maWidth){
-        width = maWidth;
+        this.width = maWidth;
     }
 
     public String getNames(Integer position){
         return names[position];
     }
 
-    public void setContext(Context context){
-        maContext = context;
+    public Context getMaContext() {
+        return maContext;
+    }
+
+    public void setMaContext(Context maContext) {
+        this.maContext = maContext;
     }
 
     @Override
@@ -73,7 +78,7 @@ public class GalleryAdapter extends BaseAdapter {
         Log.d("Loading images...", Uri.parse("file://" + fp.getFilePath() + names[position]).toString());
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
-            LayoutInflater in = (LayoutInflater) maContext
+            LayoutInflater in = (LayoutInflater) getMaContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = in.inflate(R.layout.thumbnail, null);
             imageView = (ImageView)convertView.findViewById(R.id.thumbnail_image);
@@ -81,7 +86,7 @@ public class GalleryAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
         Log.d("Loading images...", Uri.parse("file://" + fp.getFilePath() + names[position]).toString());
-        Picasso.with(maContext)
+        Picasso.with(getMaContext())
                 .load(Uri.parse("file://" + fp.getFilePath() + names[position]))
                 .resize(width,width)
                 .placeholder(R.drawable.sw_placeholder)
