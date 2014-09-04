@@ -4,13 +4,14 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.Uri;
+
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,16 +22,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.HttpPost;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -49,8 +44,10 @@ public class CServer_Fragment extends Fragment {
     private TextView fmt;
     private ImageView imageView;
     private ImageButton imageButton2;
+    private WebView webView;
     Spinner sItems;
-    List<String> spinnerVerArray =  new ArrayList<String>();
+    List<String> spinnerVerArrayL =  new ArrayList<String>();
+    List<String> tidArrayL =  new ArrayList<String>();
     ArrayList<String> versInfo = new ArrayList<String>();
     ProgressDialog ringProgressDialog;
 
@@ -72,26 +69,9 @@ public class CServer_Fragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int pos, long id) {
                 setText(pos);
-                //String urltosend = null;
-                HttpPost poster;
-                String convertPoster = null;
-                MainActivity.argslist.add("res," + reportName.getText().toString());
-                MainActivity.argslist.add("sid,"+ LoginLogoff.getSid());
-                try {
-                    //urltosend = apiobj.retrieveQuery(MainActivity.argslist);
-                    //Log.d("Variable", urltosend);
-                    poster = apiobj.retrieveQuery(MainActivity.argslist);
-                    convertPoster = convertStreamToString(poster.getEntity().getContent());
-                    Log.d("Variable","HTTP Entiry : " + convertPoster);
-                    //InputStream is = httpEntity.getContent();
-                    //String htmlContent = convertToString(is);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
+                String resp = apiobj.retrieveQuery(tidArrayL.get(pos));//get the right tid
                 Picasso.with(getActivity())
-                        .load(convertPoster)
+                        .load(resp)
                         .resize(500, 500)
                         //.placeholder(R.drawable.sw_placeholder)
                         .centerCrop()
@@ -169,7 +149,7 @@ public class CServer_Fragment extends Fragment {
         ArrayList<String> vers = new ArrayList<String>();
         for(String v : lvers){
             String[] pieces = v.split(",");
-            vers.add(pieces[sel]);//0=dsid,1=bytes,2=fmt,3=ver
+            vers.add(pieces[sel]);//0=dsid,1=bytes,2=fmt,3=ver,4=tid
         }
         return vers;
     }
@@ -182,7 +162,8 @@ public class CServer_Fragment extends Fragment {
                 public void run() {
                     try {
                         versInfo = apiobj.getVersionInfo(apiobj.listversionQuery(MainActivity.argslist));
-                        spinnerVerArray = showItems(versInfo,3);//get version numbers via 3
+                        spinnerVerArrayL = showItems(versInfo,3);//get version numbers via 3
+                        tidArrayL = showItems(versInfo,4);//get tids via 4
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -205,19 +186,9 @@ public class CServer_Fragment extends Fragment {
         }
     }
 
-    private String convertStreamToString(InputStream is) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
-        }
-        is.close();
-        return sb.toString();
-    }
 
     public void createSpinner(){
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinnerVerArray);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinnerVerArrayL);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sItems.setAdapter(adapter);
     }
