@@ -23,18 +23,18 @@ import java.util.concurrent.TimeoutException;
  */
 public class APIQueries {
     Context mContext;
-    Boolean actionresult = false;
+    static Boolean actionresult = false;
 
     public APIQueries(Context mContext){
         setmContext(mContext);
     }
 
-    public Boolean getActionresult() {
+    public static Boolean getActionresult() {
         return actionresult;
     }
 
-    public void setActionresult(Boolean pingresult) {
-        this.actionresult = pingresult;
+    public static void setActionresult(Boolean result) {
+        actionresult = result;
     }
 
     public Context getmContext() {
@@ -43,6 +43,10 @@ public class APIQueries {
 
     public void setmContext(Context mContext) {
         this.mContext = mContext;
+    }
+
+    public void resetResult(){
+        setActionresult(false);
     }
 
     String targetCIQuery(){
@@ -78,14 +82,15 @@ public class APIQueries {
             ToastMessageTask tmtask = new ToastMessageTask(getmContext(),"File upload failed.");
             tmtask.execute();
         }
+        resetResult();//reset action result after checking it
         MainActivity.argslist.clear();//clear argslist after query
     }
 
     //listnode - add &sid to the string for it to work properly
-    String[] listnodeQuery(ArrayList<Object> args) throws ExecutionException,
+    String[] listnodeQuery (ArrayList<Object> args) throws ExecutionException,
             InterruptedException, IOException, XmlPullParserException{
-
         ArrayList<Object> actionargs = args;
+        ArrayList<String> nodes = new ArrayList<String>();
         actionargs.add("act,listnode");
         HttpEntity entity = mebBuilder(actionargs);
         APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
@@ -110,6 +115,7 @@ public class APIQueries {
         String[] listnodeArray = new String[2];
         listnodeArray[0] =  xobj.findTagText("xid");
         listnodeArray[1] = xobj.findTagText("name");
+        resetResult();//reset action result after checking it
         MainActivity.argslist.clear();//clear argslist after query
         return listnodeArray;
     }
@@ -137,13 +143,13 @@ public class APIQueries {
         else{
             Log.d("Message", "CI Server listversion failed.");
         }
+        resetResult();//reset action result after checking it
         MainActivity.argslist.clear();//clear argslist after query
         return apitaskobj.getResponse();
     }
     //logon
     Boolean logonQuery(ArrayList<Object> args) throws ExecutionException,
             InterruptedException, IOException, XmlPullParserException {
-
         ArrayList<Object> actionargs = args;
         actionargs.add("act,logon");
         HttpEntity entity = mebBuilder(actionargs);
@@ -167,6 +173,7 @@ public class APIQueries {
         else{
             Log.d("Message", "CI Server logon failed.");
         }
+        resetResult();//reset action result after checking it
         MainActivity.argslist.clear();//clear argslist after query
         return getActionresult();
     }
@@ -198,6 +205,7 @@ public class APIQueries {
         else{
             Log.d("Message", "CI Server logoff failed.");
         }
+        resetResult();//reset action result after checking it
         MainActivity.argslist.clear();//clear argslist after query
         return getActionresult();
     }
@@ -207,7 +215,7 @@ public class APIQueries {
             Log.d("Message", "CI Server ping failed.");
             return false;//if no session established, return false
         }
-
+        Boolean success;
         ArrayList<Object> actionargs = args;
         actionargs.add("act,ping");
         HttpEntity entity = mebBuilder(actionargs);
@@ -225,13 +233,15 @@ public class APIQueries {
         MainActivity.argslist.clear();//clear argslist after query
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Server ping successful.");
-            return true;
+            success = true;
         }
         else{
             Log.d("Message", "CI Server ping failed.");
-            return false;
+            success = false;
         }
-
+        resetResult();//reset action result after checking it
+        MainActivity.argslist.clear();//clear argslist after query
+        return success;
     }
     //retrieve
     public String retrieveQuery(String tid){//pings the CI server, returns true if ping successful
@@ -303,6 +313,15 @@ public class APIQueries {
             versionInfo.add(sbuild.toString());
     }
         return versionInfo;
+    }
+
+    public static ArrayList<String> showItems(ArrayList<String> lvers, int sel) {
+        ArrayList<String> vers = new ArrayList<String>();
+        for (String v : lvers) {
+            String[] pieces = v.split(",");
+            vers.add(pieces[sel]);//0=dsid,1=cts,2=bytes,3=fmt,4=ver,5=tid
+        }
+        return vers;
     }
 
 
