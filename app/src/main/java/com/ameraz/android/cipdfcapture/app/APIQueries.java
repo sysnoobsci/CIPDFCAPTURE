@@ -50,7 +50,7 @@ public class APIQueries {
     }
 
     String targetCIQuery(){
-        LoginLogoff lilobj = new LoginLogoff(mContext);
+        loginlogoff lilobj = new loginlogoff(mContext);
         String targetCIQuery = "http://" + lilobj.getHostname() + "." +
                 lilobj.getDomain() + ":" + lilobj.getPortnumber() + "/ci";
         return targetCIQuery;
@@ -104,9 +104,9 @@ public class APIQueries {
         Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        LoginLogoff.logonMessage(getActionresult(), getmContext());//show status of logon action
+        loginlogoff.logonMessage(getActionresult(), getmContext());//show status of logon action
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
-            LoginLogoff.setSid(apitaskobj.getResponse());
+            loginlogoff.setSid(apitaskobj.getResponse());
             Log.d("Message", "CI Server listnode successful.");
         }
         else{
@@ -164,10 +164,10 @@ public class APIQueries {
         Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        LoginLogoff.logonMessage(getActionresult(), getmContext());//show status of logon action
+        loginlogoff.logonMessage(getActionresult(), getmContext());//show status of logon action
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
-            LoginLogoff.setSid(apitaskobj.getResponse());
-            Log.d("Variable", "loginlogoff.getSid() value: " + LoginLogoff.getSid());
+            loginlogoff.setSid(apitaskobj.getResponse());
+            Log.d("Variable", "loginlogoff.getSid() value: " + loginlogoff.getSid());
             Log.d("Message", "CI Server logon successful.");
         }
         else{
@@ -196,9 +196,9 @@ public class APIQueries {
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
         if(getActionresult()){//if login successful, set sid
-            LoginLogoff.setSid(xobj.getxmlVals());
+            loginlogoff.setSid(xobj.getxmlVals());
         }
-        LoginLogoff.logoffMessage(getActionresult(), getmContext());//show status of logon action
+        loginlogoff.logoffMessage(getActionresult(), getmContext());//show status of logon action
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Server logoff successful.");
         }
@@ -211,7 +211,7 @@ public class APIQueries {
     }
     //ping
     public Boolean pingQuery(ArrayList<Object> args) throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
-        if(LoginLogoff.getSid() == ("") || LoginLogoff.getSid() == null){//check if there is an sid (i.e. a session established)
+        if(loginlogoff.getSid() == ("") || loginlogoff.getSid() == null){//check if there is an sid (i.e. a session established)
             Log.d("Message", "CI Server ping failed.");
             return false;//if no session established, return false
         }
@@ -245,7 +245,7 @@ public class APIQueries {
     }
     //retrieve
     public String retrieveQuery(String tid){//pings the CI server, returns true if ping successful
-        String retrieveQuery = targetCIQuery() + "?act=retrieve&tid="+ tid + "&sid=" + LoginLogoff.getSid();
+        String retrieveQuery = targetCIQuery() + "?act=retrieve&tid="+ tid + "&sid=" + loginlogoff.getSid();
         return retrieveQuery;
     }
 

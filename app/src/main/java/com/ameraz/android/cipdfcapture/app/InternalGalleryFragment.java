@@ -45,7 +45,7 @@ public class InternalGalleryFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.gallery, container, false);
         maContext = getActivity();
         gridView = (GridView)rootView.findViewById(R.id.gridView);
-        ga = new GalleryAdapter();
+        ga = new GalleryAdapter(getActivity());
         galleryProgress = (LinearLayout)rootView.findViewById(R.id.gallery_progress_layout);
         pref = PreferenceManager.getDefaultSharedPreferences(maContext);
         int width = rootView.getWidth();
@@ -106,7 +106,7 @@ public class InternalGalleryFragment extends Fragment {
 
         @Override
         protected Object doInBackground(Object[] params) {
-            ga.setContext(maContext);
+            ga.setMaContext(getActivity());
             ga.setUriArray();
             return null;
         }

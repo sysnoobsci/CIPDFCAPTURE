@@ -132,10 +132,10 @@ public class Capture_Fragment extends Fragment {
     public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        LoginLogoff liloobj = new LoginLogoff(getActivity());
+        loginlogoff liloobj = new loginlogoff(getActivity());
         ringProgressDialog = ProgressDialog.show(getActivity(), "Performing Action ...",
                 "Uploading file ...", true);
-        MainActivity.argslist.add(LoginLogoff.getSid());
+        MainActivity.argslist.add(loginlogoff.getSid());
         if (apiobj.pingQuery(MainActivity.argslist)) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
@@ -161,7 +161,7 @@ public class Capture_Fragment extends Fragment {
             MainActivity.argslist.add("tplid," + tplid1);
             MainActivity.argslist.add("name," + description.getText().toString());
             MainActivity.argslist.add("detail,y");
-            MainActivity.argslist.add("sid," + LoginLogoff.getSid());
+            MainActivity.argslist.add("sid," + loginlogoff.getSid());
             MainActivity.argslist.add(imageUri);
             new Thread() {
                 public void run() {

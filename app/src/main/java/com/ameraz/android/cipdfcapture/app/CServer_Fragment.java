@@ -110,10 +110,10 @@ public class CServer_Fragment extends Fragment {
     public void searchButton() throws IOException, XmlPullParserException, InterruptedException,
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        LoginLogoff liloobj = new LoginLogoff(getActivity());
+        loginlogoff liloobj = new loginlogoff(getActivity());
         ringProgressDialog = ProgressDialog.show(getActivity(), "Performing Action ...",
                 "Searching for report ...", true);
-        MainActivity.argslist.add(LoginLogoff.getSid());
+        MainActivity.argslist.add(loginlogoff.getSid());
         if (apiobj.pingQuery(MainActivity.argslist)) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to search for reports.");
             fillSpinner(apiobj);
@@ -146,7 +146,7 @@ public class CServer_Fragment extends Fragment {
     public void fillSpinner(final APIQueries apiobj) {
         if (!reportName.getText().toString().isEmpty()) {
             MainActivity.argslist.add("res," + reportName.getText().toString());
-            MainActivity.argslist.add("sid," + LoginLogoff.getSid());
+            MainActivity.argslist.add("sid," + loginlogoff.getSid());
             new Thread() {
                 public void run() {
                     try {

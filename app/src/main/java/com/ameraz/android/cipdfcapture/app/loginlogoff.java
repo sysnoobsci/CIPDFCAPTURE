@@ -8,19 +8,18 @@ import android.util.Log;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 /**
  * Created by adrian.meraz on 5/16/2014.
  */
 
-public class LoginLogoff {
+public class loginlogoff {
 
     Context mContext;
 
-    public LoginLogoff(Context mContext) {
-        LoginLogoff.this.mContext = mContext;
+    public loginlogoff(Context mContext) {
+        loginlogoff.this.mContext = mContext;
     }
 
     private static String hostname;
@@ -33,6 +32,7 @@ public class LoginLogoff {
     SharedPreferences preferences;
     final static int SIZE_OF_TARGET_SID = 40;//size of session ID
     final static int SIZE_OF_TARGET_JSID = 32;//size of session ID
+    APIQueries apiobj = new APIQueries(mContext);
 
     public String getHostname() {
         return hostname;
@@ -47,7 +47,7 @@ public class LoginLogoff {
     }
 
     public static void setDomain(String domain) {
-        LoginLogoff.domain = domain;
+        loginlogoff.domain = domain;
     }
 
     public int getPortnumber() {
@@ -88,7 +88,7 @@ public class LoginLogoff {
         int a = result.indexOf(target);
         int b = a + target.length();
         int c =  a + SIZE_OF_TARGET_SID + target.length();//54 is the size of the sid plus the "target" string size
-        LoginLogoff.sid = result.substring(b,c);
+        loginlogoff.sid = result.substring(b,c);
         Log.d("Sid = ", sid);
     }
 
@@ -98,7 +98,7 @@ public class LoginLogoff {
         int a = result.indexOf(target);
         int b = a + target.length();
         int c =  a + SIZE_OF_TARGET_JSID + target.length();//47 is the size of the sid plus the "target" string size
-        LoginLogoff.jsid = result.substring(b,c);
+        loginlogoff.jsid = result.substring(b,c);
         Log.d("JSid = ", jsid);
     }
 
@@ -145,10 +145,9 @@ public class LoginLogoff {
     public Boolean tryLogin() throws InterruptedException, ExecutionException, XmlPullParserException, IOException {
         setCiLoginInfo();
         preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        APIQueries apiobj = new APIQueries(mContext);
         Boolean login_result = false;
         //try a ping first, if successful, don't try logging in again
-        MainActivity.argslist.add("sid," + LoginLogoff.getSid());
+        MainActivity.argslist.add("sid," + loginlogoff.getSid());
         if(apiobj.pingQuery(MainActivity.argslist)){
             Log.d("Message","Logon session already established. Ping Successful.");
             return true;//if ping is successful, return true
