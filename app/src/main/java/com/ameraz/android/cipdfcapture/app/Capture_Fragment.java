@@ -39,16 +39,17 @@ public class Capture_Fragment extends Fragment {
     private Uri imageUri;
     private String incImage;
     private File newImage;
+    APIQueries apiobj;
     ProgressDialog ringProgressDialog = null;
 
     SharedPreferences preferences;
-    final static private int NVPAIRS = 1;//number of nvpairs in createtopic api call
     final static private String tplid1 = "create.phonecapture";//time in milliseconds for createtopic attempt to timeout
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.capture_fragment, container, false);
         initializeViews(rootView);
+        apiobj = new APIQueries(getActivity());
         setCaptureBackground();
         takePicButtonListener();
         sharePDFListener();
@@ -132,20 +133,19 @@ public class Capture_Fragment extends Fragment {
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         LoginLogoff liloobj = new LoginLogoff(getActivity());
-        APIQueries apiobj = new APIQueries(getActivity());
         ringProgressDialog = ProgressDialog.show(getActivity(), "Performing Action ...",
                 "Uploading file ...", true);
         MainActivity.argslist.add(LoginLogoff.getSid());
         if (apiobj.pingQuery(MainActivity.argslist)) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
-            createTopic(apiobj, ringProgressDialog);
+            createTopic(ringProgressDialog);
         }
         else {//if ping fails, selected ci profile will be used to log back in
             Log.d("Message", "Ping to CI server indicated no login session.");
             if (liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
-                createTopic(apiobj, ringProgressDialog);
+                createTopic(ringProgressDialog);
             }
             else{//if login attempt fails from trying the CI server profile, prompt user to check profile
                 ringProgressDialog.dismiss();
@@ -156,12 +156,10 @@ public class Capture_Fragment extends Fragment {
         }
     }
 
-    void createTopic(final APIQueries apiobj, final ProgressDialog ringProgressDialog) {
+    void createTopic(final ProgressDialog ringProgressDialog) {
         if (imageUri != null || !description.getText().toString().isEmpty()) {
-            final String[] nvpairsarr = new String[NVPAIRS];
-            nvpairsarr[0] = "name," + description.getText().toString();
             MainActivity.argslist.add("tplid," + tplid1);
-            MainActivity.argslist.add(nvpairsarr[0]);
+            MainActivity.argslist.add("name," + description.getText().toString());
             MainActivity.argslist.add("detail,y");
             MainActivity.argslist.add("sid," + LoginLogoff.getSid());
             MainActivity.argslist.add(imageUri);

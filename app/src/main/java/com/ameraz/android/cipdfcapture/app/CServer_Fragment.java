@@ -44,6 +44,7 @@ public class CServer_Fragment extends Fragment {
     private ImageView imageView;
     private ImageButton imageButton2;
     private WebView webView;
+    APIQueries apiobj = null;
     Spinner sItems;
     List<String> spinnerVerArrayL = new ArrayList<String>();
     List<String> tidArrayL = new ArrayList<String>();
@@ -53,7 +54,6 @@ public class CServer_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.csserver_fragment, container, false);
-        final APIQueries apiobj = new APIQueries(getActivity());
         reportName = (EditText) rootView.findViewById(R.id.editText);
         imageButton2 = (ImageButton) rootView.findViewById(R.id.imageButton2);
         dsid = (TextView) rootView.findViewById(R.id.textView6);
@@ -61,6 +61,7 @@ public class CServer_Fragment extends Fragment {
         bytes = (TextView) rootView.findViewById(R.id.textView7);
         fmt = (TextView) rootView.findViewById(R.id.textView8);
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
+        apiobj = new APIQueries(getActivity());
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         setFonts();
         searchButtonListener();
@@ -78,7 +79,6 @@ public class CServer_Fragment extends Fragment {
                         .centerCrop()
                         .into(imageView);
             }
-
             public void onNothingSelected(AdapterView<?> parent) {
                 //do nothing
             }
@@ -111,24 +111,21 @@ public class CServer_Fragment extends Fragment {
             ExecutionException, TimeoutException {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         LoginLogoff liloobj = new LoginLogoff(getActivity());
-        final APIQueries apiobj = new APIQueries(getActivity());
         ringProgressDialog = ProgressDialog.show(getActivity(), "Performing Action ...",
                 "Searching for report ...", true);
         MainActivity.argslist.add(LoginLogoff.getSid());
         if (apiobj.pingQuery(MainActivity.argslist)) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to search for reports.");
-            //create a topic instance object
             fillSpinner(apiobj);
-        } else {//if ping fails, selected ci profile will be used to log back in
+        }
+        else {//if ping fails, selected ci profile will be used to log back in
             Log.d("Message", "Ping to CI server indicated no login session.");
             if (liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to search for reports.");
                 fillSpinner(apiobj);
-            } else {//if login attempt fails from trying the CI server profile, prompt user to check profile
-                ringProgressDialog.dismiss();
-                ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Connection to CI Server failed. Check" +
-                        "CI Connection Profile under Settings.");
-                tmtask.execute();
+            }
+            else {//if login attempt fails from trying the CI server profile, prompt user to check profile
+                ToastMessageTask.noConnectionMessage(getActivity());
             }
         }
     }
@@ -146,15 +143,6 @@ public class CServer_Fragment extends Fragment {
         });
     }
 
-    public ArrayList<String> showItems(ArrayList<String> lvers, int sel) {
-        ArrayList<String> vers = new ArrayList<String>();
-        for (String v : lvers) {
-            String[] pieces = v.split(",");
-            vers.add(pieces[sel]);//0=dsid,1=cts,2=bytes,3=fmt,4=ver,5=tid
-        }
-        return vers;
-    }
-
     public void fillSpinner(final APIQueries apiobj) {
         if (!reportName.getText().toString().isEmpty()) {
             MainActivity.argslist.add("res," + reportName.getText().toString());
@@ -163,8 +151,8 @@ public class CServer_Fragment extends Fragment {
                 public void run() {
                     try {
                         versInfo = apiobj.getVersionInfo(apiobj.listversionQuery(MainActivity.argslist));
-                        spinnerVerArrayL = showItems(versInfo, 4);//get version numbers via 4
-                        tidArrayL = showItems(versInfo, 5);//get tids via 5
+                        spinnerVerArrayL = APIQueries.showItems(versInfo, 4);//get version numbers via 4
+                        tidArrayL = APIQueries.showItems(versInfo, 5);//get tids via 5
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
