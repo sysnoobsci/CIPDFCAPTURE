@@ -29,4 +29,10 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
         Toast toast = Toast.makeText(mContext, result, Toast.LENGTH_SHORT);
         toast.show();
     }
+
+    protected static void noConnectionMessage(Context context){
+        ToastMessageTask tmtask = new ToastMessageTask(context, "Connection to CI Server failed. Check" +
+                "CI Connection Profile under Settings.");
+        tmtask.execute();
+    }
 }
