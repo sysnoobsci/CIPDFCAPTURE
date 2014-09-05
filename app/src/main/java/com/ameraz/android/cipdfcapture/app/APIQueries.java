@@ -126,18 +126,18 @@ public class APIQueries {
         } catch (TimeoutException te) {
             ToastMessageTask.noConnectionMessage(getmContext());
         }
-        Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
+        Log.d("listversionQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
-            Log.d("Message", "CI Server listversion successful.");
+            Log.d("listversionQuery()", "CI Server listversion successful.");
             resetResult();//reset action result after checking it
             MainActivity.argslist.clear();//clear argslist after query
             return apitaskobj.getResponse();//return the good results
         }
         else{
             ToastMessageTask.reportNotValidMessage(getmContext());
-            Log.d("Message", "CI Server listversion failed.");
+            Log.d("listversionQuery()", "CI Server listversion failed.");
             resetResult();//reset action result after checking it
             MainActivity.argslist.clear();//clear argslist after query
             return null;
@@ -310,7 +310,7 @@ public class APIQueries {
     //action return code check
     protected void isActionSuccessful(ArrayList<String> larray) {
         if(larray.size()==0){//if the array is of size 0, nothing was returned from the ciserver
-            Log.d("Message", "Nothing returned from CI server.");
+            Log.d("isActionSuccessful()", "Nothing returned from CI server.");
             setActionresult(false);
         }
         else {
