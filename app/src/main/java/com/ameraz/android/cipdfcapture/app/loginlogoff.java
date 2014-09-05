@@ -89,7 +89,7 @@ public class loginlogoff {
         int b = a + target.length();
         int c =  a + SIZE_OF_TARGET_SID + target.length();//54 is the size of the sid plus the "target" string size
         loginlogoff.sid = result.substring(b,c);
-        Log.d("Sid = ", sid);
+        Log.d("Sid", sid);
     }
 
     public static void setJSid(String result) {
@@ -99,18 +99,7 @@ public class loginlogoff {
         int b = a + target.length();
         int c =  a + SIZE_OF_TARGET_JSID + target.length();//47 is the size of the sid plus the "target" string size
         loginlogoff.jsid = result.substring(b,c);
-        Log.d("JSid = ", jsid);
-    }
-
-    static void logonMessage(Boolean success, Context context){
-        if (success) {
-            ToastMessageTask tmtask = new ToastMessageTask(context,"Successfully logged in.");
-            tmtask.execute();
-        }
-        else {
-            ToastMessageTask tmtask = new ToastMessageTask(context,"Problem logging off.");
-            tmtask.execute();
-        }
+        Log.d("JSid", jsid);
     }
 
     static void logoffMessage(Boolean success, Context context){
@@ -124,7 +113,7 @@ public class loginlogoff {
         }
     }
 
-    public void setCiLoginInfo(){
+    public void setCiLoginInfo() {//takes the info from the fields and sends it in the loginQuery
         DatabaseHandler dbh = new DatabaseHandler(mContext);
         preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         String ciserver = preferences.getString("list_preference_ci_servers", "n/a");
@@ -143,21 +132,22 @@ public class loginlogoff {
     }
 
     public Boolean tryLogin() throws InterruptedException, ExecutionException, XmlPullParserException, IOException {
+        Boolean loginResult;
         setCiLoginInfo();
         preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        Boolean login_result = false;
         //try a ping first, if successful, don't try logging in again
         MainActivity.argslist.add("sid," + loginlogoff.getSid());
         if(apiobj.pingQuery(MainActivity.argslist)){
-            Log.d("Message","Logon session already established. Ping Successful.");
+            Log.d("tryLogin()", "Logon session already established. Ping Successful.");
             return true;//if ping is successful, return true
         }
-        Log.d("Variable","preferences.getString() value: " + preferences.getString("list_preference_ci_servers", "n/a"));
         if(!preferences.getString("list_preference_ci_servers", "n/a").equals("n/a")) {//check if profile has been chosen
             MainActivity.argslist.add("user," + getUsername());
             MainActivity.argslist.add("password," + getPassword());
-            login_result = apiobj.logonQuery(MainActivity.argslist);//send login query to CI via asynctask
+            loginResult = apiobj.logonQuery(MainActivity.argslist);//send login query to CI via asynctask
+            return loginResult;
+        } else {
+            return false;
         }
-        return login_result;
     }
 }

@@ -3,15 +3,17 @@ package com.ameraz.android.cipdfcapture.app;
 /**
  * Created by adrian.meraz on 6/24/2014.
  */
+
 import android.util.Log;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 /**
  * Created by adrian.meraz on 5/16/2014.
  */
@@ -64,7 +66,7 @@ public class XmlParser {
 
     public String parseXMLfunc() throws XmlPullParserException, IOException{
         String xresp = getXmlResponse();
-        Log.d("Variable","parseXMLfunc() xmlVals value: " + xresp);
+        Log.d("parseXMLfunc()", "parseXMLfunc() xmlVals value: " + xresp);
         clearXMLString();//clear the String before adding a new XMLString
         clearXMLTags();
         ArrayList<String> listOfTextTags = new ArrayList<String>();//a list contain all the text inside XML tags
@@ -96,7 +98,7 @@ public class XmlParser {
 
     public String findTagText(String tag) throws XmlPullParserException, IOException {//pass in a tag, and get the tag contents
         if (tag.equals("")) {//if nothing is being searched for, return all the xml results
-            Log.d("Variable", "No tag being searched for.");
+            Log.d("findTagText()", "No tag being searched for.");
             return getxmlVals();
         }
         String xmlstring = getXmlResponse();

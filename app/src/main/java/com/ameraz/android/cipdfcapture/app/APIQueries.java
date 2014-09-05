@@ -22,7 +22,7 @@ import java.util.concurrent.TimeoutException;
  * Created by adrian.meraz on 6/27/2014.
  */
 public class APIQueries {
-    Context mContext;
+    static Context mContext;
     static Boolean actionresult = false;
 
     public APIQueries(Context mContext){
@@ -65,9 +65,7 @@ public class APIQueries {
         try {
             apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Create topic call failed. Check" +
-                    "CI Connection Profile under Settings.");
-            tmtask.execute();
+            ToastMessageTask.noConnectionMessage(getmContext());
         }
         Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
@@ -90,21 +88,17 @@ public class APIQueries {
     String[] listnodeQuery (ArrayList<Object> args) throws ExecutionException,
             InterruptedException, IOException, XmlPullParserException{
         ArrayList<Object> actionargs = args;
-        ArrayList<String> nodes = new ArrayList<String>();
         actionargs.add("act,listnode");
         HttpEntity entity = mebBuilder(actionargs);
         APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
         try {
             apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Login failed. Check" +
-                    "CI Connection Profile under Settings.");
-            tmtask.execute();
+            ToastMessageTask.noConnectionMessage(getmContext());
         }
         Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        loginlogoff.logonMessage(getActionresult(), getmContext());//show status of logon action
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
             loginlogoff.setSid(apitaskobj.getResponse());
             Log.d("Message", "CI Server listnode successful.");
@@ -130,22 +124,26 @@ public class APIQueries {
         try {
             apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Login failed. Check" +
-                    "CI Connection Profile under Settings.");
-            tmtask.execute();
+            ToastMessageTask.noConnectionMessage(getmContext());
         }
         Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Server listversion successful.");
+            resetResult();//reset action result after checking it
+            MainActivity.argslist.clear();//clear argslist after query
+            return apitaskobj.getResponse();//return the good results
         }
         else{
+            ToastMessageTask.reportNotValidMessage(getmContext());
             Log.d("Message", "CI Server listversion failed.");
+            resetResult();//reset action result after checking it
+            MainActivity.argslist.clear();//clear argslist after query
+            return null;
         }
-        resetResult();//reset action result after checking it
-        MainActivity.argslist.clear();//clear argslist after query
-        return apitaskobj.getResponse();
+
+
     }
     //logon
     Boolean logonQuery(ArrayList<Object> args) throws ExecutionException,
@@ -157,21 +155,17 @@ public class APIQueries {
         try {
             apitaskobj.execute().get(MainActivity.getLilo_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Login failed. Check" +
-                    "CI Connection Profile under Settings.");
-            tmtask.execute();
+            ToastMessageTask.noConnectionMessage(getmContext());
         }
-        Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
+        Log.d("logonQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        loginlogoff.logonMessage(getActionresult(), getmContext());//show status of logon action
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
             loginlogoff.setSid(apitaskobj.getResponse());
-            Log.d("Variable", "loginlogoff.getSid() value: " + loginlogoff.getSid());
-            Log.d("Message", "CI Server logon successful.");
+            Log.d("logonQuery()", "CI Server logon successful.");
         }
         else{
-            Log.d("Message", "CI Server logon failed.");
+            Log.d("logonQuery()", "CI Server logon failed.");
         }
         resetResult();//reset action result after checking it
         MainActivity.argslist.clear();//clear argslist after query
@@ -188,11 +182,9 @@ public class APIQueries {
         try {
             apitaskobj.execute().get(MainActivity.getLilo_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Login failed. Check" +
-                    "CI Connection Profile under Settings.");
-            tmtask.execute();
+            ToastMessageTask.noConnectionMessage(getmContext());
         }
-        Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
+        Log.d("logoffQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
         if(getActionresult()){//if login successful, set sid
@@ -200,10 +192,10 @@ public class APIQueries {
         }
         loginlogoff.logoffMessage(getActionresult(), getmContext());//show status of logon action
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
-            Log.d("Message", "CI Server logoff successful.");
+            Log.d("logoffQuery()", "CI Server logoff successful.");
         }
         else{
-            Log.d("Message", "CI Server logoff failed.");
+            Log.d("logoffQuery()", "CI Server logoff failed.");
         }
         resetResult();//reset action result after checking it
         MainActivity.argslist.clear();//clear argslist after query
@@ -211,37 +203,34 @@ public class APIQueries {
     }
     //ping
     public Boolean pingQuery(ArrayList<Object> args) throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
-        if(loginlogoff.getSid() == ("") || loginlogoff.getSid() == null){//check if there is an sid (i.e. a session established)
-            Log.d("Message", "CI Server ping failed.");
+        if (loginlogoff.getSid() == "" || (loginlogoff.getSid() == null)) {//check if there is an sid (i.e. a session established)
+            Log.d("pingQuery()", "CI Server ping failed.");
             return false;//if no session established, return false
         }
-        Boolean success;
-        ArrayList<Object> actionargs = args;
-        actionargs.add("act,ping");
-        HttpEntity entity = mebBuilder(actionargs);
+        args.add("act,ping");
+        HttpEntity entity = mebBuilder(args);
         APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
         try {
             apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Ping failed. Check" +
-                    "CI Connection Profile under Settings.");
-            tmtask.execute();
+            ToastMessageTask.noConnectionMessage(getmContext());
         }
-        Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
+        Log.d("pingQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
         MainActivity.argslist.clear();//clear argslist after query
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
-            Log.d("Message", "CI Server ping successful.");
-            success = true;
+            Log.d("pingQuery()", "CI Server ping successful.");
+            resetResult();//reset action result after checking it
+            MainActivity.argslist.clear();//clear argslist after query
+            return true;
         }
         else{
-            Log.d("Message", "CI Server ping failed.");
-            success = false;
+            Log.d("pingQuery()", "CI Server ping failed.");
+            resetResult();//reset action result after checking it
+            MainActivity.argslist.clear();//clear argslist after query
+            return false;
         }
-        resetResult();//reset action result after checking it
-        MainActivity.argslist.clear();//clear argslist after query
-        return success;
     }
     //retrieve
     public String retrieveQuery(String tid){//pings the CI server, returns true if ping successful
@@ -296,20 +285,13 @@ public class APIQueries {
         String[] bytesarr = bytes.split(",");
         String[] fmtarr = fmt.split(",");
         String[] verarr = ver.split(",");
-        Log.d("Message", "pathsarr.length " + pathsarr.length);
-        Log.d("Message", "xidarr.length " + xidarr.length);
-        Log.d("Message", "dsidarr.length " + dsidsarr.length);
-        Log.d("Message", "ctsarr.length " + ctsarr.length);
-        Log.d("Message", "bytesarr.length " + bytesarr.length);
-        Log.d("Message", "fmtarr.length " + fmtarr.length);
-        Log.d("Message", "verarr.length " + verarr.length);
 
         for(int i = 0; i < dsidsarr.length ; i++){
             StringBuilder sbuild = new StringBuilder();
             sbuild.append(dsidsarr[i] + ",").append(ctsarr[i] + ",").append(bytesarr[i] + ",").append(fmtarr[i] + ",")
                     .append(verarr[i] + ",").append("V~" + xidarr[i] + "~" + dsidsarr[i] + "~" + pathsarr[i] +
                     "~" + verarr[i]);
-            Log.d("Variable", "sbuild value: " + sbuild.toString());
+            Log.d("getVersionInfo()", "version " + verarr[i] + " attributes: " + sbuild.toString());
             versionInfo.add(sbuild.toString());
     }
         return versionInfo;
@@ -332,19 +314,11 @@ public class APIQueries {
             setActionresult(false);
         }
         else {
-            try {
                 if (larray.get(0).equals("0") && larray.get(1).equals("0") && larray.get(2).equals("0")) {
                     setActionresult(true);
                 } else {
                     setActionresult(false);
                 }
-            }
-            catch(Exception e){
-                ToastMessageTask tmtask = new ToastMessageTask(getmContext(),"Error. Connection to CI Server failed. Check " +
-                        "CI Connection Profile under Settings.");
-                Log.e("Error",e.toString());
-                tmtask.execute();
-            }
         }
     }
 }

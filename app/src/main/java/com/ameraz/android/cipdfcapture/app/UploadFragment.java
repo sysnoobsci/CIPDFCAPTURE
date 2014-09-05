@@ -30,7 +30,6 @@ import java.util.concurrent.TimeoutException;
 
 public class UploadFragment extends Fragment {
 
-
     private Uri imageUri;
     private GestureImageView imageView;
     private ImageButton imageButton;
@@ -69,9 +68,9 @@ public class UploadFragment extends Fragment {
     }
 
     private void initializeViews(View rootView) {
-        imageView = (GestureImageView)rootView.findViewById(R.id.gallery_single_image_view);
-        imageButton = (ImageButton)rootView.findViewById(R.id.gallery_single_image_upload_button);
-        description = (EditText)rootView.findViewById(R.id.gallery_single_image_description_text);
+        imageView = (GestureImageView) rootView.findViewById(R.id.gallery_single_image_view);
+        imageButton = (ImageButton) rootView.findViewById(R.id.gallery_single_image_upload_button);
+        description = (EditText) rootView.findViewById(R.id.gallery_single_image_description_text);
     }
 
     private void setImage() {
@@ -93,14 +92,12 @@ public class UploadFragment extends Fragment {
             Log.d("Message", "CI Login successful and ready to upload file.");
             //create a topic instance object
             createTopic(ringProgressDialog);
-        }
-        else {//if ping fails, selected ci profile will be used to log back in
+        } else {//if ping fails, selected ci profile will be used to log back in
             Log.d("Message", "Ping to CI server indicated no login session.");
             if (liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
                 createTopic(ringProgressDialog);
-            }
-            else{//if login attempt fails from trying the CI server profile, prompt user to check profile
+            } else {//if login attempt fails from trying the CI server profile, prompt user to check profile
                 ringProgressDialog.dismiss();
                 ToastMessageTask.noConnectionMessage(getActivity());
             }

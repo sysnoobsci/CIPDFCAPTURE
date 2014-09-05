@@ -2,64 +2,8 @@
 <pre-dex-items>
 
     <item
-        dex="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\picasso-2.2.0-26ca825f47ae6972d585219a397d89f465bd89a7.jar"
-        jar="C:\Users\The Bat Cave\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.2.0\74137f8d9aac26dd9463efe32271f2be8d41cda9\picasso-2.2.0.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="74137f8d9aac26dd9463efe32271f2be8d41cda9"/>
-    <item
-        dex="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\wire-runtime-1.5.1-c574af3ba286e9b35a4763bc70a9e36f1f1ffd09.jar"
-        jar="C:\Users\The Bat Cave\.gradle\caches\modules-2\files-2.1\com.squareup.wire\wire-runtime\1.5.1\e29e966a7f81a2c6bc2c947fb80d26121ec81592\wire-runtime-1.5.1.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="e29e966a7f81a2c6bc2c947fb80d26121ec81592"/>
-    <item
-        dex="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\okio-1.0.0-88e5cbdf752df625203cd835837fa992360286fc.jar"
-        jar="C:\Users\The Bat Cave\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.0.0\2534c458682c73f5b9871131ab3098d3f987ca3\okio-1.0.0.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="02534c458682c73f5b9871131ab3098d3f987ca3"/>
-    <item
-        dex="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\httpmime-4.3.5-fd6f39d5b6ab08daa99cd435b3243cd3d64f7b4b.jar"
-        jar="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\libs\httpmime-4.3.5.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="1dd0d38df9c6d21e893f2e52403f1cd99e91cd81"/>
-    <item
-        dex="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\httpclient-4.3.5-b5c22ee2af7e909e46fb4fca0b409f70cceaae90.jar"
-        jar="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\libs\httpclient-4.3.5.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="9783d89b8eea20a517a4afc5f979bd2882b54c44"/>
-    <item
-        dex="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\support-v4-19.1.0-c30e376a8a37b42530721aa3276156097e39d8df.jar"
-        jar="C:\Program Files (x86)\Android\android-sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
-    <item
-        dex="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\apache-mime4j-core-0.7.2-a2c1863817f9bb96ce73800d1f832af30351b676.jar"
-        jar="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\libs\apache-mime4j-core-0.7.2.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="a81264fe0265ebe8fd1d8128aad06dc320de6eef"/>
-    <item
-        dex="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\itextpdf-5.5.1-0b5a0d6662e38bc4f38506e87e1c28cd8dcf766e.jar"
-        jar="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\libs\itextpdf-5.5.1.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="081fee01fb0d7da7665261ac0e005f583985087d"/>
-    <item
-        dex="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\classes-fa594bd018a8d03a30a789bb1a88e512ef195c01.jar"
-        jar="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\19.1.0\classes.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28"/>
-    <item
-        dex="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\httpcore-4.3.2-b29926dc417a9472f11551ade12995224e962f16.jar"
-        jar="C:\Users\The Bat Cave\Android Projects\CIPDFCAPTURE\app\libs\httpcore-4.3.2.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="31fbbff1ddbf98f3aa7377c94d33b0447c646b6e"/>
+        dex="C:\Users\adrian.meraz\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\httpmime-4.4-alpha1-22cbf5e0bee03de2ca1c6abcc4bf0826c23b6603.jar"
+        jar="C:\Users\adrian.meraz\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpmime\4.4-alpha1\541a2358887d2788a6bac2b00e32be89ccf00ec6\httpmime-4.4-alpha1.jar"
+        jumboMode="false" revision="20.0.0" sha1="541a2358887d2788a6bac2b00e32be89ccf00ec6" />
 
 </pre-dex-items>

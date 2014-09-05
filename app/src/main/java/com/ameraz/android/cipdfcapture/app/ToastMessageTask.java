@@ -31,8 +31,13 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
     }
 
     protected static void noConnectionMessage(Context context){
-        ToastMessageTask tmtask = new ToastMessageTask(context, "Connection to CI Server failed. Check" +
+        ToastMessageTask tmtask = new ToastMessageTask(context, "Connection to CI Server failed/timed out. Check" +
                 "CI Connection Profile under Settings.");
+        tmtask.execute();
+    }
+
+    protected static void reportNotValidMessage(Context context) {
+        ToastMessageTask tmtask = new ToastMessageTask(context, "Report Name not found.");
         tmtask.execute();
     }
 }

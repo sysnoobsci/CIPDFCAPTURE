@@ -54,6 +54,16 @@ public class CServer_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.csserver_fragment, container, false);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        apiobj = new APIQueries(getActivity());
+        instantiateViews();
+        setFonts();
+        searchButtonListener();
+        spinnerItemListener();
+        return rootView;
+    }
+
+    public void instantiateViews() {
         reportName = (EditText) rootView.findViewById(R.id.editText);
         imageButton2 = (ImageButton) rootView.findViewById(R.id.imageButton2);
         dsid = (TextView) rootView.findViewById(R.id.textView6);
@@ -61,29 +71,7 @@ public class CServer_Fragment extends Fragment {
         bytes = (TextView) rootView.findViewById(R.id.textView7);
         fmt = (TextView) rootView.findViewById(R.id.textView8);
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
-        apiobj = new APIQueries(getActivity());
-        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        setFonts();
-        searchButtonListener();
         sItems = (Spinner) rootView.findViewById(R.id.spinner);
-        sItems.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int pos, long id) {
-                setText(pos);
-                String resp = apiobj.retrieveQuery(tidArrayL.get(pos));//get the right tid
-                Picasso.with(getActivity()).setDebugging(true);
-                Picasso.with(getActivity())
-                        .load(resp)
-                        .resize(500, 500)
-                                //.placeholder(R.drawable.sw_placeholder)
-                        .centerCrop()
-                        .into(imageView);
-            }
-            public void onNothingSelected(AdapterView<?> parent) {
-                //do nothing
-            }
-        });
-        return rootView;
     }
 
     public void setFonts() {
@@ -117,17 +105,39 @@ public class CServer_Fragment extends Fragment {
         if (apiobj.pingQuery(MainActivity.argslist)) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to search for reports.");
             fillSpinner(apiobj);
-        }
-        else {//if ping fails, selected ci profile will be used to log back in
+            ringProgressDialog.dismiss();
+        } else {//if ping fails, selected ci profile will be used to log back in
             Log.d("Message", "Ping to CI server indicated no login session.");
             if (liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to search for reports.");
                 fillSpinner(apiobj);
-            }
-            else {//if login attempt fails from trying the CI server profile, prompt user to check profile
+                ringProgressDialog.dismiss();
+            } else {//if login attempt fails from trying the CI server profile, prompt user to check profile
                 ToastMessageTask.noConnectionMessage(getActivity());
+                ringProgressDialog.dismiss();
             }
         }
+    }
+
+    private void spinnerItemListener() {
+        sItems.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+                setText(pos);
+                String resp = apiobj.retrieveQuery(tidArrayL.get(pos));//get the right tid
+                Picasso.with(getActivity()).setDebugging(true);
+                Picasso.with(getActivity())
+                        .load(resp)
+                        .resize(500, 500)
+                                //.placeholder(R.drawable.sw_placeholder)
+                        .centerCrop()
+                        .into(imageView);
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+                //do nothing
+            }
+        });
     }
 
     private void searchButtonListener() {
@@ -145,20 +155,22 @@ public class CServer_Fragment extends Fragment {
 
     public void fillSpinner(final APIQueries apiobj) {
         if (!reportName.getText().toString().isEmpty()) {
-            MainActivity.argslist.add("res," + reportName.getText().toString());
+            MainActivity.argslist.add("res," + reportName.getText().toString().toUpperCase());
             MainActivity.argslist.add("sid," + loginlogoff.getSid());
             new Thread() {
                 public void run() {
                     try {
                         versInfo = apiobj.getVersionInfo(apiobj.listversionQuery(MainActivity.argslist));
-                        spinnerVerArrayL = APIQueries.showItems(versInfo, 4);//get version numbers via 4
-                        tidArrayL = APIQueries.showItems(versInfo, 5);//get tids via 5
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                createSpinner();
-                            }
-                        });
+                        if (versInfo != null) {
+                            spinnerVerArrayL = APIQueries.showItems(versInfo, 4);//get version numbers via 4
+                            tidArrayL = APIQueries.showItems(versInfo, 5);//get tids via 5
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    createSpinner();
+                                }
+                            });
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -172,7 +184,6 @@ public class CServer_Fragment extends Fragment {
             tmtask.execute();
         }
     }
-
 
     public void createSpinner() {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinnerVerArrayL);

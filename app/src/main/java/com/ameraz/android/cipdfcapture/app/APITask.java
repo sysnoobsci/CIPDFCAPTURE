@@ -6,14 +6,12 @@ import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -22,33 +20,14 @@ import java.io.InputStreamReader;
  */
 public class APITask extends AsyncTask<String, Void, String> {
 
-
     HttpClient httpclient = new DefaultHttpClient();
     HttpPost httppost;
 
-    private static BufferedHttpEntity bufhttpEntity;
-    private static HttpResponse httpResponse;
     private static String response;
     private static String query;
     private static Context mContext;
     private static HttpEntity entity;
     private static int taskID = 0;
-
-    public static BufferedHttpEntity getBufhttpEntity() {
-        return bufhttpEntity;
-    }
-
-    public static void setBufhttpEntity(BufferedHttpEntity bufhttpEntity) {
-        APITask.bufhttpEntity = bufhttpEntity;
-    }
-
-    public static HttpResponse getHttpResponse() {
-        return httpResponse;
-    }
-
-    public static void setHttpResponse(HttpResponse httpResponse) {
-        APITask.httpResponse = httpResponse;
-    }
 
     public String getResponse() {
         return response;
@@ -110,19 +89,15 @@ public class APITask extends AsyncTask<String, Void, String> {
         httppost.setEntity(getEntity());
         try {
             HttpResponse response = httpclient.execute(httppost);
-            setHttpResponse(response);
             HttpEntity ht = response.getEntity();
             BufferedHttpEntity buf = new BufferedHttpEntity(ht);
-            setBufhttpEntity(buf);
             InputStream is = buf.getContent();
             BufferedReader r = new BufferedReader(new InputStreamReader(is));
             String line;
             while ((line = r.readLine()) != null) {
                 total.append(line);
             }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         setResponse(total.toString());
@@ -130,6 +105,6 @@ public class APITask extends AsyncTask<String, Void, String> {
     }
 
     protected void onPostExecute(String result) {
-        Log.d("Variable", "APITasks[" + getTaskID() + "].onPostExecute response: " + getResponse());
+        Log.d("onPostExecute()", "APITasks[" + getTaskID() + "].onPostExecute response: " + getResponse());
     }
 }//end of ReqTask

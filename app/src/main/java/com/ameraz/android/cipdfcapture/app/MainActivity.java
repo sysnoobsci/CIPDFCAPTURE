@@ -6,11 +6,11 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends Activity
-    implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -29,6 +29,7 @@ public class MainActivity extends Activity
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
+    static Preference button;
     SharedPreferences preferences;
     private CharSequence mTitle;
     Context maContext = MainActivity.this;
@@ -53,11 +54,10 @@ public class MainActivity extends Activity
     }
 
     public static void setAction_timeout(String action_timeout) {
-        if(action_timeout != null){
+        if (action_timeout != null) {
             MainActivity.action_timeout = Integer.parseInt(action_timeout) * 1000;
-        }
-        else{
-            Log.d("Message","No action timeout in preferences. Default set to " + getAction_timeout() + " seconds");
+        } else {
+            Log.d("Message", "No action timeout in preferences. Default set to " + getAction_timeout() + " milliseconds");
         }
     }
 
@@ -66,11 +66,10 @@ public class MainActivity extends Activity
     }
 
     public static void setLilo_timeout(String lilo_timeout) {
-        if(lilo_timeout != null){
+        if (lilo_timeout != null) {
             MainActivity.lilo_timeout = Integer.parseInt(lilo_timeout) * 1000;
-        }
-        else{
-            Log.d("Message","No login/logoff timeout in preferences. Default set to " + getLilo_timeout() + " seconds");
+        } else {
+            Log.d("Message", "No login/logoff timeout in preferences. Default set to " + getLilo_timeout() + " milliseconds");
         }
     }
 
@@ -79,65 +78,68 @@ public class MainActivity extends Activity
     }
 
     public static void setUpload_timeout(String upload_timeout) {
-        if(upload_timeout != null){
+        if (upload_timeout != null) {
             MainActivity.upload_timeout = Integer.parseInt(upload_timeout) * 1000;
-        }
-        else{
-            Log.d("Message","No upload timeout in preferences. Default set to " + getUpload_timeout() + " seconds");
+        } else {
+            Log.d("Message", "No upload timeout in preferences. Default set to " + getUpload_timeout() + " milliseconds");
         }
     }
 
-    public void saveTimestamp(){//save current timestamp
+    public void saveTimestamp() {//save current timestamp
         //add current date to preferences for next app opening
         Log.d("PrefDate", preferences.getString("pref_date", "n/a"));
         //setting up date and time on Home_Fragment before closing app
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentTimeStamp = dateFormat.format(new Date()); // Find todays date
-        Log.d("Date",currentTimeStamp);//log the time stamp
+        Log.d("Date", currentTimeStamp);//log the time stamp
         SharedPreferences.Editor edit = preferences.edit();
         edit.putString("pref_date", currentTimeStamp);//added date to preferences for next app open
         edit.commit();
     }
 
-    public void setTimeouts(){
+    public void setTimeouts() {
         setAction_timeout(preferences.getString("actiontimeout_preference", null));
         setLilo_timeout(preferences.getString("lilotimeout_preference", null));
         setUpload_timeout(preferences.getString("uploadtimeout_preference", null));
     }
 
+    public static void buttonClickListener(final Context context) {
+        button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference arg0) {
+                //code for what you want it to do
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+                String profkey = preferences.getString("profilename_preference", null);
+                String hkey = preferences.getString("hostname_preference", null);
+                String dkey = preferences.getString("domain_preference", null);
+                String portkey = preferences.getString("port_preference", null);
+                String userkey = preferences.getString("username_preference", null);
+                String pwkey = preferences.getString("password_preference", null);
+
+                ArrayList<String> arlist = new ArrayList<String>();
+                arlist.add(profkey);
+                arlist.add(hkey);
+                arlist.add(dkey);
+                arlist.add(portkey);
+                arlist.add(userkey);
+                arlist.add(pwkey);
+                DatabaseHandler db = new DatabaseHandler(context);
+                db.add_ci_server(arlist);
+                return true;
+            }
+        });//end of onclick listener
+    }
+
     public static class PrefsFragment extends PreferenceFragment {//saves prefs when save connection is pressed
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preferences);
-            Preference button = findPreference("save");
-
-            button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference arg0) {
-                    //code for what you want it to do
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-                    String profkey = preferences.getString("profilename_preference", null);
-                    String hkey = preferences.getString("hostname_preference", null);
-                    String dkey = preferences.getString("domain_preference", null);
-                    String portkey = preferences.getString("port_preference", null);
-                    String userkey = preferences.getString("username_preference", null);
-                    String pwkey = preferences.getString("password_preference", null);
-
-                    ArrayList<String> arlist = new ArrayList<String>();
-                    arlist.add(profkey);
-                    arlist.add(hkey);
-                    arlist.add(dkey);
-                    arlist.add(portkey);
-                    arlist.add(userkey);
-                    arlist.add(pwkey);
-                    DatabaseHandler db = new DatabaseHandler(getActivity());
-                    db.add_ci_server(arlist);
-                    return true;
-                }
-            });//end of onclick listener
+            button = findPreference("save");
+            buttonClickListener(getActivity());
         }
     }
 
@@ -151,13 +153,13 @@ public class MainActivity extends Activity
         setContentView(R.layout.activity_main);
         db = new DatabaseHandler(getApplicationContext());//create a db if one doesn't exist
         //navigation drawer stuff
-        mNavigationDrawerFragment=(NavigationDrawerFragment)
+        mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle=getTitle();
+        mTitle = getTitle();
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
-                (DrawerLayout)findViewById(R.id.drawer_layout)
+                (DrawerLayout) findViewById(R.id.drawer_layout)
         );
     }//end of oncreate
 
@@ -167,12 +169,12 @@ public class MainActivity extends Activity
         Log.d("Variable", "Value of argument position: " + position);
         Fragment fragment;
         Log.d("Navigation Position: ", String.valueOf(position));
-        if(getFirst_open()){//if first time opening app, show home screen fragment
+        if (getFirst_open()) {//if first time opening app, show home screen fragment
             position = -1;
             setFirst_open(false);
         }
         FragmentManager fragmentManager = getFragmentManager();
-        switch(position) {
+        switch (position) {
             case 0:
                 fragment = new Capture_Fragment();
                 break;
@@ -184,11 +186,13 @@ public class MainActivity extends Activity
                 .replace(R.id.container, fragment)
                 .commit();
     }
+
     @Override
-     public void onStop(){
+    public void onStop() {
         saveTimestamp();
         super.onStop();
     }
+
     public void restoreActionBar() {
         ActionBar actionBar = getActionBar();
         assert actionBar != null;
@@ -211,8 +215,6 @@ public class MainActivity extends Activity
     }
 
 
-
-
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -224,15 +226,14 @@ public class MainActivity extends Activity
                     .replace(R.id.container, new PrefsFragment()).addToBackStack(null).commit();
             return true;
         }
-        if(id == R.id.action_logoff) {
+        if (id == R.id.action_logoff) {
             new Thread(new Runnable() {
                 public void run() {
                     APIQueries apiobj = new APIQueries(maContext);
                     try {
                         MainActivity.argslist.add(loginlogoff.getSid());
                         apiobj.logoffQuery(MainActivity.argslist);
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
