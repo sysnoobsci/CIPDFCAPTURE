@@ -16,12 +16,6 @@ import android.widget.ImageButton;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.squareup.picasso.Picasso;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-
 /**
  * Created by john.williams on 8/27/2014.
  * UploadFragment gets the image path from InternalGalleryFragment and displays it on the screen.
@@ -35,6 +29,7 @@ public class UploadFragment extends Fragment {
     private ImageButton imageButton;
     private EditText description;
     APIQueries apiobj = null;
+    ProgressDialog ringProgressDialog;
 
     SharedPreferences preferences;
     final static private String tplid1 = "create.phonecapture";//time in milliseconds for createtopic attempt to timeout
@@ -44,6 +39,8 @@ public class UploadFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.gallery_single_layout, container, false);
         initializeViews(rootView);
         apiobj = new APIQueries(getActivity());
+        ringProgressDialog = new ProgressDialog(getActivity());
+        setUploadProgressDialog();
         setImageButtonListener();
         //gets the data passed to it from InternalGalleryFragment and creates the uri.
         Bundle bundle = this.getArguments();
@@ -73,6 +70,11 @@ public class UploadFragment extends Fragment {
         description = (EditText) rootView.findViewById(R.id.gallery_single_image_description_text);
     }
 
+    private void setUploadProgressDialog() {
+        ringProgressDialog.setTitle("Performing Action ...");
+        ringProgressDialog.setMessage("Uploading file ...");
+    }
+
     private void setImage() {
         Picasso.with(getActivity())
                 .load(imageUri)
@@ -81,22 +83,19 @@ public class UploadFragment extends Fragment {
                 .into(imageView);
     }
 
-    public void uploadButton() throws IOException, XmlPullParserException, InterruptedException,
-            ExecutionException, TimeoutException {
+    public void uploadButton() throws Exception {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         loginlogoff liloobj = new loginlogoff(getActivity());
-        ProgressDialog ringProgressDialog = ProgressDialog.show(getActivity(), "Performing Action ...",
-                "Uploading file ...", true);
-        MainActivity.argslist.add(loginlogoff.getSid());
-        if (apiobj.pingQuery(MainActivity.argslist)) {//if the ping is successful(i.e. user logged in)
+        ringProgressDialog.show();
+        QueryArguments.addArg(loginlogoff.getSid());
+        if (apiobj.pingQuery(QueryArguments.argslist)) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to upload file.");
-            //create a topic instance object
-            createTopic(ringProgressDialog);
+            createTopic();//create a topic instance object
         } else {//if ping fails, selected ci profile will be used to log back in
             Log.d("Message", "Ping to CI server indicated no login session.");
             if (liloobj.tryLogin()) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
-                createTopic(ringProgressDialog);
+                createTopic();//create a topic instance object
             } else {//if login attempt fails from trying the CI server profile, prompt user to check profile
                 ringProgressDialog.dismiss();
                 ToastMessageTask.noConnectionMessage(getActivity());
@@ -104,27 +103,30 @@ public class UploadFragment extends Fragment {
         }
     }
 
-    void createTopic(final ProgressDialog ringProgressDialog) {
-        if (imageUri != null || !description.getText().toString().isEmpty()) {
-            MainActivity.argslist.add("tplid," + tplid1);
-            MainActivity.argslist.add("name," + description.getText().toString());
-            MainActivity.argslist.add("detail,y");
-            MainActivity.argslist.add("sid," + loginlogoff.getSid());
-            MainActivity.argslist.add(imageUri);
-            new Thread() {
-                public void run() {
-                    try {
-                        apiobj.createtopicQuery(MainActivity.argslist);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+    void createTopic() {
+        if (!String.valueOf(description.getText()).isEmpty()) {
+            if (imageUri == null) {//checks if image taken yet
+                ToastMessageTask.picNotTaken(getActivity());
+            } else {
+                QueryArguments.addArg("tplid," + tplid1);
+                QueryArguments.addArg("name," + description.getText().toString());
+                QueryArguments.addArg("detail,y");
+                QueryArguments.addArg("sid," + loginlogoff.getSid());
+                QueryArguments.addArg(imageUri);
+                new Thread() {
+                    public void run() {
+                        try {
+                            apiobj.createtopicQuery(QueryArguments.argslist);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        ringProgressDialog.dismiss();
                     }
-                    ringProgressDialog.dismiss();
-                }
-            }.start();
+                }.start();
+            }
         } else {
             ringProgressDialog.dismiss();
-            ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Error. Fill out all the fields.");
-            tmtask.execute();
+            ToastMessageTask.fillFieldMessage(getActivity());
         }
     }
 }

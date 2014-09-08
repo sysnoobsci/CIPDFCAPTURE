@@ -34,11 +34,10 @@ public class MainActivity extends Activity
     private CharSequence mTitle;
     Context maContext = MainActivity.this;
     DatabaseHandler db;
-    final static ArrayList<Object> argslist = new ArrayList<Object>();
 
     private Boolean first_open = true;//keeps track of if the app is opening for the first time to show the home screen
-    private static int action_timeout = 1000;//action timeout - default 1 sec
-    private static int lilo_timeout = 1000;//login/logout timeout - default 1 sec
+    private static int action_timeout = 2000;//action timeout - default 1 sec
+    private static int lilo_timeout = 2000;//login/logout timeout - default 1 sec
     private static int upload_timeout = 30000;//upload timeout - default 30 secs
 
     public Boolean getFirst_open() {
@@ -86,7 +85,6 @@ public class MainActivity extends Activity
     }
 
     public void saveTimestamp() {//save current timestamp
-        //add current date to preferences for next app opening
         Log.d("PrefDate", preferences.getString("pref_date", "n/a"));
         //setting up date and time on Home_Fragment before closing app
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -231,8 +229,8 @@ public class MainActivity extends Activity
                 public void run() {
                     APIQueries apiobj = new APIQueries(maContext);
                     try {
-                        MainActivity.argslist.add(loginlogoff.getSid());
-                        apiobj.logoffQuery(MainActivity.argslist);
+                        QueryArguments.addArg(loginlogoff.getSid());
+                        apiobj.logoffQuery(QueryArguments.argslist);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

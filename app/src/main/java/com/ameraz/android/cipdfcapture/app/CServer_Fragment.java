@@ -21,13 +21,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by adrian.meraz on 8/26/2014.
@@ -95,14 +90,13 @@ public class CServer_Fragment extends Fragment {
         fmt.setText(infoPieces[3]);
     }
 
-    public void searchButton() throws IOException, XmlPullParserException, InterruptedException,
-            ExecutionException, TimeoutException {
+    public void searchButton() throws Exception {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         loginlogoff liloobj = new loginlogoff(getActivity());
         ringProgressDialog = ProgressDialog.show(getActivity(), "Performing Action ...",
                 "Searching for report ...", true);
-        MainActivity.argslist.add(loginlogoff.getSid());
-        if (apiobj.pingQuery(MainActivity.argslist)) {//if the ping is successful(i.e. user logged in)
+        QueryArguments.addArg(loginlogoff.getSid());
+        if (apiobj.pingQuery(QueryArguments.argslist)) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to search for reports.");
             fillSpinner(apiobj);
             ringProgressDialog.dismiss();
@@ -155,12 +149,12 @@ public class CServer_Fragment extends Fragment {
 
     public void fillSpinner(final APIQueries apiobj) {
         if (!reportName.getText().toString().isEmpty()) {
-            MainActivity.argslist.add("res," + reportName.getText().toString().toUpperCase());
-            MainActivity.argslist.add("sid," + loginlogoff.getSid());
+            QueryArguments.addArg("res," + reportName.getText().toString().toUpperCase());
+            QueryArguments.addArg("sid," + loginlogoff.getSid());
             new Thread() {
                 public void run() {
                     try {
-                        versInfo = apiobj.getVersionInfo(apiobj.listversionQuery(MainActivity.argslist));
+                        versInfo = apiobj.getVersionInfo(apiobj.listversionQuery(QueryArguments.argslist));
                         if (versInfo != null) {
                             spinnerVerArrayL = APIQueries.showItems(versInfo, 4);//get version numbers via 4
                             tidArrayL = APIQueries.showItems(versInfo, 5);//get tids via 5

@@ -70,18 +70,9 @@ public class APIQueries {
         Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        if(getActionresult()){//if return codes are good, it was successful
-           Log.d("Message","File was successfully Uploaded.");
-            ToastMessageTask tmtask = new ToastMessageTask(getmContext(),"File was successfully Uploaded.");
-            tmtask.execute();
-        }
-        else{
-            Log.d("Message","File upload failed.");
-            ToastMessageTask tmtask = new ToastMessageTask(getmContext(),"File upload failed.");
-            tmtask.execute();
-        }
+        ToastMessageTask.fileUploadStatus(getmContext(), getActionresult());
         resetResult();//reset action result after checking it
-        MainActivity.argslist.clear();//clear argslist after query
+        QueryArguments.clearList();//clear argslist after query
     }
 
     //listnode - add &sid to the string for it to work properly
@@ -110,7 +101,7 @@ public class APIQueries {
         listnodeArray[0] =  xobj.findTagText("xid");
         listnodeArray[1] = xobj.findTagText("name");
         resetResult();//reset action result after checking it
-        MainActivity.argslist.clear();//clear argslist after query
+        QueryArguments.clearList();//clear argslist after query
         return listnodeArray;
     }
     //listversion
@@ -132,30 +123,30 @@ public class APIQueries {
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
             Log.d("listversionQuery()", "CI Server listversion successful.");
             resetResult();//reset action result after checking it
-            MainActivity.argslist.clear();//clear argslist after query
+            QueryArguments.clearList();//clear argslist after query
             return apitaskobj.getResponse();//return the good results
         }
         else{
             ToastMessageTask.reportNotValidMessage(getmContext());
             Log.d("listversionQuery()", "CI Server listversion failed.");
             resetResult();//reset action result after checking it
-            MainActivity.argslist.clear();//clear argslist after query
+            QueryArguments.clearList();//clear argslist after query
             return null;
         }
 
 
     }
     //logon
-    Boolean logonQuery(ArrayList<Object> args) throws ExecutionException,
-            InterruptedException, IOException, XmlPullParserException {
+    Boolean logonQuery(ArrayList<Object> args) throws Exception {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,logon");
         HttpEntity entity = mebBuilder(actionargs);
         APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
         try {
             apitaskobj.execute().get(MainActivity.getLilo_timeout(), TimeUnit.MILLISECONDS);
-        } catch (TimeoutException te) {
+        } catch (Exception e) {
             ToastMessageTask.noConnectionMessage(getmContext());
+            e.printStackTrace();
         }
         Log.d("logonQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
@@ -168,7 +159,7 @@ public class APIQueries {
             Log.d("logonQuery()", "CI Server logon failed.");
         }
         resetResult();//reset action result after checking it
-        MainActivity.argslist.clear();//clear argslist after query
+        QueryArguments.clearList();//clear argslist after query
         return getActionresult();
     }
     //logoff
@@ -198,13 +189,13 @@ public class APIQueries {
             Log.d("logoffQuery()", "CI Server logoff failed.");
         }
         resetResult();//reset action result after checking it
-        MainActivity.argslist.clear();//clear argslist after query
+        QueryArguments.clearList();//clear argslist after query
         return getActionresult();
     }
     //ping
     public Boolean pingQuery(ArrayList<Object> args) throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
         if (loginlogoff.getSid() == "" || (loginlogoff.getSid() == null)) {//check if there is an sid (i.e. a session established)
-            Log.d("pingQuery()", "CI Server ping failed.");
+            Log.d("pingQuery()", "Valid sid not found");
             return false;//if no session established, return false
         }
         args.add("act,ping");
@@ -212,23 +203,22 @@ public class APIQueries {
         APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
         try {
             apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
-        } catch (TimeoutException te) {
-            ToastMessageTask.noConnectionMessage(getmContext());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         Log.d("pingQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        MainActivity.argslist.clear();//clear argslist after query
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
             Log.d("pingQuery()", "CI Server ping successful.");
             resetResult();//reset action result after checking it
-            MainActivity.argslist.clear();//clear argslist after query
+            QueryArguments.clearList();//clear argslist after query
             return true;
         }
         else{
             Log.d("pingQuery()", "CI Server ping failed.");
             resetResult();//reset action result after checking it
-            MainActivity.argslist.clear();//clear argslist after query
+            QueryArguments.clearList();//clear argslist after query
             return false;
         }
     }

@@ -5,11 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
 /**
  * Created by adrian.meraz on 5/16/2014.
  */
@@ -19,7 +14,7 @@ public class loginlogoff {
     Context mContext;
 
     public loginlogoff(Context mContext) {
-        loginlogoff.this.mContext = mContext;
+        setmContext(mContext);
     }
 
     private static String hostname;
@@ -33,6 +28,14 @@ public class loginlogoff {
     final static int SIZE_OF_TARGET_SID = 40;//size of session ID
     final static int SIZE_OF_TARGET_JSID = 32;//size of session ID
     APIQueries apiobj = new APIQueries(mContext);
+
+    public Context getmContext() {
+        return mContext;
+    }
+
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
+    }
 
     public String getHostname() {
         return hostname;
@@ -131,22 +134,23 @@ public class loginlogoff {
         }
     }
 
-    public Boolean tryLogin() throws InterruptedException, ExecutionException, XmlPullParserException, IOException {
+    protected Boolean tryLogin(Context context) throws Exception {
         Boolean loginResult;
         setCiLoginInfo();
         preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         //try a ping first, if successful, don't try logging in again
-        MainActivity.argslist.add("sid," + loginlogoff.getSid());
-        if(apiobj.pingQuery(MainActivity.argslist)){
+        QueryArguments.addArg("sid," + loginlogoff.getSid());
+        if (apiobj.pingQuery(QueryArguments.argslist)) {
             Log.d("tryLogin()", "Logon session already established. Ping Successful.");
             return true;//if ping is successful, return true
         }
         if(!preferences.getString("list_preference_ci_servers", "n/a").equals("n/a")) {//check if profile has been chosen
-            MainActivity.argslist.add("user," + getUsername());
-            MainActivity.argslist.add("password," + getPassword());
-            loginResult = apiobj.logonQuery(MainActivity.argslist);//send login query to CI via asynctask
+            QueryArguments.addArg("user," + getUsername());
+            QueryArguments.addArg("password," + getPassword());
+            loginResult = apiobj.logonQuery(QueryArguments.argslist);//send login query to CI via asynctask
             return loginResult;
         } else {
+            ToastMessageTask.noProfileSelected(context);
             return false;
         }
     }

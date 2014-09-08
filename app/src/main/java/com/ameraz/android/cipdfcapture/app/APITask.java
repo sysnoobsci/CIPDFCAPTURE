@@ -27,6 +27,7 @@ public class APITask extends AsyncTask<String, Void, String> {
     private static String query;
     private static Context mContext;
     private static HttpEntity entity;
+    private static int ID = 0;
     private static int taskID = 0;
 
     public String getResponse() {
@@ -45,12 +46,12 @@ public class APITask extends AsyncTask<String, Void, String> {
         this.query = query;
     }
 
-    public Context getActContext() {
+    public static Context getmContext() {
         return mContext;
     }
 
-    public void setActContext(Context mContext) {
-        this.mContext = mContext;
+    public static void setmContext(Context mContext) {
+        APITask.mContext = mContext;
     }
 
     public HttpEntity getEntity() {
@@ -70,11 +71,11 @@ public class APITask extends AsyncTask<String, Void, String> {
     }
 
     public APITask(String query, HttpEntity entity, Context context){
-        setTaskID(this.taskID);//set unique ID for task
         setQuery(query);
         setEntity(entity);
-        setActContext(context);
-        taskID++;
+        setmContext(context);
+        setTaskID(this.ID);//set unique ID for task
+        ID++;
     }
 
     @Override
@@ -105,6 +106,6 @@ public class APITask extends AsyncTask<String, Void, String> {
     }
 
     protected void onPostExecute(String result) {
-        Log.d("onPostExecute()", "APITasks[" + getTaskID() + "].onPostExecute response: " + getResponse());
+        Log.d("onPostExecute()", "APITask[" + getTaskID() + "].onPostExecute response: " + getResponse());
     }
 }//end of ReqTask
