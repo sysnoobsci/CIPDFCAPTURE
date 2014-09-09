@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -22,12 +21,12 @@ import android.widget.LinearLayout;
 public class InternalGalleryFragment extends Fragment {
 
     private Context context;
-    GridView gridView;
-    GalleryAdapter ga;
+    static GridView gridView;
+    static GalleryAdapter ga;
+    static LinearLayout galleryProgress;
     int width;
-    LinearLayout galleryProgress;
-    SharedPreferences pref;
     int numColumns;
+    SharedPreferences pref;
 
     public Context getContext() {
         return context;
@@ -41,14 +40,14 @@ public class InternalGalleryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.gallery, container, false);
         setContext(getActivity());
-        gridView = (GridView)rootView.findViewById(R.id.gridView);
         ga = new GalleryAdapter(getContext());
         galleryProgress = (LinearLayout)rootView.findViewById(R.id.gallery_progress_layout);
+        gridView = (GridView) rootView.findViewById(R.id.gridView);
         pref = PreferenceManager.getDefaultSharedPreferences(getContext());
         int width = rootView.getWidth();
         Log.i("onCreateView()", "Value of width: " + width);
         setColumnWidth();
-        setGrid sobj = new setGrid();
+        SetGridTask sobj = new SetGridTask(getContext(), ga, galleryProgress, gridView);
         sobj.execute();
         gridViewListener();
         return rootView;
@@ -98,26 +97,5 @@ public class InternalGalleryFragment extends Fragment {
         });
     }
 
-    private class setGrid extends AsyncTask{
 
-        @Override
-        protected void onPreExecute(){
-            galleryProgress.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Object doInBackground(Object[] params) {
-            ga.setContext(getContext());
-            ga.setUriArray();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object result){
-            gridView.setAdapter(ga);
-            ga.notifyDataSetChanged();
-            galleryProgress.setVisibility(View.INVISIBLE);
-            this.cancel(true);
-        }
-    }
 }

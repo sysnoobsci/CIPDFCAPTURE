@@ -95,7 +95,7 @@ public class Capture_Fragment extends Fragment {
                 FilePath fp = new FilePath();
                 String storageState = Environment.getExternalStorageState();
                 if (storageState.equals(Environment.MEDIA_MOUNTED)) {
-                    incImage = fp.getFilePath()+"sys_original_image" + System.currentTimeMillis() + ".jpg";
+                    incImage = fp.getFilePath() + "sys_original_image" + System.currentTimeMillis() + ".jpg";
                     newImage = new File(incImage);
                     try {
                         if (!newImage.exists()) {
@@ -106,7 +106,6 @@ public class Capture_Fragment extends Fragment {
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                             startActivityForResult(intent, 0);
                         }
-
                     } catch (IOException e) {
                         ToastMessageTask.fileNotWritten(getContext());
                         Log.e("File: ", "Could not create file.", e);
@@ -121,8 +120,8 @@ public class Capture_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == getActivity().RESULT_OK) {
-             Log.d("onActivityResult ", imageUri.toString());
-             setCapturedImage();
+            Log.d("onActivityResult ", imageUri.toString());
+            setCapturedImage();
         }
     }
 
