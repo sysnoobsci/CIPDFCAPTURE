@@ -90,12 +90,15 @@ public class CServer_Fragment extends Fragment {
         fmt.setText(infoPieces[3]);
     }
 
+    private void setUploadProgressDialog() {
+        ringProgressDialog.setTitle("Performing Action ...");
+        ringProgressDialog.setMessage("Searching for report ...");
+    }
+
     public void searchButton() throws Exception {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         loginlogoff liloobj = new loginlogoff(getActivity());
-        ringProgressDialog = ProgressDialog.show(getActivity(), "Performing Action ...",
-                "Searching for report ...", true);
-        QueryArguments.addArg(loginlogoff.getSid());
+        ringProgressDialog.show();
         if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to search for reports.");
             fillSpinner(apiobj);

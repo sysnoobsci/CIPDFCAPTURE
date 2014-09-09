@@ -79,11 +79,16 @@ public class Capture_Fragment extends Fragment {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    uploadButton();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                ringProgressDialog.show();
+                new Thread() {
+                    public void run() {
+                        try {
+                            uploadButton();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
             }
         });
     }
@@ -146,16 +151,19 @@ public class Capture_Fragment extends Fragment {
         description = (EditText) rootView.findViewById(R.id.description_text);
     }
 
-    public void uploadButton() throws Exception {
+    public void uploadButton(){
         if (uploadCheck(description, imageUri)) {
-            ringProgressDialog.show();
             loginlogoff liloobj = new loginlogoff(getContext());
-            if (liloobj.tryLogin(getContext())) {
-                Log.d("Message", "CI Login successful and ready to upload file.");
-                createTopic();//create a topic instance object
+            try {
+                if (liloobj.tryLogin(getContext())) {
+                    Log.d("Message", "CI Login successful and ready to upload file.");
+                    createTopic();//create a topic instance object
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            ringProgressDialog.dismiss();
         }
+        ringProgressDialog.dismiss();
     }
 
 
@@ -165,16 +173,12 @@ public class Capture_Fragment extends Fragment {
         QueryArguments.addArg("detail,y");
         QueryArguments.addArg("sid," + loginlogoff.getSid());
         QueryArguments.addArg(imageUri);
-        new Thread() {
-            public void run() {
-                try {
-                    apiobj.createtopicQuery(QueryArguments.getArgslist());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                ringProgressDialog.dismiss();
-            }
-        }.start();
+        try {
+            apiobj.createtopicQuery(QueryArguments.getArgslist());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ringProgressDialog.dismiss();
     }
 
     Boolean uploadCheck(EditText description, Uri imageUri) {
