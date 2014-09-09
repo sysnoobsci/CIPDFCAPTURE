@@ -96,13 +96,13 @@ public class CServer_Fragment extends Fragment {
         ringProgressDialog = ProgressDialog.show(getActivity(), "Performing Action ...",
                 "Searching for report ...", true);
         QueryArguments.addArg(loginlogoff.getSid());
-        if (apiobj.pingQuery(QueryArguments.argslist)) {//if the ping is successful(i.e. user logged in)
+        if (apiobj.pingQuery(QueryArguments.getArgslist())) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to search for reports.");
             fillSpinner(apiobj);
             ringProgressDialog.dismiss();
         } else {//if ping fails, selected ci profile will be used to log back in
             Log.d("Message", "Ping to CI server indicated no login session.");
-            if (liloobj.tryLogin()) {
+            if (liloobj.tryLogin(getActivity())) {
                 Log.d("Message", "CI Login successful and ready to search for reports.");
                 fillSpinner(apiobj);
                 ringProgressDialog.dismiss();
@@ -154,7 +154,7 @@ public class CServer_Fragment extends Fragment {
             new Thread() {
                 public void run() {
                     try {
-                        versInfo = apiobj.getVersionInfo(apiobj.listversionQuery(QueryArguments.argslist));
+                        versInfo = apiobj.getVersionInfo(apiobj.listversionQuery(QueryArguments.getArgslist()));
                         if (versInfo != null) {
                             spinnerVerArrayL = APIQueries.showItems(versInfo, 4);//get version numbers via 4
                             tidArrayL = APIQueries.showItems(versInfo, 5);//get tids via 5

@@ -140,14 +140,14 @@ public class loginlogoff {
         preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         //try a ping first, if successful, don't try logging in again
         QueryArguments.addArg("sid," + loginlogoff.getSid());
-        if (apiobj.pingQuery(QueryArguments.argslist)) {
+        if (apiobj.pingQuery(QueryArguments.getArgslist())) {
             Log.d("tryLogin()", "Logon session already established. Ping Successful.");
             return true;//if ping is successful, return true
         }
         if(!preferences.getString("list_preference_ci_servers", "n/a").equals("n/a")) {//check if profile has been chosen
             QueryArguments.addArg("user," + getUsername());
             QueryArguments.addArg("password," + getPassword());
-            loginResult = apiobj.logonQuery(QueryArguments.argslist);//send login query to CI via asynctask
+            loginResult = apiobj.logonQuery(QueryArguments.getArgslist());//send login query to CI via asynctask
             return loginResult;
         } else {
             ToastMessageTask.noProfileSelected(context);

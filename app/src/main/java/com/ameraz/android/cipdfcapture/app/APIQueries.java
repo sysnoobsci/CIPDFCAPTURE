@@ -194,7 +194,7 @@ public class APIQueries {
     }
     //ping
     public Boolean pingQuery(ArrayList<Object> args) throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
-        if (loginlogoff.getSid() == "" || (loginlogoff.getSid() == null)) {//check if there is an sid (i.e. a session established)
+        if (loginlogoff.getSid() == "" || loginlogoff.getSid() == null) {//check if there is an sid (i.e. a session established)
             Log.d("pingQuery()", "Valid sid not found");
             return false;//if no session established, return false
         }

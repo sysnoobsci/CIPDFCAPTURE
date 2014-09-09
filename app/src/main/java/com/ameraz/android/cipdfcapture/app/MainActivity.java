@@ -230,7 +230,7 @@ public class MainActivity extends Activity
                     APIQueries apiobj = new APIQueries(maContext);
                     try {
                         QueryArguments.addArg(loginlogoff.getSid());
-                        apiobj.logoffQuery(QueryArguments.argslist);
+                        apiobj.logoffQuery(QueryArguments.getArgslist());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

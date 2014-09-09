@@ -39,7 +39,7 @@ public class Capture_Fragment extends Fragment {
     private File newImage;
     APIQueries apiobj;
     ProgressDialog ringProgressDialog;
-    Context context;
+    static Context context;
 
     SharedPreferences preferences;
     final static private String tplid1 = "create.phonecapture";//time in milliseconds for createtopic attempt to timeout
@@ -49,6 +49,7 @@ public class Capture_Fragment extends Fragment {
         View rootView = inflater.inflate(R.layout.capture_fragment, container, false);
         initializeViews(rootView);
         context = getActivity();
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
         apiobj = new APIQueries(context);
         ringProgressDialog = new ProgressDialog(context);
         setUploadProgressDialog();
@@ -139,49 +140,49 @@ public class Capture_Fragment extends Fragment {
     }
 
     public void uploadButton() throws Exception {
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        loginlogoff liloobj = new loginlogoff(context);
-        ringProgressDialog.show();
-        QueryArguments.addArg(loginlogoff.getSid());
-        if (apiobj.pingQuery(QueryArguments.argslist)) {//if the ping is successful(i.e. user logged in)
-            Log.d("Message", "CI Login successful and ready to upload file.");
-            createTopic();//create a topic instance object
-        }
-        else {//if ping fails, selected ci profile will be used to log back in
+        if (uploadCheck(description, imageUri)) {
+            loginlogoff liloobj = new loginlogoff(context);
+            ringProgressDialog.show();
+            QueryArguments.addArg(loginlogoff.getSid());
             Log.d("Message", "Ping to CI server indicated no login session.");
-            if (liloobj.tryLogin()) {
+            if (liloobj.tryLogin(context)) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
                 createTopic();//create a topic instance object
-            } else {//if login attempt fails from trying the CI server profile, prompt user to check profile
-                ringProgressDialog.dismiss();
             }
+            ringProgressDialog.dismiss();
         }
     }
 
+
     void createTopic() {
-        if (!String.valueOf(description.getText()).isEmpty()) {
-            if (imageUri == null) {//checks if image taken yet
-                ToastMessageTask.picNotTaken(context);
-            } else {
-                QueryArguments.addArg("tplid," + tplid1);
-                QueryArguments.addArg("name," + description.getText().toString());
-                QueryArguments.addArg("detail,y");
-                QueryArguments.addArg("sid," + loginlogoff.getSid());
-                QueryArguments.addArg(imageUri);
-                new Thread() {
-                    public void run() {
-                        try {
-                            apiobj.createtopicQuery(QueryArguments.argslist);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        ringProgressDialog.dismiss();
-                    }
-                }.start();
+        QueryArguments.addArg("tplid," + tplid1);
+        QueryArguments.addArg("name," + description.getText().toString());
+        QueryArguments.addArg("detail,y");
+        QueryArguments.addArg("sid," + loginlogoff.getSid());
+        QueryArguments.addArg(imageUri);
+        new Thread() {
+            public void run() {
+                try {
+                    apiobj.createtopicQuery(QueryArguments.getArgslist());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                ringProgressDialog.dismiss();
             }
-        } else {
+        }.start();
+    }
+
+    Boolean uploadCheck(EditText description, Uri imageUri) {
+        if (imageUri == null) {//checks if image taken yet
+            ringProgressDialog.dismiss();
+            ToastMessageTask.picNotTaken(context);
+            return false;
+        }
+        if (String.valueOf(description.getText()).isEmpty()) {
             ringProgressDialog.dismiss();
             ToastMessageTask.fillFieldMessage(context);
+            return false;
         }
+        return true;//if pic was taken and there is a non-empty description, return true
     }
 }
