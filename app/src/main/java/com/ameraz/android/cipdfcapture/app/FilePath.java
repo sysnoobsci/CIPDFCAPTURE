@@ -5,9 +5,8 @@ package com.ameraz.android.cipdfcapture.app;
  */
 public class FilePath {
     public static final String FILEPATH = "/storage/sdcard0/Systemware/";
-    public void FilePath(){
-    }
-    public String getFilePath(){
+
+    public String getFilePath() {
         return FILEPATH;
     }
 }

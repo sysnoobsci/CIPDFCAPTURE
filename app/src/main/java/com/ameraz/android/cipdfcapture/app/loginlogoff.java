@@ -139,8 +139,7 @@ public class loginlogoff {
         setCiLoginInfo();
         preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         //try a ping first, if successful, don't try logging in again
-        QueryArguments.addArg("sid," + loginlogoff.getSid());
-        if (apiobj.pingQuery(QueryArguments.getArgslist())) {
+        if (apiobj.pingQuery()) {
             Log.d("tryLogin()", "Logon session already established. Ping Successful.");
             return true;//if ping is successful, return true
         }
@@ -151,6 +150,14 @@ public class loginlogoff {
             return loginResult;
         } else {
             ToastMessageTask.noProfileSelected(context);
+            return false;
+        }
+    }
+
+    protected static Boolean doesSidExist() {//checks if there is a valid sid
+        if ((getSid() != null) && !getSid().isEmpty()) {
+            return true;
+        } else {
             return false;
         }
     }

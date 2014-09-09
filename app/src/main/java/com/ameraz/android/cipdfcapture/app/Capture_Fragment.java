@@ -63,7 +63,7 @@ public class Capture_Fragment extends Fragment {
         setUploadProgressDialog();
         setCaptureBackground();
         takePicButtonListener();
-        uploadListener();
+        uploadButtonListener();
         return rootView;
     }
 
@@ -75,7 +75,7 @@ public class Capture_Fragment extends Fragment {
                 .into(background);
     }
 
-    private void uploadListener() {
+    private void uploadButtonListener() {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,10 +148,8 @@ public class Capture_Fragment extends Fragment {
 
     public void uploadButton() throws Exception {
         if (uploadCheck(description, imageUri)) {
-            loginlogoff liloobj = new loginlogoff(getContext());
             ringProgressDialog.show();
-            QueryArguments.addArg(loginlogoff.getSid());
-            Log.d("Message", "Ping to CI server indicated no login session.");
+            loginlogoff liloobj = new loginlogoff(getContext());
             if (liloobj.tryLogin(getContext())) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
                 createTopic();//create a topic instance object
@@ -181,12 +179,10 @@ public class Capture_Fragment extends Fragment {
 
     Boolean uploadCheck(EditText description, Uri imageUri) {
         if (imageUri == null) {//checks if image taken yet
-            ringProgressDialog.dismiss();
             ToastMessageTask.picNotTaken(getContext());
             return false;
         }
         if (String.valueOf(description.getText()).isEmpty()) {
-            ringProgressDialog.dismiss();
             ToastMessageTask.fillFieldMessage(getContext());
             return false;
         }

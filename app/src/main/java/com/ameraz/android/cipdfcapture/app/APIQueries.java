@@ -25,7 +25,7 @@ public class APIQueries {
     static Context mContext;
     static Boolean actionresult = false;
 
-    public APIQueries(Context mContext){
+    public APIQueries(Context mContext) {
         setmContext(mContext);
     }
 
@@ -45,29 +45,30 @@ public class APIQueries {
         this.mContext = mContext;
     }
 
-    public void resetResult(){
+    public void resetResult() {
         setActionresult(false);
     }
 
-    String targetCIQuery(){
+    String targetCIQuery() {
         loginlogoff lilobj = new loginlogoff(mContext);
         String targetCIQuery = "http://" + lilobj.getHostname() + "." +
                 lilobj.getDomain() + ":" + lilobj.getPortnumber() + "/ci";
         return targetCIQuery;
     }
+
     //createtopic
     void createtopicQuery(ArrayList<Object> args) throws IOException, XmlPullParserException, InterruptedException, ExecutionException {
 
         ArrayList<Object> actionargs = args;
         actionargs.add("act,createtopic");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(),entity,mContext);
+        APITask apitaskobj = new APITask(targetCIQuery(), entity, mContext);
         try {
             apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask.noConnectionMessage(getmContext());
         }
-        Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
+        Log.d("Variable", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
         ToastMessageTask.fileUploadStatus(getmContext(), getActionresult());
@@ -76,34 +77,33 @@ public class APIQueries {
     }
 
     //listnode - add &sid to the string for it to work properly
-    String[] listnodeQuery (ArrayList<Object> args) throws ExecutionException,
-            InterruptedException, IOException, XmlPullParserException{
+    String[] listnodeQuery(ArrayList<Object> args) throws ExecutionException,
+            InterruptedException, IOException, XmlPullParserException {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,listnode");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
+        APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
         try {
             apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask.noConnectionMessage(getmContext());
         }
-        Log.d("Variable","apitaskobj.getResponse() value: " + apitaskobj.getResponse());
+        Log.d("Variable", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        if (getActionresult()) {//if the ping is successful(i.e. user logged in)
-            loginlogoff.setSid(apitaskobj.getResponse());
+        if (getActionresult()) {
             Log.d("Message", "CI Server listnode successful.");
-        }
-        else{
+        } else {
             Log.d("Message", "CI Server listnode failed.");
         }
         String[] listnodeArray = new String[2];
-        listnodeArray[0] =  xobj.findTagText("xid");
+        listnodeArray[0] = xobj.findTagText("xid");
         listnodeArray[1] = xobj.findTagText("name");
         resetResult();//reset action result after checking it
         QueryArguments.clearList();//clear argslist after query
         return listnodeArray;
     }
+
     //listversion
     String listversionQuery(ArrayList<Object> args) throws ExecutionException,
             InterruptedException, IOException, XmlPullParserException {
@@ -111,7 +111,7 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,listversion");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
+        APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
         try {
             apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
@@ -125,8 +125,7 @@ public class APIQueries {
             resetResult();//reset action result after checking it
             QueryArguments.clearList();//clear argslist after query
             return apitaskobj.getResponse();//return the good results
-        }
-        else{
+        } else {
             ToastMessageTask.reportNotValidMessage(getmContext());
             Log.d("listversionQuery()", "CI Server listversion failed.");
             resetResult();//reset action result after checking it
@@ -136,12 +135,13 @@ public class APIQueries {
 
 
     }
+
     //logon
     Boolean logonQuery(ArrayList<Object> args) throws Exception {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,logon");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
+        APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
         try {
             apitaskobj.execute().get(MainActivity.getLilo_timeout(), TimeUnit.MILLISECONDS);
         } catch (Exception e) {
@@ -154,22 +154,22 @@ public class APIQueries {
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
             loginlogoff.setSid(apitaskobj.getResponse());
             Log.d("logonQuery()", "CI Server logon successful.");
-        }
-        else{
+        } else {
             Log.d("logonQuery()", "CI Server logon failed.");
         }
         resetResult();//reset action result after checking it
         QueryArguments.clearList();//clear argslist after query
         return getActionresult();
     }
+
     //logoff
     Boolean logoffQuery(ArrayList<Object> args) throws ExecutionException,
-    InterruptedException, IOException, XmlPullParserException{
+            InterruptedException, IOException, XmlPullParserException {
 
         ArrayList<Object> actionargs = args;
         actionargs.add("act,logoff");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
+        APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
         try {
             apitaskobj.execute().get(MainActivity.getLilo_timeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
@@ -178,29 +178,27 @@ public class APIQueries {
         Log.d("logoffQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        if(getActionresult()){//if login successful, set sid
-            loginlogoff.setSid(xobj.getxmlVals());
-        }
         loginlogoff.logoffMessage(getActionresult(), getmContext());//show status of logon action
         if (getActionresult()) {//if the ping is successful(i.e. user logged in)
             Log.d("logoffQuery()", "CI Server logoff successful.");
-        }
-        else{
+        } else {
             Log.d("logoffQuery()", "CI Server logoff failed.");
         }
         resetResult();//reset action result after checking it
         QueryArguments.clearList();//clear argslist after query
         return getActionresult();
     }
+
     //ping
-    public Boolean pingQuery(ArrayList<Object> args) throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
-        if (loginlogoff.getSid() == "" || loginlogoff.getSid() == null) {//check if there is an sid (i.e. a session established)
-            Log.d("pingQuery()", "Valid sid not found");
+    public Boolean pingQuery() throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
+        if (!loginlogoff.doesSidExist()) {//check if there is an sid (i.e. a session established)
+            Log.d("pingQuery()", "Empty sid found. Need to login");
             return false;//if no session established, return false
         }
-        args.add("act,ping");
-        HttpEntity entity = mebBuilder(args);
-        APITask apitaskobj = new APITask(targetCIQuery(),entity,getmContext());
+        QueryArguments.addArg("act,ping");
+        QueryArguments.addArg("sid," + loginlogoff.getSid());
+        HttpEntity entity = mebBuilder(QueryArguments.getArgslist());
+        APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
         try {
             apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
         } catch (Exception e) {
@@ -214,25 +212,25 @@ public class APIQueries {
             resetResult();//reset action result after checking it
             QueryArguments.clearList();//clear argslist after query
             return true;
-        }
-        else{
+        } else {
             Log.d("pingQuery()", "CI Server ping failed.");
             resetResult();//reset action result after checking it
             QueryArguments.clearList();//clear argslist after query
             return false;
         }
     }
+
     //retrieve
-    public String retrieveQuery(String tid){//pings the CI server, returns true if ping successful
-        String retrieveQuery = targetCIQuery() + "?act=retrieve&tid="+ tid + "&sid=" + loginlogoff.getSid();
+    public String retrieveQuery(String tid) {//pings the CI server, returns true if ping successful
+        String retrieveQuery = targetCIQuery() + "?act=retrieve&tid=" + tid + "&sid=" + loginlogoff.getSid();
         return retrieveQuery;
     }
 
     //build MultiPartEntity after checking type of the args
     HttpEntity mebBuilder(ArrayList<Object> args) throws UnsupportedEncodingException {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        for(Object larg : args){//check each argument for class type and act accordingly
-            if(larg != null) {//make sure arg isn't null
+        for (Object larg : args) {//check each argument for class type and act accordingly
+            if (larg != null) {//make sure arg isn't null
                 if (larg.getClass().equals(String.class)) {//if type of arg is String, do this
                     int i = 0;
                     int j = 1;
@@ -276,14 +274,14 @@ public class APIQueries {
         String[] fmtarr = fmt.split(",");
         String[] verarr = ver.split(",");
 
-        for(int i = 0; i < dsidsarr.length ; i++){
+        for (int i = 0; i < dsidsarr.length; i++) {
             StringBuilder sbuild = new StringBuilder();
             sbuild.append(dsidsarr[i] + ",").append(ctsarr[i] + ",").append(bytesarr[i] + ",").append(fmtarr[i] + ",")
                     .append(verarr[i] + ",").append("V~" + xidarr[i] + "~" + dsidsarr[i] + "~" + pathsarr[i] +
                     "~" + verarr[i]);
             Log.d("getVersionInfo()", "version " + verarr[i] + " attributes: " + sbuild.toString());
             versionInfo.add(sbuild.toString());
-    }
+        }
         return versionInfo;
     }
 
@@ -299,16 +297,15 @@ public class APIQueries {
 
     //action return code check
     protected void isActionSuccessful(ArrayList<String> larray) {
-        if(larray.size()==0){//if the array is of size 0, nothing was returned from the ciserver
+        if (larray.size() == 0) {//if the array is of size 0, nothing was returned from the ciserver
             Log.d("isActionSuccessful()", "Nothing returned from CI server.");
             setActionresult(false);
-        }
-        else {
-                if (larray.get(0).equals("0") && larray.get(1).equals("0") && larray.get(2).equals("0")) {
-                    setActionresult(true);
-                } else {
-                    setActionresult(false);
-                }
+        } else {
+            if (larray.get(0).equals("0") && larray.get(1).equals("0") && larray.get(2).equals("0")) {
+                setActionresult(true);
+            } else {
+                setActionresult(false);
+            }
         }
     }
 }

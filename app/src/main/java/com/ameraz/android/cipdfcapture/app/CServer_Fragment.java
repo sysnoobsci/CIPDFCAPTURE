@@ -96,7 +96,7 @@ public class CServer_Fragment extends Fragment {
         ringProgressDialog = ProgressDialog.show(getActivity(), "Performing Action ...",
                 "Searching for report ...", true);
         QueryArguments.addArg(loginlogoff.getSid());
-        if (apiobj.pingQuery(QueryArguments.getArgslist())) {//if the ping is successful(i.e. user logged in)
+        if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to search for reports.");
             fillSpinner(apiobj);
             ringProgressDialog.dismiss();

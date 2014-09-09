@@ -41,10 +41,10 @@ public class InternalGalleryFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.gallery, container, false);
         setContext(getActivity());
         ga = new GalleryAdapter(getContext());
-        galleryProgress = (LinearLayout)rootView.findViewById(R.id.gallery_progress_layout);
+        galleryProgress = (LinearLayout) rootView.findViewById(R.id.gallery_progress_layout);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
         pref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        int width = rootView.getWidth();
+        width = rootView.getWidth();
         Log.i("onCreateView()", "Value of width: " + width);
         setColumnWidth();
         SetGridTask sobj = new SetGridTask(getContext(), ga, galleryProgress, gridView);
@@ -59,23 +59,22 @@ public class InternalGalleryFragment extends Fragment {
         return (xlarge || large);
     }
 
-    public void setColumnWidth(){
+    public void setColumnWidth() {
 
         if (isTablet(getContext())) {
             numColumns = pref.getInt("gallery_preference", 0);
-            if(numColumns == 0){
+            if (numColumns == 0) {
                 numColumns = 10;
             }
-        }else{
+        } else {
             numColumns = pref.getInt("gallery_preference", 0);
-            if(numColumns == 0){
+            if (numColumns == 0) {
                 numColumns = 3;
             }
         }
         int iDisplayWidth = getResources().getDisplayMetrics().widthPixels;
-
         width = iDisplayWidth
-                / numColumns ;
+                / numColumns;
         gridView.setColumnWidth(width);
         ga.setWidth(width);
     }

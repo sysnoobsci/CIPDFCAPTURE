@@ -3,7 +3,6 @@ package com.ameraz.android.cipdfcapture.app;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,7 +31,6 @@ public class UploadFragment extends Fragment {
     ProgressDialog ringProgressDialog;
     Context context;
 
-    SharedPreferences preferences;
     final static private String tplid1 = "create.phonecapture";//time in milliseconds for createtopic attempt to timeout
 
 
@@ -58,7 +56,6 @@ public class UploadFragment extends Fragment {
         String fileName = bundle.getString("fileName");
         FilePath fp = new FilePath();
         imageUri = Uri.parse("file://" + fp.getFilePath() + fileName);
-
         //Using the Picasso library, loads the image onto the screen.
         setImage();
         description.setText(fileName);
