@@ -2,8 +2,16 @@
 <pre-dex-items>
 
     <item
-        dex="C:\Users\adrian.meraz\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\httpmime-4.4-alpha1-22cbf5e0bee03de2ca1c6abcc4bf0826c23b6603.jar"
-        jar="C:\Users\adrian.meraz\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpmime\4.4-alpha1\541a2358887d2788a6bac2b00e32be89ccf00ec6\httpmime-4.4-alpha1.jar"
-        jumboMode="false" revision="20.0.0" sha1="541a2358887d2788a6bac2b00e32be89ccf00ec6" />
+        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\okio-1.0.0-1cbe1339a577710518a961ff5fa4c68b6829de43.jar"
+        jar="C:\Users\john.williams\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.0.0\2534c458682c73f5b9871131ab3098d3f987ca3\okio-1.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="02534c458682c73f5b9871131ab3098d3f987ca3"/>
+    <item
+        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\wire-runtime-1.5.1-a2c2f546c9f0629974c8325f38d6905799c76c96.jar"
+        jar="C:\Users\john.williams\.gradle\caches\modules-2\files-2.1\com.squareup.wire\wire-runtime\1.5.1\e29e966a7f81a2c6bc2c947fb80d26121ec81592\wire-runtime-1.5.1.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="e29e966a7f81a2c6bc2c947fb80d26121ec81592"/>
 
 </pre-dex-items>

@@ -55,10 +55,13 @@ public class UploadFragment extends Fragment {
         setImageButtonListener();
         //gets the data passed to it from InternalGalleryFragment and creates the uri.
         Bundle bundle = this.getArguments();
-        String imageUriString = bundle.getString("inc_string");
-        imageUri = Uri.parse(imageUriString);
+        String fileName = bundle.getString("fileName");
+        FilePath fp = new FilePath();
+        imageUri = Uri.parse("file://" + fp.getFilePath() + fileName);
+
         //Using the Picasso library, loads the image onto the screen.
         setImage();
+        description.setText(fileName);
         return rootView;
     }
 
