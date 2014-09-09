@@ -35,13 +35,22 @@ public class UploadFragment extends Fragment {
     SharedPreferences preferences;
     final static private String tplid1 = "create.phonecapture";//time in milliseconds for createtopic attempt to timeout
 
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.gallery_single_layout, container, false);
         initializeViews(rootView);
         context = getActivity();
-        apiobj = new APIQueries(context);
-        ringProgressDialog = new ProgressDialog(context);
+        apiobj = new APIQueries(getContext());
+        ringProgressDialog = new ProgressDialog(getContext());
         setUploadProgressDialog();
         setImageButtonListener();
         //gets the data passed to it from InternalGalleryFragment and creates the uri.
@@ -78,7 +87,7 @@ public class UploadFragment extends Fragment {
     }
 
     private void setImage() {
-        Picasso.with(getActivity())
+        Picasso.with(getContext())
                 .load(imageUri)
                 .fit()
                 .centerCrop()
@@ -87,11 +96,11 @@ public class UploadFragment extends Fragment {
 
     public void uploadButton() throws Exception {
         if (uploadCheck(description, imageUri)) {
-            loginlogoff liloobj = new loginlogoff(context);
+            loginlogoff liloobj = new loginlogoff(getContext());
             ringProgressDialog.show();
             QueryArguments.addArg(loginlogoff.getSid());
             Log.d("Message", "Ping to CI server indicated no login session.");
-            if (liloobj.tryLogin(context)) {
+            if (liloobj.tryLogin(getContext())) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
                 createTopic();//create a topic instance object
             }
@@ -120,12 +129,12 @@ public class UploadFragment extends Fragment {
     Boolean uploadCheck(EditText description, Uri imageUri) {
         if (imageUri == null) {//checks if image taken yet
             ringProgressDialog.dismiss();
-            ToastMessageTask.picNotTaken(context);
+            ToastMessageTask.picNotTaken(getContext());
             return false;
         }
         if (String.valueOf(description.getText()).isEmpty()) {
             ringProgressDialog.dismiss();
-            ToastMessageTask.fillFieldMessage(context);
+            ToastMessageTask.fillFieldMessage(getContext());
             return false;
         }
         return true;//if pic was taken and there is a non-empty description, return true

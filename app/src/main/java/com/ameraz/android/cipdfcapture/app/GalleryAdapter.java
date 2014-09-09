@@ -18,14 +18,14 @@ import java.io.FilenameFilter;
  * Created by john.williams on 8/26/2014.
  */
 public class GalleryAdapter extends BaseAdapter {
-    private Context maContext;
+    private Context context;
     private File FILE_DIR;
     String[] names;
     FilePath fp;
     int width;
 
     public GalleryAdapter(Context context) {
-        setMaContext(context);
+        setContext(context);
     }
 
     public void setUriArray(){
@@ -59,12 +59,12 @@ public class GalleryAdapter extends BaseAdapter {
         return names[position];
     }
 
-    public Context getMaContext() {
-        return maContext;
+    public Context getContext() {
+        return context;
     }
 
-    public void setMaContext(Context maContext) {
-        this.maContext = maContext;
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class GalleryAdapter extends BaseAdapter {
         Log.d("Loading images...", Uri.parse("file://" + fp.getFilePath() + names[position]).toString());
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
-            LayoutInflater in = (LayoutInflater) getMaContext()
+            LayoutInflater in = (LayoutInflater) getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = in.inflate(R.layout.thumbnail, null);
             imageView = (ImageView)convertView.findViewById(R.id.thumbnail_image);
@@ -96,7 +96,7 @@ public class GalleryAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
         Log.d("Loading images...", Uri.parse("file://" + fp.getFilePath() + names[position]).toString());
-        Picasso.with(getMaContext())
+        Picasso.with(getContext())
                 .load(Uri.parse("file://" + fp.getFilePath() + names[position]))
                 .resize(width,width)
                 .placeholder(R.drawable.sw_placeholder)

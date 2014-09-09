@@ -44,14 +44,22 @@ public class Capture_Fragment extends Fragment {
     SharedPreferences preferences;
     final static private String tplid1 = "create.phonecapture";//time in milliseconds for createtopic attempt to timeout
 
+    public static Context getContext() {
+        return context;
+    }
+
+    public static void setContext(Context context) {
+        Capture_Fragment.context = context;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.capture_fragment, container, false);
         initializeViews(rootView);
         context = getActivity();
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        apiobj = new APIQueries(context);
-        ringProgressDialog = new ProgressDialog(context);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        apiobj = new APIQueries(getContext());
+        ringProgressDialog = new ProgressDialog(getContext());
         setUploadProgressDialog();
         setCaptureBackground();
         takePicButtonListener();
@@ -60,7 +68,7 @@ public class Capture_Fragment extends Fragment {
     }
 
     private void setCaptureBackground() {
-        Picasso.with(context)
+        Picasso.with(getContext())
                 .load(R.drawable.clouds_parlx_bg1)
                 .fit()
                 .centerInside()
@@ -100,7 +108,7 @@ public class Capture_Fragment extends Fragment {
                         }
 
                     } catch (IOException e) {
-                        ToastMessageTask.fileNotWritten(context);
+                        ToastMessageTask.fileNotWritten(getContext());
                         Log.e("File: ", "Could not create file.", e);
                     }
                     Log.i("File: ", incImage);
@@ -124,7 +132,7 @@ public class Capture_Fragment extends Fragment {
     }
 
     private void setCapturedImage() {
-        Picasso.with(context)
+        Picasso.with(getContext())
                 .load(imageUri)
                 .fit()
                 .centerInside()
@@ -141,11 +149,11 @@ public class Capture_Fragment extends Fragment {
 
     public void uploadButton() throws Exception {
         if (uploadCheck(description, imageUri)) {
-            loginlogoff liloobj = new loginlogoff(context);
+            loginlogoff liloobj = new loginlogoff(getContext());
             ringProgressDialog.show();
             QueryArguments.addArg(loginlogoff.getSid());
             Log.d("Message", "Ping to CI server indicated no login session.");
-            if (liloobj.tryLogin(context)) {
+            if (liloobj.tryLogin(getContext())) {
                 Log.d("Message", "CI Login successful and ready to upload file.");
                 createTopic();//create a topic instance object
             }
@@ -175,12 +183,12 @@ public class Capture_Fragment extends Fragment {
     Boolean uploadCheck(EditText description, Uri imageUri) {
         if (imageUri == null) {//checks if image taken yet
             ringProgressDialog.dismiss();
-            ToastMessageTask.picNotTaken(context);
+            ToastMessageTask.picNotTaken(getContext());
             return false;
         }
         if (String.valueOf(description.getText()).isEmpty()) {
             ringProgressDialog.dismiss();
-            ToastMessageTask.fillFieldMessage(context);
+            ToastMessageTask.fillFieldMessage(getContext());
             return false;
         }
         return true;//if pic was taken and there is a non-empty description, return true
