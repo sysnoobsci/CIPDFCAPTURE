@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-            android:title="@string/CI_config_preferences">
+    <PreferenceCategory android:title="@string/CI_config_preferences">
 
         <com.ameraz.android.cipdfcapture.app.CiServerPref
             android:title="@string/title_list_cprofiles"
-            android:key="list_preference_ci_servers"
-            />
+            android:key="list_preference_ci_servers" />
         <!--
         <ListPreference
             android:key="list_preference"
@@ -21,10 +19,10 @@
              in word processing). Like for other preference types, we assign a key
              here so it is able to save and restore its instance state. -->
         <PreferenceScreen
-                android:key="ci_server_preference"
-                android:title="@string/CI_config_screen_preference"
-                android:summary="@string/CI_config_summary_screen_preference">
-            
+            android:key="ci_server_preference"
+            android:title="@string/CI_config_screen_preference"
+            android:summary="@string/CI_config_summary_screen_preference">
+
             <!-- You can place more preferences here that will be shown on the next screen. -->
             <EditTextPreference
                 android:key="profilename_preference"
@@ -63,71 +61,71 @@
                 android:summary="@string/summary_next_screen_password_preference"
                 android:dialogTitle="@string/dialog_title_password_preference" />
 
-            <Preference android:title="@string/title_next_screen_button_preference"
+            <Preference
+                android:title="@string/title_next_screen_button_preference"
                 android:key="save"
-                android:summary="@string/summary_next_screen_button_preference"/>
+                android:summary="@string/summary_next_screen_button_preference" />
 
         </PreferenceScreen>
 
     </PreferenceCategory>
 
-        <!-- You can place more preferences here that will be shown on the next screen. -->
-        <PreferenceCategory
-            android:title="@string/client_config_preferences">
+    <!-- You can place more preferences here that will be shown on the next screen. -->
+    <PreferenceCategory android:title="@string/client_config_preferences">
 
-            <PreferenceScreen
-                android:key="timeout_preference"
-                android:title="@string/CI_timeout_screen_preference"
-                android:summary="@string/CI_timeout_summary_screen_preference">
+        <PreferenceScreen
+            android:key="timeout_preference"
+            android:title="@string/CI_timeout_screen_preference"
+            android:summary="@string/CI_timeout_summary_screen_preference">
 
-                <EditTextPreference
-                    android:key="actiontimeout_preference"
-                    android:title="@string/title_next_screen_actiontimeout_preference"
-                    android:summary="@string/summary_next_screen_actiontimeout_preference"
-                    android:numeric="integer"
-                    android:dialogTitle="@string/dialog_title_actiontimeout_preference" />
+            <EditTextPreference
+                android:key="actiontimeout_preference"
+                android:title="@string/title_next_screen_actiontimeout_preference"
+                android:summary="@string/summary_next_screen_actiontimeout_preference"
+                android:numeric="integer"
+                android:dialogTitle="@string/dialog_title_actiontimeout_preference" />
 
-                <EditTextPreference
-                    android:key="lilotimeout_preference"
-                    android:title="@string/title_next_screen_lilotimeout_preference"
-                    android:summary="@string/summary_next_screen_lilotimeout_preference"
-                    android:numeric="integer"
-                    android:dialogTitle="@string/dialog_title_lilotimeout_preference" />
+            <EditTextPreference
+                android:key="lilotimeout_preference"
+                android:title="@string/title_next_screen_lilotimeout_preference"
+                android:summary="@string/summary_next_screen_lilotimeout_preference"
+                android:numeric="integer"
+                android:dialogTitle="@string/dialog_title_lilotimeout_preference" />
 
-                <EditTextPreference
-                    android:key="uploadtimeout_preference"
-                    android:title="@string/title_next_screen_uploadtimeout_preference"
-                    android:summary="@string/summary_next_screen_uploadtimeout_preference"
-                    android:numeric="integer"
-                    android:dialogTitle="@string/dialog_title_uploadtimeout_preference" />
+            <EditTextPreference
+                android:key="uploadtimeout_preference"
+                android:title="@string/title_next_screen_uploadtimeout_preference"
+                android:summary="@string/summary_next_screen_uploadtimeout_preference"
+                android:numeric="integer"
+                android:dialogTitle="@string/dialog_title_uploadtimeout_preference" />
 
-            </PreferenceScreen>
-            <PreferenceScreen
-                android:key="gallery_preference"
-                android:title="Gallery Settings">
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="gallery_preference"
+            android:title="Gallery Settings">
 
-                <EditTextPreference
-                    android:key="column_preference"
-                    android:title="Number of columns in the gallery"
-                    android:numeric="integer"
-                    android:dialogTitle="Number of columns"/>
+            <EditTextPreference
+                android:key="column_preference"
+                android:title="Number of columns in the gallery"
+                android:numeric="integer"
+                android:dialogTitle="Number of columns" />
 
 
-            </PreferenceScreen>
-        </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory>
 
-    
-<PreferenceCategory
-    android:title="@string/oresources_attributes">
 
-    <PreferenceScreen
-        android:title="@string/title_intent_preference"
-        android:summary="@string/summary_intent_preference">
+    <PreferenceCategory android:title="@string/oresources_attributes">
 
-        <intent android:action="android.intent.action.VIEW"
-            android:data="http://systemware.com/" />
+        <PreferenceScreen
+            android:title="@string/title_intent_preference"
+            android:summary="@string/summary_intent_preference">
 
-    </PreferenceScreen>
-</PreferenceCategory>
-    
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://systemware.com/" />
+
+        </PreferenceScreen>
+    </PreferenceCategory>
+
 </PreferenceScreen>

@@ -13,7 +13,7 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
     static String toastMessage;
     static Context mContext;
 
-    protected ToastMessageTask(Context mContext, String toastMessage) {
+    public ToastMessageTask(Context mContext, String toastMessage) {
         setmContext(mContext);
         setToastMessage(toastMessage);
     }
@@ -46,26 +46,26 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
         toast.show();
     }
 
-    protected static void noConnectionMessage(Context context) {
+    public static void noConnectionMessage(Context context) {
         setmContext(context);
         ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Connection to CI Server failed/timed out. Check " +
                 "CI Connection Profile under Settings.");
         tmtask.execute();
     }
 
-    protected static void reportNotValidMessage(Context context) {
+    public static void reportNotValidMessage(Context context) {
         setmContext(context);
         ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Report Name not found.");
         tmtask.execute();
     }
 
-    protected static void fillFieldMessage(Context context) {
+    public static void fillFieldMessage(Context context) {
         setmContext(context);
         ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Error. Fill out all the fields.");
         tmtask.execute();
     }
 
-    protected static void fileUploadStatus(Context context, Boolean flag) {
+    public static void fileUploadStatus(Context context, Boolean flag) {
         setmContext(context);
         if (flag) {
             Log.d("fileUploadStatus()", "File was successfully Uploaded.");
@@ -78,13 +78,13 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
         }
     }
 
-    protected static void fileNotWritten(Context context) {
+    public static void fileNotWritten(Context context) {
         setmContext(context);
         ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Error writing file to local storage");
         tmtask.execute();
     }
 
-    protected static void picNotTaken(Context context) {
+    public static void picNotTaken(Context context) {
         setmContext(context);
         ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Error. No image has been taken yet.");
         tmtask.execute();

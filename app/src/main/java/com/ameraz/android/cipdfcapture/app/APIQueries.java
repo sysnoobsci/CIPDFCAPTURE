@@ -1,7 +1,9 @@
 package com.ameraz.android.cipdfcapture.app;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.apache.http.HttpEntity;
@@ -22,11 +24,15 @@ import java.util.concurrent.TimeoutException;
  * Created by adrian.meraz on 6/27/2014.
  */
 public class APIQueries {
-    static Context mContext;
+    private static Context mContext;
     static Boolean actionresult = false;
+    static int action_timeout = 5000;//default values in milliseconds of timeouts
+    static int lilo_timeout = 5000;
+    static int upload_timeout = 30000;
 
     public APIQueries(Context mContext) {
         setmContext(mContext);
+        setTimeouts();//set timeouts whenever APIQueries object is instantiated
     }
 
     public static Boolean getActionresult() {
@@ -45,26 +51,36 @@ public class APIQueries {
         this.mContext = mContext;
     }
 
+    void setTimeouts() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getmContext());
+        action_timeout = Integer.parseInt(preferences.getString("actiontimeout_preference", String.valueOf(action_timeout))) * 1000;
+        lilo_timeout = Integer.parseInt(preferences.getString("lilotimeout_preference", String.valueOf(lilo_timeout))) * 1000;
+        upload_timeout = Integer.parseInt(preferences.getString("uploadtimeout_preference", String.valueOf(upload_timeout))) * 1000;
+        Log.d("setTimeouts()", "action_timeout in seconds: " + (double) action_timeout / 1000);
+        Log.d("setTimeouts()", "lilo_timeout in seconds: " + (double) lilo_timeout / 1000);
+        Log.d("setTimeouts()", "upload_timeout in seconds: " + (double) upload_timeout / 1000);
+    }
+
     public void resetResult() {
         setActionresult(false);
     }
 
     String targetCIQuery() {
-        loginlogoff lilobj = new loginlogoff(mContext);
+        LogonSession lilobj = new LogonSession(mContext);
         String targetCIQuery = "http://" + lilobj.getHostname() + "." +
                 lilobj.getDomain() + ":" + lilobj.getPortnumber() + "/ci";
         return targetCIQuery;
     }
 
     //createtopic
-    void createtopicQuery(ArrayList<Object> args) throws IOException, XmlPullParserException, InterruptedException, ExecutionException {
+    public void createtopicQuery(ArrayList<Object> args) throws IOException, XmlPullParserException, InterruptedException, ExecutionException {
 
         ArrayList<Object> actionargs = args;
         actionargs.add("act,createtopic");
         HttpEntity entity = mebBuilder(actionargs);
         APITask apitaskobj = new APITask(targetCIQuery(), entity, mContext);
         try {
-            apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
+            apitaskobj.execute().get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask.noConnectionMessage(getmContext());
         }
@@ -77,14 +93,14 @@ public class APIQueries {
     }
 
     //listnode - add &sid to the string for it to work properly
-    String[] listnodeQuery(ArrayList<Object> args) throws ExecutionException,
+    public String[] listnodeQuery(ArrayList<Object> args) throws ExecutionException,
             InterruptedException, IOException, XmlPullParserException {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,listnode");
         HttpEntity entity = mebBuilder(actionargs);
         APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
         try {
-            apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
+            apitaskobj.execute().get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask.noConnectionMessage(getmContext());
         }
@@ -105,7 +121,7 @@ public class APIQueries {
     }
 
     //listversion
-    String listversionQuery(ArrayList<Object> args) throws ExecutionException,
+    public String listversionQuery(ArrayList<Object> args) throws ExecutionException,
             InterruptedException, IOException, XmlPullParserException {
 
         ArrayList<Object> actionargs = args;
@@ -113,7 +129,7 @@ public class APIQueries {
         HttpEntity entity = mebBuilder(actionargs);
         APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
         try {
-            apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
+            apitaskobj.execute().get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask.noConnectionMessage(getmContext());
         }
@@ -137,13 +153,13 @@ public class APIQueries {
     }
 
     //logon
-    Boolean logonQuery(ArrayList<Object> args) throws Exception {
+    public Boolean logonQuery(ArrayList<Object> args) throws Exception {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,logon");
         HttpEntity entity = mebBuilder(actionargs);
         APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
         try {
-            apitaskobj.execute().get(MainActivity.getLilo_timeout(), TimeUnit.MILLISECONDS);
+            apitaskobj.execute().get(lilo_timeout, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             ToastMessageTask.noConnectionMessage(getmContext());
             e.printStackTrace();
@@ -151,19 +167,20 @@ public class APIQueries {
         Log.d("logonQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        if (getActionresult()) {//if the ping is successful(i.e. user logged in)
-            loginlogoff.setSid(apitaskobj.getResponse());
+        Boolean logonStatus = getActionresult();
+        if (logonStatus) {//if the ping is successful(i.e. user logged in)
+            LogonSession.setSid(apitaskobj.getResponse());
             Log.d("logonQuery()", "CI Server logon successful.");
         } else {
             Log.d("logonQuery()", "CI Server logon failed.");
         }
         resetResult();//reset action result after checking it
         QueryArguments.clearList();//clear argslist after query
-        return getActionresult();
+        return logonStatus;
     }
 
     //logoff
-    Boolean logoffQuery(ArrayList<Object> args) throws ExecutionException,
+    public Boolean logoffQuery(ArrayList<Object> args) throws ExecutionException,
             InterruptedException, IOException, XmlPullParserException {
 
         ArrayList<Object> actionargs = args;
@@ -171,36 +188,37 @@ public class APIQueries {
         HttpEntity entity = mebBuilder(actionargs);
         APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
         try {
-            apitaskobj.execute().get(MainActivity.getLilo_timeout(), TimeUnit.MILLISECONDS);
+            apitaskobj.execute().get(lilo_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask.noConnectionMessage(getmContext());
         }
         Log.d("logoffQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        loginlogoff.logoffMessage(getActionresult(), getmContext());//show status of logon action
-        if (getActionresult()) {//if the ping is successful(i.e. user logged in)
+        Boolean logoffStatus = getActionresult();
+        LogonSession.logoffMessage(getActionresult(), getmContext());//show status of logon action
+        if (logoffStatus) {//if the ping is successful(i.e. user logged in)
             Log.d("logoffQuery()", "CI Server logoff successful.");
         } else {
             Log.d("logoffQuery()", "CI Server logoff failed.");
         }
         resetResult();//reset action result after checking it
         QueryArguments.clearList();//clear argslist after query
-        return getActionresult();
+        return logoffStatus;
     }
 
     //ping
     public Boolean pingQuery() throws ExecutionException, InterruptedException, IOException, XmlPullParserException {//pings the CI server, returns true if ping successful
-        if (!loginlogoff.doesSidExist()) {//check if there is an sid (i.e. a session established)
+        if (!LogonSession.doesSidExist()) {//check if there is an sid (i.e. a session established)
             Log.d("pingQuery()", "Empty sid found. Need to login");
             return false;//if no session established, return false
         }
         QueryArguments.addArg("act,ping");
-        QueryArguments.addArg("sid," + loginlogoff.getSid());
+        QueryArguments.addArg("sid," + LogonSession.getSid());
         HttpEntity entity = mebBuilder(QueryArguments.getArgslist());
         APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
         try {
-            apitaskobj.execute().get(MainActivity.getAction_timeout(), TimeUnit.MILLISECONDS);
+            apitaskobj.execute().get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -222,7 +240,7 @@ public class APIQueries {
 
     //retrieve
     public String retrieveQuery(String tid) {//pings the CI server, returns true if ping successful
-        String retrieveQuery = targetCIQuery() + "?act=retrieve&tid=" + tid + "&sid=" + loginlogoff.getSid();
+        String retrieveQuery = targetCIQuery() + "?act=retrieve&tid=" + tid + "&sid=" + LogonSession.getSid();
         return retrieveQuery;
     }
 
@@ -256,7 +274,7 @@ public class APIQueries {
         return entity;
     }
 
-    ArrayList<String> getVersionInfo(String xmlResponse) throws IOException, XmlPullParserException {
+    public ArrayList<String> getVersionInfo(String xmlResponse) throws IOException, XmlPullParserException {
         XmlParser xobj = new XmlParser(xmlResponse);
         ArrayList<String> versionInfo = new ArrayList<String>();
         String path = xobj.findTagText("path");//get the path name

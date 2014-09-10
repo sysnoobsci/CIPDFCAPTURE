@@ -15,6 +15,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.ameraz.android.cipdfcapture.app.fragments.Capture_Fragment;
+import com.ameraz.android.cipdfcapture.app.fragments.Home_Fragment;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,20 +28,16 @@ public class MainActivity extends Activity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     static Preference button;
-    SharedPreferences preferences;
     private CharSequence mTitle;
-    Context maContext = MainActivity.this;
+    Context context = MainActivity.this;
     DatabaseHandler db;
 
     private Boolean first_open = true;//keeps track of if the app is opening for the first time to show the home screen
-    private static int action_timeout = 2000;//action timeout - default 1 sec
-    private static int lilo_timeout = 2000;//login/logout timeout - default 1 sec
-    private static int upload_timeout = 30000;//upload timeout - default 30 secs
+
 
     public Boolean getFirst_open() {
         return first_open;
@@ -48,57 +47,17 @@ public class MainActivity extends Activity
         this.first_open = first_open;
     }
 
-    public static int getAction_timeout() {
-        return action_timeout;
-    }
-
-    public static void setAction_timeout(String action_timeout) {
-        if (action_timeout != null) {
-            MainActivity.action_timeout = Integer.parseInt(action_timeout) * 1000;
-        } else {
-            Log.d("Message", "No action timeout in preferences. Default set to " + getAction_timeout() + " milliseconds");
-        }
-    }
-
-    public static int getLilo_timeout() {
-        return lilo_timeout;
-    }
-
-    public static void setLilo_timeout(String lilo_timeout) {
-        if (lilo_timeout != null) {
-            MainActivity.lilo_timeout = Integer.parseInt(lilo_timeout) * 1000;
-        } else {
-            Log.d("Message", "No login/logoff timeout in preferences. Default set to " + getLilo_timeout() + " milliseconds");
-        }
-    }
-
-    public static int getUpload_timeout() {
-        return upload_timeout;
-    }
-
-    public static void setUpload_timeout(String upload_timeout) {
-        if (upload_timeout != null) {
-            MainActivity.upload_timeout = Integer.parseInt(upload_timeout) * 1000;
-        } else {
-            Log.d("Message", "No upload timeout in preferences. Default set to " + getUpload_timeout() + " milliseconds");
-        }
-    }
 
     public void saveTimestamp() {//save current timestamp
-        Log.d("PrefDate", preferences.getString("pref_date", "n/a"));
+        SharedPreferences timestampPrefs = context.getSharedPreferences("timestamp", MODE_PRIVATE);
+        Log.d("PrefDate", timestampPrefs.getString("pref_date", "n/a"));
         //setting up date and time on Home_Fragment before closing app
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentTimeStamp = dateFormat.format(new Date()); // Find todays date
         Log.d("Date", currentTimeStamp);//log the time stamp
-        SharedPreferences.Editor edit = preferences.edit();
+        SharedPreferences.Editor edit = timestampPrefs.edit();
         edit.putString("pref_date", currentTimeStamp);//added date to preferences for next app open
         edit.commit();
-    }
-
-    public void setTimeouts() {
-        setAction_timeout(preferences.getString("actiontimeout_preference", null));
-        setLilo_timeout(preferences.getString("lilotimeout_preference", null));
-        setUpload_timeout(preferences.getString("uploadtimeout_preference", null));
     }
 
     public static void buttonClickListener(final Context context) {
@@ -106,14 +65,13 @@ public class MainActivity extends Activity
             @Override
             public boolean onPreferenceClick(Preference arg0) {
                 //code for what you want it to do
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-                String profkey = preferences.getString("profilename_preference", null);
-                String hkey = preferences.getString("hostname_preference", null);
-                String dkey = preferences.getString("domain_preference", null);
-                String portkey = preferences.getString("port_preference", null);
-                String userkey = preferences.getString("username_preference", null);
-                String pwkey = preferences.getString("password_preference", null);
+                SharedPreferences connProfile = PreferenceManager.getDefaultSharedPreferences(context);
+                String profkey = connProfile.getString("profilename_preference", null);
+                String hkey = connProfile.getString("hostname_preference", null);
+                String dkey = connProfile.getString("domain_preference", null);
+                String portkey = connProfile.getString("port_preference", null);
+                String userkey = connProfile.getString("username_preference", null);
+                String pwkey = connProfile.getString("password_preference", null);
 
                 ArrayList<String> arlist = new ArrayList<String>();
                 arlist.add(profkey);
@@ -143,11 +101,7 @@ public class MainActivity extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-
         super.onCreate(savedInstanceState);
-        // Create loginDialog Dialog
-        setTimeouts();
         setContentView(R.layout.activity_main);
         db = new DatabaseHandler(getApplicationContext());//create a db if one doesn't exist
         //navigation drawer stuff
@@ -227,9 +181,9 @@ public class MainActivity extends Activity
         if (id == R.id.action_logoff) {
             new Thread(new Runnable() {
                 public void run() {
-                    APIQueries apiobj = new APIQueries(maContext);
+                    APIQueries apiobj = new APIQueries(context);
                     try {
-                        QueryArguments.addArg(loginlogoff.getSid());
+                        QueryArguments.addArg(LogonSession.getSid());
                         apiobj.logoffQuery(QueryArguments.getArgslist());
                     } catch (Exception e) {
                         e.printStackTrace();

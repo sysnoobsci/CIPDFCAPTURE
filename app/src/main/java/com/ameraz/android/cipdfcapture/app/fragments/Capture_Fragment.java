@@ -1,14 +1,12 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.fragments;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +16,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.ameraz.android.cipdfcapture.app.APIQueries;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
+import com.ameraz.android.cipdfcapture.app.FilePath;
+import com.ameraz.android.cipdfcapture.app.LogonSession;
+import com.ameraz.android.cipdfcapture.app.QueryArguments;
+import com.ameraz.android.cipdfcapture.app.R;
+import com.ameraz.android.cipdfcapture.app.ToastMessageTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -41,7 +45,6 @@ public class Capture_Fragment extends Fragment {
     ProgressDialog ringProgressDialog;
     static Context context;
 
-    SharedPreferences preferences;
     final static private String tplid1 = "create.phonecapture";//time in milliseconds for createtopic attempt to timeout
 
     public static Context getContext() {
@@ -56,8 +59,7 @@ public class Capture_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.capture_fragment, container, false);
         initializeViews(rootView);
-        context = getActivity();
-        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        setContext(getActivity());
         apiobj = new APIQueries(getContext());
         ringProgressDialog = new ProgressDialog(getContext());
         setUploadProgressDialog();
@@ -151,16 +153,16 @@ public class Capture_Fragment extends Fragment {
         description = (EditText) rootView.findViewById(R.id.description_text);
     }
 
-    public void uploadButton(){
+    public void uploadButton() throws Exception {
+        LogonSession lsobj = new LogonSession(getContext());
         if (uploadCheck(description, imageUri)) {
-            loginlogoff liloobj = new loginlogoff(getContext());
-            try {
-                if (liloobj.tryLogin(getContext())) {
-                    Log.d("Message", "CI Login successful and ready to upload file.");
-                    createTopic();//create a topic instance object
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            Log.d("uploadButton()", "getContext() value: " + getContext());
+            Boolean logonStatus = lsobj.tryLogin(getContext());
+            if (logonStatus) {
+                Log.d("Message", "CI Login successful and ready to upload file.");
+                createTopic();//create a topic instance object
+            } else {
+                Log.d("Message", "CI Login failed. Unable to load file.");
             }
         }
         ringProgressDialog.dismiss();
@@ -171,7 +173,7 @@ public class Capture_Fragment extends Fragment {
         QueryArguments.addArg("tplid," + tplid1);
         QueryArguments.addArg("name," + description.getText().toString());
         QueryArguments.addArg("detail,y");
-        QueryArguments.addArg("sid," + loginlogoff.getSid());
+        QueryArguments.addArg("sid," + LogonSession.getSid());
         QueryArguments.addArg(imageUri);
         try {
             apiobj.createtopicQuery(QueryArguments.getArgslist());

@@ -8,11 +8,11 @@ import java.util.ArrayList;
 public class QueryArguments {
     static private ArrayList<Object> argslist = new ArrayList<Object>();
 
-    static ArrayList<Object> getArgslist() {
+    public static ArrayList<Object> getArgslist() {
         return argslist;
     }
 
-    static void addArg(Object arg) {
+    public static void addArg(Object arg) {
         argslist.add(arg);
     }
 

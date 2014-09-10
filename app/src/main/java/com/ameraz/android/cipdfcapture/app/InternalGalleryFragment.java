@@ -15,6 +15,8 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
+import com.ameraz.android.cipdfcapture.app.fragments.Upload_Fragment;
+
 /**
  * Created by john.williams on 8/26/2014.
  */
@@ -83,7 +85,7 @@ public class InternalGalleryFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fragment fragment = new UploadFragment();
+                Fragment fragment = new Upload_Fragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("fileName", ga.getNames(position));
                 fragment.setArguments(bundle);

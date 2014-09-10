@@ -1,11 +1,9 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.fragments;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +17,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ameraz.android.cipdfcapture.app.APIQueries;
+import com.ameraz.android.cipdfcapture.app.LogonSession;
+import com.ameraz.android.cipdfcapture.app.QueryArguments;
+import com.ameraz.android.cipdfcapture.app.R;
+import com.ameraz.android.cipdfcapture.app.ToastMessageTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -30,7 +33,6 @@ import java.util.List;
 public class CServer_Fragment extends Fragment {
 
     static View rootView;
-    SharedPreferences preferences;
     private EditText reportName;
     private TextView dsid;
     private TextView cts;
@@ -49,7 +51,6 @@ public class CServer_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.csserver_fragment, container, false);
-        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         apiobj = new APIQueries(getActivity());
         instantiateViews();
         setFonts();
@@ -96,8 +97,7 @@ public class CServer_Fragment extends Fragment {
     }
 
     public void searchButton() throws Exception {
-        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        loginlogoff liloobj = new loginlogoff(getActivity());
+        LogonSession liloobj = new LogonSession(getActivity());
         ringProgressDialog.show();
         if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to search for reports.");
@@ -153,7 +153,7 @@ public class CServer_Fragment extends Fragment {
     public void fillSpinner(final APIQueries apiobj) {
         if (!reportName.getText().toString().isEmpty()) {
             QueryArguments.addArg("res," + reportName.getText().toString().toUpperCase());
-            QueryArguments.addArg("sid," + loginlogoff.getSid());
+            QueryArguments.addArg("sid," + LogonSession.getSid());
             new Thread() {
                 public void run() {
                     try {

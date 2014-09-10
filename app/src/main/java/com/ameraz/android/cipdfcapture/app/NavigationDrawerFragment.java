@@ -19,6 +19,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
+import com.ameraz.android.cipdfcapture.app.fragments.CServer_Fragment;
+import com.ameraz.android.cipdfcapture.app.fragments.Capture_Fragment;
+import com.ameraz.android.cipdfcapture.app.fragments.Home_Fragment;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
