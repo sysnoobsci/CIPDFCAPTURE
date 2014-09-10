@@ -57,8 +57,13 @@ public class Upload_Fragment extends Fragment {
         apiobj = new APIQueries(getContext());
         ringProgressDialog = new ProgressDialog(getContext());
         setUploadProgressDialog();
-        imageButtonListener();
+        gridImageListener();
         //gets the data passed to it from InternalGalleryFragment and creates the uri.
+        setUriAndImage();
+        return rootView;
+    }
+
+    private void setUriAndImage() {
         Bundle bundle = this.getArguments();
         String fileName = bundle.getString("fileName");
         FilePath fp = new FilePath();
@@ -67,9 +72,7 @@ public class Upload_Fragment extends Fragment {
         //Using the Picasso library, loads the image onto the screen.
         setImage();
         description.setText(fileName);
-        return rootView;
     }
-
 
     private void initializeViews(View rootView) {
         imageView = (GestureImageView) rootView.findViewById(R.id.gallery_single_image_view);
@@ -90,7 +93,7 @@ public class Upload_Fragment extends Fragment {
                 .into(imageView);
     }
 
-    private void imageButtonListener() {
+    private void gridImageListener() {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

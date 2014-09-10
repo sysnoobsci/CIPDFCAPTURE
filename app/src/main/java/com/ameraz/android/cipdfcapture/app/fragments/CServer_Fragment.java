@@ -2,6 +2,7 @@ package com.ameraz.android.cipdfcapture.app.fragments;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +42,7 @@ public class CServer_Fragment extends Fragment {
     private ImageView imageView;
     private ImageButton imageButton2;
     private WebView webView;
+    static Context context;
     APIQueries apiobj = null;
     Spinner sItems;
     List<String> spinnerVerArrayL = new ArrayList<String>();
@@ -48,12 +50,23 @@ public class CServer_Fragment extends Fragment {
     ArrayList<String> versInfo = new ArrayList<String>();
     ProgressDialog ringProgressDialog;
 
+    public static Context getContext() {
+        return context;
+    }
+
+    public static void setContext(Context context) {
+        CServer_Fragment.context = context;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.csserver_fragment, container, false);
+        setContext(getActivity());
         apiobj = new APIQueries(getActivity());
         instantiateViews();
         setFonts();
+        ringProgressDialog = new ProgressDialog(getContext());
+        setSearchProgressDialog();
         searchButtonListener();
         spinnerItemListener();
         return rootView;
@@ -91,7 +104,7 @@ public class CServer_Fragment extends Fragment {
         fmt.setText(infoPieces[3]);
     }
 
-    private void setUploadProgressDialog() {
+    private void setSearchProgressDialog() {
         ringProgressDialog.setTitle("Performing Action ...");
         ringProgressDialog.setMessage("Searching for report ...");
     }

@@ -182,8 +182,8 @@ public class MainActivity extends Activity
             new Thread(new Runnable() {
                 public void run() {
                     APIQueries apiobj = new APIQueries(context);
-                    try {
                         QueryArguments.addArg(LogonSession.getSid());
+                    try {
                         apiobj.logoffQuery(QueryArguments.getArgslist());
                     } catch (Exception e) {
                         e.printStackTrace();
