@@ -17,6 +17,7 @@ import android.view.MenuItem;
 
 import com.ameraz.android.cipdfcapture.app.fragments.Capture_Fragment;
 import com.ameraz.android.cipdfcapture.app.fragments.Home_Fragment;
+import com.ameraz.android.cipdfcapture.app.fragments.NavigationDrawerFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -182,7 +183,7 @@ public class MainActivity extends Activity
             new Thread(new Runnable() {
                 public void run() {
                     APIQueries apiobj = new APIQueries(context);
-                        QueryArguments.addArg(LogonSession.getSid());
+                    QueryArguments.addArg(LogonSession.getSid());
                     try {
                         apiobj.logoffQuery(QueryArguments.getArgslist());
                     } catch (Exception e) {

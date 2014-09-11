@@ -20,7 +20,6 @@ public class UploadProcess {
     String topicTemplateName;
     SharedPreferences preferences;
     APIQueries apiobj;
-    XmlParser xobj;
 
     public UploadProcess(Context context, EditText description, Uri imageUri,
                          ProgressDialog ringProgressDialog) {

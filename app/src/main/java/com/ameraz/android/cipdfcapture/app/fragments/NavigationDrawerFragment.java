@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.fragments;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -19,9 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import com.ameraz.android.cipdfcapture.app.fragments.CServer_Fragment;
-import com.ameraz.android.cipdfcapture.app.fragments.Capture_Fragment;
-import com.ameraz.android.cipdfcapture.app.fragments.Home_Fragment;
+import com.ameraz.android.cipdfcapture.app.ExpandableListAdapter;
+import com.ameraz.android.cipdfcapture.app.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

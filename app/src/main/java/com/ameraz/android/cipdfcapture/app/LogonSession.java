@@ -24,7 +24,6 @@ public class LogonSession {
     private static String password;
     private static String sid;//session id
     private static String jsid;//jsession id
-    static SharedPreferences preferences;
     final static int SIZE_OF_TARGET_SID = 40;//size of session ID
     final static int SIZE_OF_TARGET_JSID = 32;//size of session ID
     static APIQueries apiobj;

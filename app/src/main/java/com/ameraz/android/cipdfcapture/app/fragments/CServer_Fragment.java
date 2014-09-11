@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -23,7 +24,6 @@ import com.ameraz.android.cipdfcapture.app.LogonSession;
 import com.ameraz.android.cipdfcapture.app.QueryArguments;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.ToastMessageTask;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +43,12 @@ public class CServer_Fragment extends Fragment {
     private ImageButton imageButton2;
     private WebView webView;
     static Context context;
+    String resp;
     APIQueries apiobj = null;
     Spinner sItems;
     List<String> spinnerVerArrayL = new ArrayList<String>();
     List<String> tidArrayL = new ArrayList<String>();
+    List<String> fmtArrayL = new ArrayList<String>();
     ArrayList<String> versInfo = new ArrayList<String>();
     ProgressDialog ringProgressDialog;
 
@@ -62,7 +64,7 @@ public class CServer_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.csserver_fragment, container, false);
         setContext(getActivity());
-        apiobj = new APIQueries(getActivity());
+        apiobj = new APIQueries(getContext());
         instantiateViews();
         setFonts();
         ringProgressDialog = new ProgressDialog(getContext());
@@ -81,6 +83,7 @@ public class CServer_Fragment extends Fragment {
         fmt = (TextView) rootView.findViewById(R.id.textView8);
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
         sItems = (Spinner) rootView.findViewById(R.id.spinner);
+        webView = (WebView) rootView.findViewById(R.id.webView);
     }
 
     public void setFonts() {
@@ -88,7 +91,7 @@ public class CServer_Fragment extends Fragment {
         TextView txt2 = (TextView) rootView.findViewById(R.id.textView2);
         TextView txt3 = (TextView) rootView.findViewById(R.id.textView3);
         TextView txt4 = (TextView) rootView.findViewById(R.id.textView4);
-        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
+        Typeface font = Typeface.createFromAsset(getContext().getAssets(), "OpenSans-Regular.ttf");
         txt1.setTypeface(font);
         txt2.setTypeface(font);
         txt3.setTypeface(font);
@@ -110,7 +113,7 @@ public class CServer_Fragment extends Fragment {
     }
 
     public void searchButton() throws Exception {
-        LogonSession liloobj = new LogonSession(getActivity());
+        LogonSession liloobj = new LogonSession(getContext());
         ringProgressDialog.show();
         if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
             Log.d("Message", "CI Login successful and ready to search for reports.");
@@ -118,12 +121,12 @@ public class CServer_Fragment extends Fragment {
             ringProgressDialog.dismiss();
         } else {//if ping fails, selected ci profile will be used to log back in
             Log.d("Message", "Ping to CI server indicated no login session.");
-            if (liloobj.tryLogin(getActivity())) {
+            if (liloobj.tryLogin(getContext())) {
                 Log.d("Message", "CI Login successful and ready to search for reports.");
                 fillSpinner(apiobj);
                 ringProgressDialog.dismiss();
             } else {//if login attempt fails from trying the CI server profile, prompt user to check profile
-                ToastMessageTask.noConnectionMessage(getActivity());
+                ToastMessageTask.noConnectionMessage(getContext());
                 ringProgressDialog.dismiss();
             }
         }
@@ -134,16 +137,17 @@ public class CServer_Fragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int pos, long id) {
                 setText(pos);
-                String resp = apiobj.retrieveQuery(tidArrayL.get(pos));//get the right tid
-                Picasso.with(getActivity()).setDebugging(true);
-                Picasso.with(getActivity())
+                resp = apiobj.retrieveQuery(tidArrayL.get(pos));//get the right tid
+                Log.d("spinnerItemListener()", "resp value: " + resp);
+                /*Picasso.with(getContext())
                         .load(resp)
-                        .resize(500, 500)
+                        .fit()
                                 //.placeholder(R.drawable.sw_placeholder)
-                        .centerCrop()
+                        .centerInside()
                         .into(imageView);
+                */
+                open(webView);
             }
-
             public void onNothingSelected(AdapterView<?> parent) {
                 //do nothing
             }
@@ -172,6 +176,7 @@ public class CServer_Fragment extends Fragment {
                     try {
                         versInfo = apiobj.getVersionInfo(apiobj.listversionQuery(QueryArguments.getArgslist()));
                         if (versInfo != null) {
+
                             spinnerVerArrayL = APIQueries.showItems(versInfo, 4);//get version numbers via 4
                             tidArrayL = APIQueries.showItems(versInfo, 5);//get tids via 5
                             getActivity().runOnUiThread(new Runnable() {
@@ -190,15 +195,32 @@ public class CServer_Fragment extends Fragment {
             }.start();
         } else {
             ringProgressDialog.dismiss();
-            ToastMessageTask tmtask = new ToastMessageTask(getActivity(), "Error. Fill out Report Name field.");
+            ToastMessageTask tmtask = new ToastMessageTask(getContext(), "Error. Fill out Report Name field.");
             tmtask.execute();
         }
     }
 
     public void createSpinner() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinnerVerArrayL);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, spinnerVerArrayL);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sItems.setAdapter(adapter);
+    }
+
+    public void open(View view) {
+        String url = resp;
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        webView.loadUrl(url);
+
+    }
+
+    private class MyBrowser extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return true;
+        }
     }
 
 
