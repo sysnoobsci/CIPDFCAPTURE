@@ -95,4 +95,12 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
         ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Error. Select a connection profile.");
         tmtask.execute();
     }
+
+    protected static void noValidTopicTemplateSpecified(Context context) {
+        setmContext(context);
+        ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Error. Topic template id is invalid. Check settings.");
+        tmtask.execute();
+    }
+
+
 }

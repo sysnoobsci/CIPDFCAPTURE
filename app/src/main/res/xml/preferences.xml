@@ -6,15 +6,7 @@
         <com.ameraz.android.cipdfcapture.app.CiServerPref
             android:title="@string/title_list_cprofiles"
             android:key="list_preference_ci_servers" />
-        <!--
-        <ListPreference
-            android:key="list_preference"
-            android:title="@string/title_list_cprofiles"
-            android:summary="@string/summary_list_preference"
-            android:entries="@array/entries_list_preference"
-            android:entryValues="@array/entryvalues_list_preference"
-            android:dialogTitle="@string/dialog_title_list_preference" />
-        -->
+
         <!-- This PreferenceScreen tag serves as a screen break (similar to page break
              in word processing). Like for other preference types, we assign a key
              here so it is able to save and restore its instance state. -->
@@ -65,6 +57,20 @@
                 android:title="@string/title_next_screen_button_preference"
                 android:key="save"
                 android:summary="@string/summary_next_screen_button_preference" />
+
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:key="ci_cam_preference"
+            android:title="@string/CI_CAM_config_screen_preference"
+            android:summary="@string/CI_CAM_config_summary_screen_preference">
+
+            <!-- You can place more preferences here that will be shown on the next screen. -->
+            <EditTextPreference
+                android:key="camName_preference"
+                android:title="@string/CI_topictemplate_screen_preference"
+                android:summary="@string/CI_topictemplate_summary_screen_preference"
+                android:dialogTitle="@string/dialog_title_topictemplate_preference" />
 
         </PreferenceScreen>
 

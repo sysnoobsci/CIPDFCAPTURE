@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,8 @@ import android.widget.ImageButton;
 import com.ameraz.android.cipdfcapture.app.APIQueries;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.ameraz.android.cipdfcapture.app.FilePath;
-import com.ameraz.android.cipdfcapture.app.LogonSession;
-import com.ameraz.android.cipdfcapture.app.QueryArguments;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.ToastMessageTask;
+import com.ameraz.android.cipdfcapture.app.UploadProcess;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -38,8 +35,6 @@ public class Upload_Fragment extends Fragment {
     APIQueries apiobj = null;
     ProgressDialog ringProgressDialog;
     static Context context;
-
-    final static private String tplid1 = "create.phonecapture";//time in milliseconds for createtopic attempt to timeout
 
     public static Context getContext() {
         return context;
@@ -101,7 +96,8 @@ public class Upload_Fragment extends Fragment {
                 new Thread() {
                     public void run() {
                         try {
-                            uploadButton();
+                            UploadProcess upobj = new UploadProcess(getContext(), description, imageUri, ringProgressDialog);
+                            upobj.uploadProcess();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -111,45 +107,4 @@ public class Upload_Fragment extends Fragment {
         });
     }
 
-    public void uploadButton() throws Exception {
-        LogonSession lsobj = new LogonSession(getContext());
-        if (uploadCheck(description, imageUri)) {
-            Log.d("uploadButton()", "getContext() value: " + getContext());
-            Boolean logonStatus = lsobj.tryLogin(getContext());
-            if (logonStatus) {
-                Log.d("Message", "CI Login successful and ready to upload file.");
-                createTopic();//create a topic instance object
-            } else {
-                Log.d("Message", "CI Login failed. Unable to load file.");
-            }
-        }
-        ringProgressDialog.dismiss();
-    }
-
-
-    void createTopic() {
-        QueryArguments.addArg("tplid," + tplid1);
-        QueryArguments.addArg("name," + description.getText().toString());
-        QueryArguments.addArg("detail,y");
-        QueryArguments.addArg("sid," + LogonSession.getSid());
-        QueryArguments.addArg(imageUri);
-        try {
-            apiobj.createtopicQuery(QueryArguments.getArgslist());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        ringProgressDialog.dismiss();
-    }
-
-    Boolean uploadCheck(EditText description, Uri imageUri) {
-        if (imageUri == null) {//checks if image taken yet
-            ToastMessageTask.picNotTaken(getContext());
-            return false;
-        }
-        if (String.valueOf(description.getText()).isEmpty()) {
-            ToastMessageTask.fillFieldMessage(getContext());
-            return false;
-        }
-        return true;//if pic was taken and there is a non-empty description, return true
-    }
 }

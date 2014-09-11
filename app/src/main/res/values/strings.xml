@@ -27,15 +27,13 @@
     <string name="dialog_title_username_preference">Enter the Username</string>
     <string name="dialog_title_password_preference">Enter the Password</string>
 
+    <string name="dialog_title_topictemplate_preference">Enter the Topic Template Name</string>
+
     <string name="dialog_title_actiontimeout_preference">Enter the Action Timeout (Seconds)</string>
     <string name="dialog_title_lilotimeout_preference">Enter the Login/Logoff Timeout (Seconds)</string>
     <string name="dialog_title_uploadtimeout_preference">Enter the Upload Timeout (Seconds)</string>
 
-    <string name="title_checkbox_preference">Checkbox preference</string>
-    <string name="summary_checkbox_preference">This is a checkbox</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="inline_preferences">In-line preferences</string>
-    <string name="dialog_based_preferences">Dialog-based preferences</string>
+
     <string name="CI_config_preferences">Content Integrator preferences</string>
     <string name="client_config_preferences">Client preferences</string>
 
@@ -44,14 +42,19 @@
     <string name="title_list_cprofiles">Connection Profiles</string>
     <string name="summary_list_preference">List of Content Integrators to connect to</string>
     <string name="dialog_title_list_preference">Choose one</string>
-    <string name="CI_config_screen_preference">New CI Connection <Profile /></string>
-    <string name="CI_config_summary_screen_preference">Add info for new CI Server</string>
-    <string name="CI_timeout_screen_preference">Edit Timeouts <Profile /></string>
+
+    <string name="CI_config_screen_preference">New CI Connection</string>
+    <string name="CI_config_summary_screen_preference">Add new Ci connection profile</string>
+
+    <string name="CI_CAM_config_screen_preference">CI CAM Settings</string>
+    <string name="CI_CAM_config_summary_screen_preference">Edit CAM Settings</string>
+
+    <string name="CI_topictemplate_screen_preference">Edit Topic Template Name </string>
+    <string name="CI_topictemplate_summary_screen_preference">Modify Topic Template Name </string>
+
+    <string name="CI_timeout_screen_preference">Edit Timeouts </string>
     <string name="CI_timeout_summary_screen_preference">Modify timeouts for actions</string>
-    <string name="title_fragment_preference">Fragment preference</string>
-    <string name="summary_fragment_preference">Shows another fragment of preferences</string>
-    <string name="title_next_screen_toggle_preference">Toggle preference</string>
-    <string name="summary_next_screen_toggle_preference">Preference that is on the next screen but same hierarchy</string>
+
     <string name="title_next_screen_ciprofile_preference">Edit Profile Name</string>
     <string name="summary_next_screen_ciprofile_preference">Name of the connection profile</string>
     <string name="title_next_screen_hostname_preference">Edit Hostname</string>
