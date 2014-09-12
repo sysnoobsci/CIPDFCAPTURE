@@ -84,6 +84,7 @@ public class CServer_Fragment extends Fragment {
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
         sItems = (Spinner) rootView.findViewById(R.id.spinner);
         webView = (WebView) rootView.findViewById(R.id.webView);
+        webView.setWebViewClient(new MyBrowser());
     }
 
     public void setFonts() {
@@ -113,24 +114,18 @@ public class CServer_Fragment extends Fragment {
     }
 
     public void searchButton() throws Exception {
-        LogonSession liloobj = new LogonSession(getContext());
+        LogonSession lsobj = new LogonSession(getContext());
         ringProgressDialog.show();
-        if (apiobj.pingQuery()) {//if the ping is successful(i.e. user logged in)
+        if (lsobj.tryLogin(getContext())) {
             Log.d("Message", "CI Login successful and ready to search for reports.");
             fillSpinner(apiobj);
             ringProgressDialog.dismiss();
-        } else {//if ping fails, selected ci profile will be used to log back in
-            Log.d("Message", "Ping to CI server indicated no login session.");
-            if (liloobj.tryLogin(getContext())) {
-                Log.d("Message", "CI Login successful and ready to search for reports.");
-                fillSpinner(apiobj);
-                ringProgressDialog.dismiss();
-            } else {//if login attempt fails from trying the CI server profile, prompt user to check profile
-                ToastMessageTask.noConnectionMessage(getContext());
-                ringProgressDialog.dismiss();
-            }
+        } else {//if login attempt fails from trying the CI server profile, prompt user to check profile
+            ToastMessageTask.noConnectionMessage(getContext());
+            ringProgressDialog.dismiss();
         }
     }
+
 
     private void spinnerItemListener() {
         sItems.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -208,9 +203,11 @@ public class CServer_Fragment extends Fragment {
 
     public void open(View view) {
         String url = resp;
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.setInitialScale(1);
         webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        webView.getSettings().setBuiltInZoomControls(true);
         webView.loadUrl(url);
 
     }
@@ -222,6 +219,4 @@ public class CServer_Fragment extends Fragment {
             return true;
         }
     }
-
-
 }

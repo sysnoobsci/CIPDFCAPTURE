@@ -205,6 +205,7 @@
         android:id="@+id/webView"
         android:layout_alignBottom="@+id/imageView"
         android:layout_alignLeft="@+id/imageView"
-        android:layout_alignStart="@+id/imageView" />
+        android:layout_alignStart="@+id/imageView"
+        android:isScrollContainer="false" />
 
 </RelativeLayout>
