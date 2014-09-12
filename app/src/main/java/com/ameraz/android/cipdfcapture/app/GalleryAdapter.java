@@ -28,34 +28,35 @@ public class GalleryAdapter extends BaseAdapter {
         setContext(context);
     }
 
-    public void setUriArray(){
+    public void setUriArray() {
         fp = new FilePath();
         FILE_DIR = new File(fp.getFilePath());
         Log.d("File name: ", FILE_DIR.toString());
         names = FILE_DIR.list(
                 new FilenameFilter() {
-                    public boolean accept(File FILE_DIR, String name){
-                        if(name.endsWith(".jpg")){
+                    public boolean accept(File FILE_DIR, String name) {
+                        if (name.endsWith(".jpg")) {
                             return name.endsWith(".jpg");
                         }
-                        if(name.endsWith(".jpeg")){
+                        if (name.endsWith(".jpeg")) {
                             return name.endsWith(".jpeg");
                         }
-                        if(name.endsWith(".png")){
+                        if (name.endsWith(".png")) {
                             return name.endsWith(".png");
                         }
-                        if(name.endsWith(".gif")){
+                        if (name.endsWith(".gif")) {
                             return name.endsWith(".gif");
                         }
                         return false;
                     }
                 });
     }
-    public void setWidth(int maWidth){
+
+    public void setWidth(int maWidth) {
         this.width = maWidth;
     }
 
-    public String getNames(Integer position){
+    public String getNames(Integer position) {
         return names[position];
     }
 
@@ -91,14 +92,14 @@ public class GalleryAdapter extends BaseAdapter {
             LayoutInflater in = (LayoutInflater) getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = in.inflate(R.layout.thumbnail, null);
-            imageView = (ImageView)convertView.findViewById(R.id.thumbnail_image);
+            imageView = (ImageView) convertView.findViewById(R.id.thumbnail_image);
         } else {
             imageView = (ImageView) convertView;
         }
         Log.d("Loading images...", Uri.parse("file://" + fp.getFilePath() + names[position]).toString());
         Picasso.with(getContext())
                 .load(Uri.parse("file://" + fp.getFilePath() + names[position]))
-                .resize(width,width)
+                .resize(width, width)
                 .placeholder(R.drawable.sw_placeholder)
                 .centerCrop()
                 .into(imageView);

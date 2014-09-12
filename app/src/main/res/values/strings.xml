@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">CIPDFCAPTURE</string>
+    <string name="app_name">Phone Capture</string>
     <string name="title_section1">About</string>
     <string name="title_section2">Capture PDF</string>
     <string name="title_section3">Upload PDF</string>

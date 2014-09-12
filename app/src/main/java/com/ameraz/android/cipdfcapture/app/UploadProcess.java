@@ -3,7 +3,6 @@ package com.ameraz.android.cipdfcapture.app;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.EditText;
@@ -15,17 +14,17 @@ public class UploadProcess {
 
     Context context;
     EditText description;
-    Uri imageUri;
+    Object file2upload;
     ProgressDialog ringProgressDialog;
     String topicTemplateName;
     SharedPreferences preferences;
     APIQueries apiobj;
 
-    public UploadProcess(Context context, EditText description, Uri imageUri,
+    public UploadProcess(Context context, EditText description, Object file2upload,
                          ProgressDialog ringProgressDialog) {
         setContext(context);
         setDescription(description);
-        setImageUri(imageUri);
+        setFile2upload(file2upload);
         setRingProgressDialog(ringProgressDialog);
         apiobj = new APIQueries(getContext());
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -48,12 +47,12 @@ public class UploadProcess {
         this.description = description;
     }
 
-    public Uri getImageUri() {
-        return imageUri;
+    public Object getFile2upload() {
+        return file2upload;
     }
 
-    public void setImageUri(Uri imageUri) {
-        this.imageUri = imageUri;
+    public void setFile2upload(Object file2upload) {
+        this.file2upload = file2upload;
     }
 
     public ProgressDialog getRingProgressDialog() {
@@ -66,7 +65,7 @@ public class UploadProcess {
 
     public void uploadProcess() throws Exception {
         LogonSession lsobj = new LogonSession(getContext());
-        if (uploadCheck(getDescription(), getImageUri())) {
+        if (uploadCheck(getDescription(), getFile2upload())) {
             Log.d("uploadProcess()", "getContext() value: " + getContext());
             Boolean logonStatus = lsobj.tryLogin(getContext());
             if (logonStatus) {
@@ -86,7 +85,7 @@ public class UploadProcess {
             QueryArguments.addArg("name," + description.getText().toString());
             QueryArguments.addArg("detail,y");
             QueryArguments.addArg("sid," + LogonSession.getSid());
-            QueryArguments.addArg(imageUri);
+            QueryArguments.addArg(file2upload);
             try {
                 apiobj.createtopicQuery(QueryArguments.getArgslist());
             } catch (Exception e) {
@@ -98,8 +97,8 @@ public class UploadProcess {
         ringProgressDialog.dismiss();
     }
 
-    Boolean uploadCheck(EditText description, Uri imageUri) {
-        if (imageUri == null) {//checks if image taken yet
+    Boolean uploadCheck(EditText description, Object file2upload) {
+        if (file2upload == null) {//checks if image taken yet - or if object is valid if not an image
             ToastMessageTask.picNotTaken(getContext());
             return false;
         }
