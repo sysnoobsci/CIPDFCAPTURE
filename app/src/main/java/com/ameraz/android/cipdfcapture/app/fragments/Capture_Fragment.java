@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import com.ameraz.android.cipdfcapture.app.APIQueries;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.ameraz.android.cipdfcapture.app.FilePath;
+import com.ameraz.android.cipdfcapture.app.ImageToPDF;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.UploadProcess;
@@ -39,6 +40,7 @@ public class Capture_Fragment extends Fragment {
     private EditText description;
     private Uri imageUri;
     private String incImage;
+    private String outImage;
     private File newImage;
     APIQueries apiobj;
     ProgressDialog ringProgressDialog;
@@ -80,6 +82,12 @@ public class Capture_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 ringProgressDialog.show();
+                ImageToPDF itp = new ImageToPDF(incImage,outImage);
+                if(itp.convertImagetoPDF()){
+                    imageUri = imageUri.parse("file://" + outImage);
+                    Log.d(imageUri.toString(), "shrug");
+                }
+                Log.d(imageUri.toString(), "shrug");
                 new Thread() {
                     public void run() {
                         try {
@@ -101,7 +109,8 @@ public class Capture_Fragment extends Fragment {
                 FilePath fp = new FilePath();
                 String storageState = Environment.getExternalStorageState();
                 if (storageState.equals(Environment.MEDIA_MOUNTED)) {
-                    incImage = fp.getFilePath() + "sys_original_image" + System.currentTimeMillis() + ".jpg";
+                    incImage = fp.getFilePath() + "Images/" + "sys_image" + System.currentTimeMillis() + ".jpg";
+                    outImage = fp.getFilePath() + "PDF/" + "sys_pdf" + System.currentTimeMillis() + ".pdf";
                     newImage = new File(incImage);
                     try {
                         if (!newImage.exists()) {

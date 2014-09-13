@@ -47,6 +47,9 @@ public class GalleryAdapter extends BaseAdapter {
                         if (name.endsWith(".gif")) {
                             return name.endsWith(".gif");
                         }
+                        if(name.endsWith(".TIF")){
+                            return name.endsWith(".TIF");
+                        }
                         return false;
                     }
                 });
