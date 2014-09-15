@@ -102,5 +102,11 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
         tmtask.execute();
     }
 
+    public static void pdfConversionFailed(Context context) {
+        setmContext(context);
+        ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Error. PDF conversion failed.");
+        tmtask.execute();
+    }
+
 
 }

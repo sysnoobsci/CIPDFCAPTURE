@@ -25,20 +25,28 @@
             android:inputType="textMultiLine"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:id="@+id/gallery_single_image_description_text"
             android:padding="5dp"
             android:minLines="1"
             android:maxLines="2"
             android:hint="Name: 40 character max"
             android:gravity="top"
+            android:layout_gravity="center"
             android:background="#ffffff"
             android:maxLength="40" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/upload_option_spinner"
+            android:layout_gravity="center"
+            android:layout_margin="4dp" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/gallery_single_image_upload_button"
+            android:id="@+id/image_upload_button"
             android:layout_gravity="center"
             android:layout_margin="4dp"
             android:background="#00000000"

@@ -84,7 +84,7 @@ public class Capture_Fragment extends Fragment {
                 ringProgressDialog.show();
                 ImageToPDF itp = new ImageToPDF(incImage,outImage);
                 if(itp.convertImagetoPDF()){
-                    imageUri = imageUri.parse("file://" + outImage);
+                    imageUri = itp.getImageUri();
                     Log.d(imageUri.toString(), "shrug");
                 }
                 Log.d(imageUri.toString(), "shrug");
@@ -109,8 +109,8 @@ public class Capture_Fragment extends Fragment {
                 FilePath fp = new FilePath();
                 String storageState = Environment.getExternalStorageState();
                 if (storageState.equals(Environment.MEDIA_MOUNTED)) {
-                    incImage = fp.getFilePath() + "Images/" + "sys_image" + System.currentTimeMillis() + ".jpg";
-                    outImage = fp.getFilePath() + "PDF/" + "sys_pdf" + System.currentTimeMillis() + ".pdf";
+                    incImage = fp.getImageFilePath() + "Images/" + "sys_image" + System.currentTimeMillis() + ".jpg";
+                    outImage = fp.getImageFilePath() + "PDF/" + "sys_pdf" + System.currentTimeMillis() + ".pdf";
                     newImage = new File(incImage);
                     try {
                         if (!newImage.exists()) {

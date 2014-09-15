@@ -92,4 +92,9 @@
     <string name="topicdesc">Description</string>
     <string name="topicdescval">Description</string>
 
+    <string-array name="upload_type_choice">
+    <item>Image</item>
+    <item>PDF</item>
+    </string-array>
+
 </resources>

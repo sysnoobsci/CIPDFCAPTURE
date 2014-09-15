@@ -87,7 +87,7 @@ public class InternalGalleryFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fragment fragment = new Upload_Fragment();
+                Fragment fragment = new Image_Upload_Fragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("fileName", ga.getNames(position));
                 fragment.setArguments(bundle);

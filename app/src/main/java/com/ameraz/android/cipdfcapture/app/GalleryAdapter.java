@@ -30,7 +30,7 @@ public class GalleryAdapter extends BaseAdapter {
 
     public void setUriArray() {
         fp = new FilePath();
-        FILE_DIR = new File(fp.getFilePath());
+        FILE_DIR = new File(fp.getImageFilePath());
         Log.d("File name: ", FILE_DIR.toString());
         names = FILE_DIR.list(
                 new FilenameFilter() {
@@ -89,7 +89,7 @@ public class GalleryAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Log.d("position: ", Integer.toString(position));
-        Log.d("Loading images...", Uri.parse("file://" + fp.getFilePath() + names[position]).toString());
+        Log.d("Loading images...", Uri.parse("file://" + fp.getImageFilePath() + names[position]).toString());
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             LayoutInflater in = (LayoutInflater) getContext()
@@ -99,9 +99,9 @@ public class GalleryAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-        Log.d("Loading images...", Uri.parse("file://" + fp.getFilePath() + names[position]).toString());
+        Log.d("Loading images...", Uri.parse("file://" + fp.getImageFilePath() + names[position]).toString());
         Picasso.with(getContext())
-                .load(Uri.parse("file://" + fp.getFilePath() + names[position]))
+                .load(Uri.parse("file://" + fp.getImageFilePath() + names[position]))
                 .resize(width, width)
                 .placeholder(R.drawable.sw_placeholder)
                 .centerCrop()
