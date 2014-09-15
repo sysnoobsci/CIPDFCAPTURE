@@ -4,13 +4,19 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,8 +26,12 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
 import com.ameraz.android.cipdfcapture.app.ExpandableListAdapter;
+import com.ameraz.android.cipdfcapture.app.FilePath;
 import com.ameraz.android.cipdfcapture.app.R;
+import com.ameraz.android.cipdfcapture.app.ToastMessageTask;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +78,9 @@ public class NavigationDrawerFragment extends Fragment {
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+
+    private Uri imageUri;
+    private String fileName;
 
     public NavigationDrawerFragment() {
     }
@@ -122,7 +135,8 @@ public class NavigationDrawerFragment extends Fragment {
                     case 0:
                         switch (childPosition) {
                             case 0:
-                                fragment = new Capture_Fragment();
+                                captureImage();
+                                //fragment = new Camera_Capture_Fragment();
                                 break;
                         }
                         break;
@@ -157,6 +171,61 @@ public class NavigationDrawerFragment extends Fragment {
 
 
         return mDrawerListView;
+    }
+
+    private void captureImage() {
+        if(createFile()) {
+            startCamera();
+        }
+    }
+
+
+    private boolean createFile() {
+        FilePath fp = new FilePath();
+        String storageState = Environment.getExternalStorageState();
+        if (storageState.equals(Environment.MEDIA_MOUNTED)) {
+            fileName = "sys_image" + System.currentTimeMillis() + ".jpg";
+            String incImage = fp.getImageFilePath() + fileName;
+            //outImage = fp.getImageFilePath() + "PDF/" + "sys_pdf" + System.currentTimeMillis() + ".pdf";
+            File newImage = new File(incImage);
+            try {
+                if (!newImage.exists()) {
+                    newImage.getParentFile().mkdirs();
+                    newImage.createNewFile();
+                    imageUri = Uri.fromFile(newImage);
+                }
+            } catch (IOException e) {
+                ToastMessageTask.fileNotWritten(this.getActivity());
+                Log.e("File: ", "Could not create file.", e);
+                return false;
+            }
+        }else{
+            ToastMessageTask.fileNotWritten(this.getActivity());
+            Log.e("File: ", "Storage not mounted.");
+            return false;
+        }
+        return true;
+    }
+
+    private void startCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == getActivity().RESULT_OK) {
+            Log.d("onActivityResult ", imageUri.toString());
+            Fragment fragment = new Image_Upload_Fragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("fileName", fileName);
+            fragment.setArguments(bundle);
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .commit();
+        }
     }
 
     private void prepareListData() {
@@ -327,7 +396,7 @@ public class NavigationDrawerFragment extends Fragment {
             FragmentManager fragmentManager = getFragmentManager();
             Fragment fragment = new Home_Fragment();
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment)
+                    .replace(R.id.container, fragment, "HOME")
                     .commit();
             return true;
         }

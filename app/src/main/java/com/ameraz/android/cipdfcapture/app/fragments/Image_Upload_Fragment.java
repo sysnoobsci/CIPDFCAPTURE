@@ -39,7 +39,6 @@ public class Image_Upload_Fragment extends Fragment {
     private ImageButton imageButton;
     private EditText description;
     private Spinner uploadOption;
-    private APIQueries apiobj = null;
     private ProgressDialog ringProgressDialog;
     static Context context;
     String incFileName;
@@ -61,7 +60,7 @@ public class Image_Upload_Fragment extends Fragment {
         setContext(getActivity());
         setSpinnerAdapter();
         setUploadSpinnerListener();
-        apiobj = new APIQueries(getContext());
+        new APIQueries(getContext());
         ringProgressDialog = new ProgressDialog(getContext());
         setUploadProgressDialog();
         uploadListener();
@@ -115,8 +114,8 @@ public class Image_Upload_Fragment extends Fragment {
     }
 
     private void initializeViews(View rootView) {
-        imageView = (GestureImageView) rootView.findViewById(R.id.gallery_single_image_view);
-        description = (EditText) rootView.findViewById(R.id.gallery_single_image_description_text);
+        imageView = (GestureImageView) rootView.findViewById(R.id.upload_image_view);
+        description = (EditText) rootView.findViewById(R.id.upload_name_input);
         uploadOption = (Spinner)rootView.findViewById(R.id.upload_option_spinner);
         imageButton = (ImageButton)rootView.findViewById(R.id.image_upload_button);
         fp = new FilePath();
