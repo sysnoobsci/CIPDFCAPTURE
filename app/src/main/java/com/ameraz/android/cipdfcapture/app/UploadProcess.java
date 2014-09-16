@@ -53,6 +53,7 @@ public class UploadProcess {
 
     public void setFile2upload(Object file2upload) {
         this.file2upload = file2upload;
+        Log.d("Upload Process ImageUri= ", file2upload.toString());
     }
 
     public ProgressDialog getRingProgressDialog() {

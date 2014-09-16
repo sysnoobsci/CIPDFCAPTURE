@@ -5,11 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Path;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -17,8 +15,6 @@ import android.widget.ImageButton;
 
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.squareup.picasso.Picasso;
-
-import java.io.File;
 
 /**
  * Created by john.williams on 9/15/2014.
@@ -42,23 +38,10 @@ public class MediaShare extends Activity {
         context = this;
 
         imageUri = receivedIntent.getParcelableExtra(Intent.EXTRA_STREAM);
-        //imageUri = Uri.parse("file:/" + getImagePath(imageUri));
-        //imageUri.getPath();
-        String filePath = imageUri.getPath();
-        //String filePath = imageUri.toString();
-        String yourRealPath = "";
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(imageUri, filePathColumn, null, null, null);
-        if(cursor.moveToFirst()){
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            yourRealPath = cursor.getString(columnIndex);
-        } else {
-            //boooo, cursor doesn't have rows ...
-        }
-        cursor.close();
+        imageUri = Uri.parse("file://" + getRealPathFromURI(imageUri));
+        Log.d("Get ImageUri= ", imageUri.toString());
         if (imageUri != null) {
-            Log.d("imageUri =", yourRealPath);
-            //setUploadName();
+            setUploadName();
             setImage();
         }
     }
@@ -111,37 +94,26 @@ public class MediaShare extends Activity {
     }
 
     private String getUploadName() {
-        Cursor returnCursor =
-                getContentResolver().query(imageUri, null, null, null, null);
-        return returnCursor.getString(returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+        String fileName = imageUri.toString();
+        fileName = fileName.substring(fileName.lastIndexOf('/')+1, fileName.lastIndexOf('.'));
+        Log.d("fileName =", fileName);
+        return fileName;
     }
 
-    public String getImagePath(Uri uri){
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        String document_id = cursor.getString(0);
-        document_id = document_id.substring(document_id.lastIndexOf(":")+1);
-        cursor.close();
+    public String getRealPathFromURI(Uri imageUri)    {
+        String realPath = "";
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(imageUri, filePathColumn, null, null, null);
+        if(cursor.moveToFirst()){
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            realPath = cursor.getString(columnIndex);
+        } else {
+            Log.d("Path =", "path not found...");
+        }
 
-        cursor = getContentResolver().query(
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
-        cursor.moveToFirst();
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-        cursor.close();
-
-        return path;
-    }
-
-    public String getRealPathFromURI(Uri imageUri)
-    {
-        String[] proj = { MediaStore.Audio.Media.DATA };
-        String[] proj1 = {MediaStore.EXTRA_OUTPUT};
-        //Cursor cursor = managedQuery(contentUri, proj, null, null, null);
-        Cursor cursor = getContentResolver().query(imageUri, proj, null, null, null); //Since manageQuery is deprecated
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
+        //realPath = realPath.replace("/storage/emulated/0", "/sdcard");
+        Log.d("RealPath imageUri =", realPath);
+        return realPath;
     }
 
 }
