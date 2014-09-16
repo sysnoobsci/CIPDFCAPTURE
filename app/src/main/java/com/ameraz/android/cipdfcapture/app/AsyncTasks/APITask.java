@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.AsyncTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -70,7 +70,7 @@ public class APITask extends AsyncTask<String, Void, String> {
         this.taskID = taskID;
     }
 
-    public APITask(String query, HttpEntity entity, Context context){
+    public APITask(String query, HttpEntity entity, Context context) {
         setQuery(query);
         setEntity(entity);
         setmContext(context);
@@ -86,6 +86,7 @@ public class APITask extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... args) {
         StringBuilder total = new StringBuilder();
+        Log.d("APITask.doInBackground()", "query value: " + getQuery());
         httppost = new HttpPost(getQuery());
         httppost.setEntity(getEntity());
         try {

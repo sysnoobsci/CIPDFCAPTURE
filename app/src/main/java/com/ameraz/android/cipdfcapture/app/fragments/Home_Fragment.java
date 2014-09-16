@@ -52,6 +52,5 @@ public class Home_Fragment extends Fragment {
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
         txt.setTypeface(font);
         txt1.setTypeface(font);
-
     }
 }

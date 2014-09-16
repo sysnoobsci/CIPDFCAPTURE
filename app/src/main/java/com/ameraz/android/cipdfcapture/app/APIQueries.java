@@ -6,6 +6,9 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.APITask;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -249,6 +252,7 @@ public class APIQueries {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         for (Object larg : args) {//check each argument for class type and act accordingly
             if (larg != null) {//make sure arg isn't null
+                Log.d("mebBuilder()", "larg.getClass() value: " + larg.getClass());
                 if (larg.getClass().equals(String.class)) {//if type of arg is String, do this
                     int i = 0;
                     int j = 1;
@@ -262,7 +266,8 @@ public class APIQueries {
                 if (larg.getClass().equals(File.class)) {//if type of arg is File, do this
                     builder.addPart("file", new FileBody((File) larg));
                 }
-                if (larg.getClass().getName().equals("android.net.Uri$HierarchicalUri")) {//if type of arg is Uri, do this
+                //if (larg.getClass().getName().startsWith("android.net.Uri$HierarchicalUri") || larg.getClass().getName().equals("android.net.Uri$StringUri")) {//if type of arg is Uri, do this
+                if (larg.getClass().getName().startsWith("android.net.Uri$")) {//if type of arg is Uri, do this
                     Uri imageUri = (Uri) larg;
                     File newImage = new File(imageUri.getPath());
                     Log.d("Variable", "imageUri.getPath().toString() value: " + imageUri.getPath());
@@ -319,7 +324,7 @@ public class APIQueries {
             Log.d("isActionSuccessful()", "Nothing returned from CI server.");
             setActionresult(false);
         } else {
-            if (larray.get(0).equals("0") && larray.get(1).equals("0") && larray.get(2).equals("0")) {
+            if ((larray.get(0).equals("0") || larray.get(0).equals("7")) && larray.get(1).equals("0") && larray.get(2).equals("0")) {
                 setActionresult(true);
             } else {
                 setActionresult(false);

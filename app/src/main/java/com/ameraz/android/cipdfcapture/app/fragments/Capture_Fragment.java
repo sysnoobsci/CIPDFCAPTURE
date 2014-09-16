@@ -17,11 +17,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.ameraz.android.cipdfcapture.app.APIQueries;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.ameraz.android.cipdfcapture.app.FilePath;
 import com.ameraz.android.cipdfcapture.app.ImageToPDF;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.UploadProcess;
 import com.squareup.picasso.Picasso;
 

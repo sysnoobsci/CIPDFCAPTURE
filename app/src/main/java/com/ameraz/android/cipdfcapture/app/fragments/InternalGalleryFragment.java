@@ -15,9 +15,9 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.SetGridTask;
 import com.ameraz.android.cipdfcapture.app.GalleryAdapter;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.SetGridTask;
 
 /**
  * Created by john.williams on 8/26/2014.

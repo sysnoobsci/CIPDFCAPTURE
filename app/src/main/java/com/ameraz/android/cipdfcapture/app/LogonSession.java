@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+
 /**
  * Created by adrian.meraz on 5/16/2014.
  */

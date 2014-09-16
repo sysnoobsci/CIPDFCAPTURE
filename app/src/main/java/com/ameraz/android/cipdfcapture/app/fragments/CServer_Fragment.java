@@ -20,10 +20,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ameraz.android.cipdfcapture.app.APIQueries;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.LogonSession;
 import com.ameraz.android.cipdfcapture.app.QueryArguments;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.ToastMessageTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,9 @@ public class CServer_Fragment extends Fragment {
         ringProgressDialog = new ProgressDialog(getContext());
         setSearchProgressDialog();
         searchButtonListener();
+        Log.d("CServer_Fragment.onCreateView()", "start spinnerItemListener() call.");
         spinnerItemListener();
+
         return rootView;
     }
 
@@ -99,7 +101,7 @@ public class CServer_Fragment extends Fragment {
         txt4.setTypeface(font);
     }
 
-    public void setText(int versionSelected) {
+    public void setVersions(int versionSelected) {
         String selection = versInfo.get(versionSelected);
         String[] infoPieces = selection.split(",");//0=dsid,1=cts,2=bytes,3=fmt,4=ver
         dsid.setText(infoPieces[0]);
@@ -131,7 +133,7 @@ public class CServer_Fragment extends Fragment {
         sItems.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int pos, long id) {
-                setText(pos);
+                setVersions(pos);
                 resp = apiobj.retrieveQuery(tidArrayL.get(pos));//get the right tid
                 Log.d("spinnerItemListener()", "resp value: " + resp);
                 /*Picasso.with(getContext())
@@ -141,8 +143,9 @@ public class CServer_Fragment extends Fragment {
                         .centerInside()
                         .into(imageView);
                 */
-                open(webView);
+                open(view);
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
                 //do nothing
             }
@@ -203,13 +206,14 @@ public class CServer_Fragment extends Fragment {
 
     public void open(View view) {
         String url = resp;
+        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);//turns off hardware accelerated canvas
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.setInitialScale(1);
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.loadUrl(url);
-
+        Log.d("CServer_Fragment.open()", "open() called.");
     }
 
     private class MyBrowser extends WebViewClient {

@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.AsyncTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -40,7 +40,7 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
 
     // This is executed in the context of the main GUI thread
     protected void onPostExecute(String result) {
-        Log.d("onPostExecute()","Value of result: " + result);
+        Log.d("onPostExecute()", "Value of result: " + result);
         Log.d("ToastMessageTask.onPostExecute()", "Value of getmContext(): " + String.valueOf(getmContext()));
         Toast toast = Toast.makeText(getmContext(), getToastMessage(), Toast.LENGTH_SHORT);
         toast.show();
@@ -90,13 +90,13 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
         tmtask.execute();
     }
 
-    protected static void noProfileSelected(Context context) {
+    public static void noProfileSelected(Context context) {
         setmContext(context);
         ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Error. Select a connection profile.");
         tmtask.execute();
     }
 
-    protected static void noValidTopicTemplateSpecified(Context context) {
+    public static void noValidTopicTemplateSpecified(Context context) {
         setmContext(context);
         ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Error. Topic template id is invalid. Check settings.");
         tmtask.execute();

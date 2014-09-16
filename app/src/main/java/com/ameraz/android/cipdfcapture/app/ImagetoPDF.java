@@ -27,35 +27,35 @@ public class ImageToPDF {
         this.output = output;
     }
 
-    public void createFile(){
+    public void createFile() {
         newImage = new File(output);
         imageUri = Uri.fromFile(newImage);
     }
 
-    public Uri getImageUri(){
+    public Uri getImageUri() {
         return imageUri;
     }
 
     public boolean convertImagetoPDF() {
         createFile();
         Document document = new Document();
-            try {
-                FileOutputStream fos = new FileOutputStream(newImage);
-                PdfWriter writer = PdfWriter.getInstance(document, fos);
-                writer.open();
-                document.open();
-                document.setPageSize(PageSize.A4);
-                if(!imageAdded(document)){
-                    return false;
-                }
-                document.close();
-                writer.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            FileOutputStream fos = new FileOutputStream(newImage);
+            PdfWriter writer = PdfWriter.getInstance(document, fos);
+            writer.open();
+            document.open();
+            document.setPageSize(PageSize.A4);
+            if (!imageAdded(document)) {
                 return false;
             }
-            return true;
+            document.close();
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
+        return true;
+    }
 
     private boolean imageAdded(Document document) {
         Image image;

@@ -4,16 +4,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -150,7 +150,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         try {
             db.insertOrThrow(TABLE_NAME, null, values);
             db.close();
-            ToastMessageTask tmtask = new ToastMessageTask(context,"CI Connection " +
+            ToastMessageTask tmtask = new ToastMessageTask(context, "CI Connection " +
                     "Profile Saved.");
             tmtask.execute();
         } catch (SQLiteException e) {

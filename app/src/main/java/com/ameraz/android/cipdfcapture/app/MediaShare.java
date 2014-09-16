@@ -27,6 +27,25 @@ public class MediaShare extends Activity {
     private ProgressDialog ringProgressDialog;
     Context context;
 
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    private void setUploadName() {
+        uploadName.setText(getUploadName());
+    }
+
+    private String getUploadName() {
+        String fileName = imageUri.toString();
+        fileName = fileName.substring(fileName.lastIndexOf('/') + 1, fileName.lastIndexOf('.'));
+        Log.d("fileName =", fileName);
+        return fileName;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,11 +54,10 @@ public class MediaShare extends Activity {
         initializeViews();
         setUploadProgressDialog();
         setUploadButtonListener();
-        context = this;
-
+        setContext(getApplicationContext());
         imageUri = receivedIntent.getParcelableExtra(Intent.EXTRA_STREAM);
         imageUri = Uri.parse("file://" + getRealPathFromURI(imageUri));
-        Log.d("Get ImageUri= ", imageUri.toString());
+        Log.d("MediaShare.onCreate()", "imageUri value: " + imageUri.toString());
         if (imageUri != null) {
             setUploadName();
             setImage();
@@ -60,7 +78,7 @@ public class MediaShare extends Activity {
         new Thread() {
             public void run() {
                 try {
-                    UploadProcess upobj = new UploadProcess(context, uploadName, imageUri, ringProgressDialog);
+                    UploadProcess upobj = new UploadProcess(getContext(), uploadName, imageUri, ringProgressDialog);
                     upobj.uploadProcess();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -89,16 +107,7 @@ public class MediaShare extends Activity {
                 .into(imageView);
     }
 
-    private void setUploadName() {
-        uploadName.setText(getUploadName());
-    }
 
-    private String getUploadName() {
-        String fileName = imageUri.toString();
-        fileName = fileName.substring(fileName.lastIndexOf('/')+1, fileName.lastIndexOf('.'));
-        Log.d("fileName =", fileName);
-        return fileName;
-    }
 
     public String getRealPathFromURI(Uri imageUri)    {
         String realPath = "";
@@ -110,7 +119,6 @@ public class MediaShare extends Activity {
         } else {
             Log.d("Path =", "path not found...");
         }
-
         //realPath = realPath.replace("/storage/emulated/0", "/sdcard");
         Log.d("RealPath imageUri =", realPath);
         return realPath;

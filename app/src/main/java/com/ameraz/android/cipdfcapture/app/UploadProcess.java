@@ -7,6 +7,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+
 /**
  * Created by adrian.meraz on 9/11/2014.
  */
@@ -65,6 +67,7 @@ public class UploadProcess {
     }
 
     public void uploadProcess() throws Exception {
+        Log.d("uploadProcess()", "uploadProcess() called.");
         LogonSession lsobj = new LogonSession(getContext());
         if (uploadCheck(getDescription(), getFile2upload())) {
             Log.d("uploadProcess()", "getContext() value: " + getContext());
@@ -107,6 +110,7 @@ public class UploadProcess {
             ToastMessageTask.fillFieldMessage(getContext());
             return false;
         }
+        Log.d("uploadCheck()", "upload check passed.");
         return true;//if pic was taken and there is a non-empty description, return true
     }
 }

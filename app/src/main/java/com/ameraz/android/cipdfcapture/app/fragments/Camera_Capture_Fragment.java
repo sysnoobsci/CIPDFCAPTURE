@@ -2,25 +2,17 @@ package com.ameraz.android.cipdfcapture.app.fragments;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.ameraz.android.cipdfcapture.app.APIQueries;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.FilePath;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.ToastMessageTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,9 +34,9 @@ public class Camera_Capture_Fragment extends Fragment {
         Capture_Fragment.context = context;
     }
 
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(createFile()) {
+        if (createFile()) {
             startCamera();
         }
     }
@@ -68,7 +60,7 @@ public class Camera_Capture_Fragment extends Fragment {
                 Log.e("File: ", "Could not create file.", e);
                 return false;
             }
-        }else{
+        } else {
             ToastMessageTask.fileNotWritten(getContext());
             Log.e("File: ", "Storage not mounted.");
             return false;
