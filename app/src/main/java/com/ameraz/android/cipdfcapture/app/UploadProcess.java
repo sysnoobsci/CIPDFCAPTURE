@@ -90,6 +90,7 @@ public class UploadProcess {
             QueryArguments.addArg("detail,y");
             QueryArguments.addArg("sid," + LogonSession.getSid());
             QueryArguments.addArg(file2upload);
+            Log.d("Upload Process ImageUri= ", file2upload.toString());
             try {
                 apiobj.createtopicQuery(QueryArguments.getArgslist());
             } catch (Exception e) {

@@ -12,12 +12,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.squareup.picasso.Picasso;
 
 /**
- * Created by john.williams on 9/15/2014.
+ * Created by John Williams on 9/15/2014.
+ * MediaShare adds the ability to bring in an image from any application that offers the share action.
  */
 public class MediaShare extends Activity {
     private ImageButton uploadButton;
@@ -123,5 +123,7 @@ public class MediaShare extends Activity {
         Log.d("RealPath imageUri =", realPath);
         return realPath;
     }
+
+
 
 }

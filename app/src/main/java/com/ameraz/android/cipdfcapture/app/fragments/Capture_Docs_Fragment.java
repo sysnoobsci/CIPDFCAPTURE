@@ -15,7 +15,10 @@ import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.filebrowser.FileChooser;
 
 /**
- * Created by john.williams on 9/12/2014.
+ * Created by John Williams.
+ *
+ * This fragment will create a file browser that will return documents that can be uploaded to Content Integrator.
+ *
  */
 public class Capture_Docs_Fragment extends Fragment {
     static Context context;
@@ -47,7 +50,7 @@ public class Capture_Docs_Fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // See which child activity is calling us back.
         if (requestCode == 0) {
-            FilePath fp = new FilePath();
+            String filePath = data.getStringExtra("GetFilePath");
             String fileName = data.getStringExtra("GetFileName");
         }
     }
