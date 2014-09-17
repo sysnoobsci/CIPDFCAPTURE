@@ -52,7 +52,7 @@
     <string name="CI_topictemplate_screen_preference">Edit Topic Template Name </string>
     <string name="CI_topictemplate_summary_screen_preference">Modify Topic Template Name </string>
 
-    <string name="CI_timeout_screen_preference">Edit Timeouts </string>
+    <string name="CI_timeout_screen_preference">Timeouts</string>
     <string name="CI_timeout_summary_screen_preference">Modify timeouts for actions</string>
 
     <string name="title_next_screen_ciprofile_preference">Edit Profile Name</string>
@@ -78,6 +78,12 @@
     <string name="title_intent_preference">Systemware Website</string>
     <string name="summary_intent_preference">Visits www.systemware.com</string>
 
+    <string name="title_default_report_screen_preference">Default Report</string>
+    <string name="summary_default_report_screen_preference">Change the default report name</string>
+
+    <string name="title_default_report_preference">Default report name</string>
+    <string name="dialog_title_default_report_preference">Edit the default report name</string>
+
     <string name="ci_profile">profilename_preference</string>
     <string name="ci_hostname">hostname_preference</string>
     <string name="ci_domain">domain_preference</string>
@@ -93,8 +99,8 @@
     <string name="topicdescval">Description</string>
 
     <string-array name="upload_type_choice">
-    <item>Image</item>
-    <item>PDF</item>
+        <item>Image</item>
+        <item>PDF</item>
     </string-array>
 
 </resources>

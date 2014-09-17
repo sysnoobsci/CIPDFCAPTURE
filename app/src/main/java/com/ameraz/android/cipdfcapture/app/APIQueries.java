@@ -27,14 +27,14 @@ import java.util.concurrent.TimeoutException;
  * Created by adrian.meraz on 6/27/2014.
  */
 public class APIQueries {
-    private static Context mContext;
+    private static Context context;
     static Boolean actionresult = false;
     static int action_timeout = 5000;//default values in milliseconds of timeouts
     static int lilo_timeout = 5000;
     static int upload_timeout = 30000;
 
-    public APIQueries(Context mContext) {
-        setmContext(mContext);
+    public APIQueries(Context context) {
+        setContext(context);
         setTimeouts();//set timeouts whenever APIQueries object is instantiated
     }
 
@@ -46,16 +46,16 @@ public class APIQueries {
         actionresult = result;
     }
 
-    public Context getmContext() {
-        return mContext;
+    public Context getContext() {
+        return context;
     }
 
-    public void setmContext(Context mContext) {
-        this.mContext = mContext;
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     void setTimeouts() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getmContext());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         action_timeout = Integer.parseInt(preferences.getString("actiontimeout_preference", String.valueOf(action_timeout))) * 1000;
         lilo_timeout = Integer.parseInt(preferences.getString("lilotimeout_preference", String.valueOf(lilo_timeout))) * 1000;
         upload_timeout = Integer.parseInt(preferences.getString("uploadtimeout_preference", String.valueOf(upload_timeout))) * 1000;
@@ -69,7 +69,7 @@ public class APIQueries {
     }
 
     String targetCIQuery() {
-        LogonSession lilobj = new LogonSession(mContext);
+        LogonSession lilobj = new LogonSession(context);
         String targetCIQuery = "http://" + lilobj.getHostname() + "." +
                 lilobj.getDomain() + ":" + lilobj.getPortnumber() + "/ci";
         return targetCIQuery;
@@ -81,16 +81,16 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,createtopic");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(), entity, mContext);
+        APITask apitaskobj = new APITask(targetCIQuery(), entity, context);
         try {
             apitaskobj.execute().get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask.noConnectionMessage(getmContext());
+            ToastMessageTask.noConnectionMessage(getContext());
         }
         Log.d("Variable", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        ToastMessageTask.fileUploadStatus(getmContext(), getActionresult());
+        ToastMessageTask.fileUploadStatus(getContext(), getActionresult());
         resetResult();//reset action result after checking it
         QueryArguments.clearList();//clear argslist after query
     }
@@ -101,11 +101,11 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,listnode");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
+        APITask apitaskobj = new APITask(targetCIQuery(), entity, getContext());
         try {
             apitaskobj.execute().get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask.noConnectionMessage(getmContext());
+            ToastMessageTask.noConnectionMessage(getContext());
         }
         Log.d("Variable", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
@@ -130,11 +130,11 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,listversion");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
+        APITask apitaskobj = new APITask(targetCIQuery(), entity, getContext());
         try {
             apitaskobj.execute().get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask.noConnectionMessage(getmContext());
+            ToastMessageTask.noConnectionMessage(getContext());
         }
         Log.d("listversionQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
@@ -145,7 +145,7 @@ public class APIQueries {
             QueryArguments.clearList();//clear argslist after query
             return apitaskobj.getResponse();//return the good results
         } else {
-            ToastMessageTask.reportNotValidMessage(getmContext());
+            ToastMessageTask.reportNotValidMessage(getContext());
             Log.d("listversionQuery()", "CI Server listversion failed.");
             resetResult();//reset action result after checking it
             QueryArguments.clearList();//clear argslist after query
@@ -160,11 +160,11 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,logon");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
+        APITask apitaskobj = new APITask(targetCIQuery(), entity, getContext());
         try {
             apitaskobj.execute().get(lilo_timeout, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
-            ToastMessageTask.noConnectionMessage(getmContext());
+            ToastMessageTask.noConnectionMessage(getContext());
             e.printStackTrace();
         }
         Log.d("logonQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
@@ -189,17 +189,17 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,logoff");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
+        APITask apitaskobj = new APITask(targetCIQuery(), entity, getContext());
         try {
             apitaskobj.execute().get(lilo_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask.noConnectionMessage(getmContext());
+            ToastMessageTask.noConnectionMessage(getContext());
         }
         Log.d("logoffQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
         Boolean logoffStatus = getActionresult();
-        LogonSession.logoffMessage(getActionresult(), getmContext());//show status of logon action
+        LogonSession.logoffMessage(getActionresult(), getContext());//show status of logon action
         if (logoffStatus) {//if the ping is successful(i.e. user logged in)
             Log.d("logoffQuery()", "CI Server logoff successful.");
         } else {
@@ -219,7 +219,7 @@ public class APIQueries {
         QueryArguments.addArg("act,ping");
         QueryArguments.addArg("sid," + LogonSession.getSid());
         HttpEntity entity = mebBuilder(QueryArguments.getArgslist());
-        APITask apitaskobj = new APITask(targetCIQuery(), entity, getmContext());
+        APITask apitaskobj = new APITask(targetCIQuery(), entity, getContext());
         try {
             apitaskobj.execute().get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (Exception e) {

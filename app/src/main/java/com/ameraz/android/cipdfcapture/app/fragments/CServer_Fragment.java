@@ -3,8 +3,10 @@ package com.ameraz.android.cipdfcapture.app.fragments;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -24,9 +26,9 @@ import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.LogonSession;
 import com.ameraz.android.cipdfcapture.app.QueryArguments;
 import com.ameraz.android.cipdfcapture.app.R;
+import com.ameraz.android.cipdfcapture.app.VersionInfoAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by adrian.meraz on 8/26/2014.
@@ -35,22 +37,21 @@ public class CServer_Fragment extends Fragment {
 
     static View rootView;
     private EditText reportName;
-    private TextView dsid;
-    private TextView cts;
-    private TextView bytes;
-    private TextView fmt;
-    private ImageView imageView;
+    TextView txt1;
+    TextView txt2;
+    private ListView listView;
     private ImageButton imageButton2;
     private WebView webView;
     static Context context;
     String resp;
     APIQueries apiobj = null;
     Spinner sItems;
-    List<String> spinnerVerArrayL = new ArrayList<String>();
-    List<String> tidArrayL = new ArrayList<String>();
-    List<String> fmtArrayL = new ArrayList<String>();
+    ArrayList<String> spinnerVerArrayL = new ArrayList<String>();
+    ArrayList<String> tidArrayL = new ArrayList<String>();
+    ArrayList<String> versionInfo = new ArrayList<String>();
     ArrayList<String> versInfo = new ArrayList<String>();
     ProgressDialog ringProgressDialog;
+    SharedPreferences preferences;
 
     public static Context getContext() {
         return context;
@@ -72,42 +73,42 @@ public class CServer_Fragment extends Fragment {
         searchButtonListener();
         Log.d("CServer_Fragment.onCreateView()", "start spinnerItemListener() call.");
         spinnerItemListener();
-
         return rootView;
     }
 
     public void instantiateViews() {
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         reportName = (EditText) rootView.findViewById(R.id.editText);
+        reportName.setText(preferences.getString("report_preference", null));//set the filed to default report name if there is one
+        txt1 = (TextView) rootView.findViewById(R.id.textView);
+        txt2 = (TextView) rootView.findViewById(R.id.textView2);
         imageButton2 = (ImageButton) rootView.findViewById(R.id.imageButton2);
-        dsid = (TextView) rootView.findViewById(R.id.textView6);
-        cts = (TextView) rootView.findViewById(R.id.textView10);
-        bytes = (TextView) rootView.findViewById(R.id.textView7);
-        fmt = (TextView) rootView.findViewById(R.id.textView8);
-        imageView = (ImageView) rootView.findViewById(R.id.imageView);
         sItems = (Spinner) rootView.findViewById(R.id.spinner);
         webView = (WebView) rootView.findViewById(R.id.webView);
         webView.setWebViewClient(new MyBrowser());
+        listView = (ListView) rootView.findViewById(R.id.listView);
+    }
+
+    public void createVersInfoAdapter() {
+        VersionInfoAdapter listAdapter = new VersionInfoAdapter(getContext(), R.layout.versioninfo_list, versionInfo);
+        listView.setAdapter(listAdapter);
     }
 
     public void setFonts() {
-        TextView txt1 = (TextView) rootView.findViewById(R.id.textView);
-        TextView txt2 = (TextView) rootView.findViewById(R.id.textView2);
-        TextView txt3 = (TextView) rootView.findViewById(R.id.textView3);
-        TextView txt4 = (TextView) rootView.findViewById(R.id.textView4);
         Typeface font = Typeface.createFromAsset(getContext().getAssets(), "OpenSans-Regular.ttf");
         txt1.setTypeface(font);
         txt2.setTypeface(font);
-        txt3.setTypeface(font);
-        txt4.setTypeface(font);
     }
 
-    public void setVersions(int versionSelected) {
+    public void setVersionInfo(int versionSelected) {
+        versionInfo.clear();//clear the list first to make sure it's clean
         String selection = versInfo.get(versionSelected);
         String[] infoPieces = selection.split(",");//0=dsid,1=cts,2=bytes,3=fmt,4=ver
-        dsid.setText(infoPieces[0]);
-        cts.setText(infoPieces[1]);
-        bytes.setText(infoPieces[2]);
-        fmt.setText(infoPieces[3]);
+        versionInfo.add("DSID\t\t\n" + infoPieces[0]);
+        versionInfo.add("Created Timestamp\t\t\n" + infoPieces[1]);
+        versionInfo.add("Bytes\t\t\n" + infoPieces[2]);
+        versionInfo.add("Format\t\t\n" + infoPieces[3]);
+        versionInfo.add("Version\t\t\n" + infoPieces[4]);
     }
 
     private void setSearchProgressDialog() {
@@ -131,21 +132,23 @@ public class CServer_Fragment extends Fragment {
 
     private void spinnerItemListener() {
         sItems.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int pos, long id) {
-                setVersions(pos);
-                resp = apiobj.retrieveQuery(tidArrayL.get(pos));//get the right tid
-                Log.d("spinnerItemListener()", "resp value: " + resp);
-                /*Picasso.with(getContext())
-                        .load(resp)
-                        .fit()
-                                //.placeholder(R.drawable.sw_placeholder)
-                        .centerInside()
-                        .into(imageView);
-                */
-                open(view);
-            }
+            public void onItemSelected(AdapterView<?> parent, final View view,
+                                       final int pos, long id) {
+                setVersionInfo(pos);
+                new Thread() {
+                    public void run() {
+                        resp = apiobj.retrieveQuery(tidArrayL.get(pos));//get the right tid
+                        Log.d("spinnerItemListener()", "resp value: " + resp);
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                open(view);
+                                createVersInfoAdapter();//fill the adapter with the report version's info
+                            }
+                        });
 
+                    }
+                }.start();
+            }
             public void onNothingSelected(AdapterView<?> parent) {
                 //do nothing
             }
@@ -174,7 +177,6 @@ public class CServer_Fragment extends Fragment {
                     try {
                         versInfo = apiobj.getVersionInfo(apiobj.listversionQuery(QueryArguments.getArgslist()));
                         if (versInfo != null) {
-
                             spinnerVerArrayL = APIQueries.showItems(versInfo, 4);//get version numbers via 4
                             tidArrayL = APIQueries.showItems(versInfo, 5);//get tids via 5
                             getActivity().runOnUiThread(new Runnable() {
@@ -189,7 +191,6 @@ public class CServer_Fragment extends Fragment {
                     }
                     ringProgressDialog.dismiss();
                 }
-
             }.start();
         } else {
             ringProgressDialog.dismiss();

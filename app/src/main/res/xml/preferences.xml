@@ -106,6 +106,12 @@
                 android:dialogTitle="@string/dialog_title_uploadtimeout_preference" />
 
         </PreferenceScreen>
+
+        <EditTextPreference
+            android:key="report_preference"
+            android:title="@string/title_default_report_screen_preference"
+            android:summary="@string/summary_default_report_screen_preference"></EditTextPreference>
+
         <PreferenceScreen
             android:key="gallery_preference"
             android:title="Gallery Settings">
@@ -115,7 +121,6 @@
                 android:title="Number of columns in the gallery"
                 android:numeric="integer"
                 android:dialogTitle="Number of columns" />
-
 
         </PreferenceScreen>
     </PreferenceCategory>
