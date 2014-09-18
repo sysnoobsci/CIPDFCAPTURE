@@ -10,14 +10,14 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/input_layout"
         android:id="@+id/capture_background"
-        android:src="@drawable/clouds_parlx_bg1"/>
+        android:src="@drawable/clouds_parlx_bg1" />
 
 
-        <com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/input_layout"
-            android:id="@+id/imageView"/>
+    <com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/input_layout"
+        android:id="@+id/imageView" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -62,14 +62,4 @@
             android:layout_gravity="center_vertical" />
     </LinearLayout>
 
-    <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:background="#CCffffff"
-        android:layout_above="@+id/linearLayout"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-    </LinearLayout>
 </RelativeLayout>

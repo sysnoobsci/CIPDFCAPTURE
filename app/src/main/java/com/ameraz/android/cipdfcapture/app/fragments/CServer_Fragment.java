@@ -1,6 +1,7 @@
 package com.ameraz.android.cipdfcapture.app.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,12 +12,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -41,7 +44,9 @@ public class CServer_Fragment extends Fragment {
     TextView txt2;
     private ListView listView;
     private ImageButton imageButton2;
+    private ImageButton enlargeImg;
     private WebView webView;
+    private LinearLayout linearLayoutGroup;
     static Context context;
     String resp;
     APIQueries apiobj = null;
@@ -71,7 +76,7 @@ public class CServer_Fragment extends Fragment {
         ringProgressDialog = new ProgressDialog(getContext());
         setSearchProgressDialog();
         searchButtonListener();
-        Log.d("CServer_Fragment.onCreateView()", "start spinnerItemListener() call.");
+        enlargeImgButtonListener();
         spinnerItemListener();
         return rootView;
     }
@@ -83,6 +88,8 @@ public class CServer_Fragment extends Fragment {
         txt1 = (TextView) rootView.findViewById(R.id.textView);
         txt2 = (TextView) rootView.findViewById(R.id.textView2);
         imageButton2 = (ImageButton) rootView.findViewById(R.id.imageButton2);
+        enlargeImg = (ImageButton) rootView.findViewById(R.id.enlarge_img);
+        linearLayoutGroup = (LinearLayout) rootView.findViewById(R.id.grouped_Layout);
         sItems = (Spinner) rootView.findViewById(R.id.spinner);
         webView = (WebView) rootView.findViewById(R.id.webView);
         webView.setWebViewClient(new MyBrowser());
@@ -155,7 +162,7 @@ public class CServer_Fragment extends Fragment {
         });
     }
 
-    private void searchButtonListener() {
+    private void searchButtonListener() {//searches for the report and displays the versions
         imageButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,6 +173,46 @@ public class CServer_Fragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void enlargeImgButtonListener() {//enlarges the image that appears in the WebView
+        linearLayoutGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("enlargeImgButtonListener()", "enlargeImgButtonListener() clicked");
+                try {
+                    callIP_Fragment();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void downloadButtonListener() {//need to flesh out with download code
+        enlargeImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("downloadButtonListener()", "downloadButtonListener() clicked");
+                try {
+                    callIP_Fragment();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void callIP_Fragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString("retrieve_url", resp);
+        Fragment fragment = new Image_Preview_Fragment();
+        fragment.setArguments(bundle);
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     public void fillSpinner(final APIQueries apiobj) {
@@ -206,6 +253,7 @@ public class CServer_Fragment extends Fragment {
     }
 
     public void open(View view) {
+        Log.d("CServer_Fragment.open()", "open() called.");
         String url = resp;
         webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);//turns off hardware accelerated canvas
         webView.getSettings().setUseWideViewPort(true);
@@ -213,8 +261,16 @@ public class CServer_Fragment extends Fragment {
         webView.setInitialScale(1);
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);//turn caching mode on
         webView.loadUrl(url);
-        Log.d("CServer_Fragment.open()", "open() called.");
+
+    }
+
+    @Override
+    public void onDestroy() {
+        // Clear the cache (this clears the WebViews cache for the entire application)
+        webView.clearCache(true);
+        super.onDestroy();
     }
 
     private class MyBrowser extends WebViewClient {

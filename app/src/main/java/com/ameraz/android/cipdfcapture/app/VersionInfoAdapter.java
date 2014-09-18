@@ -1,7 +1,6 @@
 package com.ameraz.android.cipdfcapture.app;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,15 +32,9 @@ public class VersionInfoAdapter extends ArrayAdapter {
             LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             mView = vi.inflate(id, null);
         }
-
         TextView text = (TextView) mView.findViewById(R.id.textView);
-
         if (items.get(position) != null) {
-            text.setTextColor(Color.WHITE);
             text.setText(items.get(position));
-            text.setBackgroundColor(#0078c9);
-            int color = Color.argb(200, 255, 64, 64);
-            text.setBackgroundColor(color);
         }
         return mView;
     }

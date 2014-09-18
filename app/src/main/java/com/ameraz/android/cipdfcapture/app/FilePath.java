@@ -1,20 +1,29 @@
 package com.ameraz.android.cipdfcapture.app;
 
+import android.os.Environment;
+
 /**
  * Created by john.williams on 8/26/2014.
  */
 public class FilePath {
-    public static final String IMAGE_FILEPATH = "/storage/sdcard0/Systemware/Images/";
-    public static final String PDF_FILEPATH = "/storage/sdcard0/Systemware/PDF/";
-    public static final String TEMP_FILEPATH = "/storage/sdcard0/Systemware/Temp/";
+    static String root = Environment.getExternalStorageDirectory().toString();
+    public static final String IMAGE_FILEPATH = root + "/Systemware/Images/";
+    public static final String PDF_FILEPATH = root + "/Systemware/PDF/";
+    public static final String TEMP_FILEPATH = root + "/Systemware/Temp/";
 
-    public String getImageFilePath() {
+    public static String getRootPath() {
+        return root;
+    }
+
+    public static String getImageFilePath() {
         return IMAGE_FILEPATH;
     }
-    public String getPDFFilePath() {
+
+    public static String getPDFFilePath() {
         return PDF_FILEPATH;
     }
-    public String getTempFilePath() {
+
+    public static String getTempFilePath() {
         return TEMP_FILEPATH;
     }
 }
