@@ -25,10 +25,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".filebrowser.FileChooser"
-            android:label="Choose File"
-            android:theme="@android:style/Theme.Holo"></activity>
 
         <activity
             android:name="MediaShare"

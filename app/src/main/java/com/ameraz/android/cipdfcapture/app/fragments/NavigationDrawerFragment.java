@@ -28,6 +28,7 @@ import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.ExpandableListAdapter;
 import com.ameraz.android.cipdfcapture.app.FilePath;
 import com.ameraz.android.cipdfcapture.app.R;
+import com.ameraz.android.cipdfcapture.app.filebrowser.File_Explorer_Fragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,8 +79,8 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-    private Uri imageUri;
-    private String fileName;
+/*    private Uri imageUri;
+    private String fileName;*/
 
     public NavigationDrawerFragment() {
     }
@@ -134,8 +135,8 @@ public class NavigationDrawerFragment extends Fragment {
                     case 0:
                         switch (childPosition) {
                             case 0:
-                                captureImage();
-                                //fragment = new Camera_Capture_Fragment();
+                                //captureImage();
+                                fragment = new Camera_Capture_Fragment();
                                 break;
                         }
                         break;
@@ -145,7 +146,7 @@ public class NavigationDrawerFragment extends Fragment {
                                 fragment = new InternalGalleryFragment();
                                 break;
                             case 1:
-                                fragment = new Capture_Fragment();
+                                fragment = new File_Explorer_Fragment();
                                 break;
                         }
                         break;
@@ -172,7 +173,7 @@ public class NavigationDrawerFragment extends Fragment {
         return mDrawerListView;
     }
 
-    private void captureImage() {
+/*    private void captureImage() {
         if (createFile()) {
             startCamera();
         }
@@ -225,7 +226,7 @@ public class NavigationDrawerFragment extends Fragment {
                     .replace(R.id.container, fragment)
                     .commit();
         }
-    }
+    }*/
 
     private void prepareListData() {
 

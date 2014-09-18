@@ -9,17 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import com.ameraz.android.cipdfcapture.app.APIQueries;
-import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.ameraz.android.cipdfcapture.app.FilePath;
-import com.ameraz.android.cipdfcapture.app.ImageToPDF;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.UploadProcess;
 import com.squareup.picasso.Picasso;
@@ -41,9 +37,7 @@ public class Image_Upload_Fragment extends Fragment {
     private Spinner uploadOption;
     private ProgressDialog ringProgressDialog;
     static Context context;
-    String incFileName;
-    private boolean imageUpload;
-    FilePath fp;
+    private FilePath fp;
 
     public static Context getContext() {
         return context;
@@ -58,8 +52,6 @@ public class Image_Upload_Fragment extends Fragment {
         View rootView = inflater.inflate(R.layout.image_upload_layout, container, false);
         initializeViews(rootView);
         setContext(getActivity());
-        setSpinnerAdapter();
-        setUploadSpinnerListener();
         new APIQueries(getContext());
         ringProgressDialog = new ProgressDialog(getContext());
         setUploadProgressDialog();
@@ -69,48 +61,21 @@ public class Image_Upload_Fragment extends Fragment {
         return rootView;
     }
 
-    private void setUploadSpinnerListener() {
-        uploadOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch(position){
-                    case 0:
-                        imageUpload = true;
-
-                        break;
-                    case 1:
-                        imageUpload = false;
-                        break;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-    }
-
-    public String getOutFileName(){
-         int end = incFileName.indexOf('.');
-        return incFileName.substring(0,end);
-    }
-
-    private void setSpinnerAdapter() {
-        ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.upload_type_choice, R.layout.spinner_background);
-        typeAdapter.setDropDownViewResource(R.layout.spinner_dropdown);
-        uploadOption.setAdapter(typeAdapter);
-    }
-
     private void setUriAndImage() {
         Bundle bundle = this.getArguments();
-        incFileName = bundle.getString("fileName");
-        File existingImage = new File(fp.getImageFilePath() + incFileName);
-        imageUri = Uri.fromFile(existingImage);
+        if(bundle.getString("fileName") != null) {
+            String fileName = bundle.getString("fileName");
+            File existingImage = new File(fp.getImageFilePath() + fileName);
+            imageUri = Uri.fromFile(existingImage);
+            description.setText(fileName);
+        }else if(bundle.getString("stringUri") != null){
+            String stringUri = bundle.getString("stringUri");
+            imageUri = Uri.parse(stringUri);
+            description.setText(stringUri.substring(stringUri.lastIndexOf('/') + 1, stringUri.indexOf('.')));
+            Log.d("imageUri = ", imageUri.toString());
+        }
         //Using the Picasso library, loads the image onto the screen.
         setImage();
-        description.setText(getOutFileName());
     }
 
     private void initializeViews(View rootView) {
@@ -151,19 +116,7 @@ public class Image_Upload_Fragment extends Fragment {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FilePath fp = new FilePath();
-                if(imageUpload){
-                    upload();
-                }else{
-                    ImageToPDF itp = new ImageToPDF(fp.getImageFilePath()+incFileName,fp.getPDFFilePath()+getOutFileName()+ ".pdf");
-                    if(itp.convertImagetoPDF()){
-                        imageUri = itp.getImageUri();
-                        Log.d(imageUri.toString(), "shrug");
-                        upload();
-                    }else{
-                        ToastMessageTask.pdfConversionFailed(getContext());
-                    }
-                }
+                upload();
             }
         });
     }

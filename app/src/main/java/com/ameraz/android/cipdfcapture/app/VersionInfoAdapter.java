@@ -36,13 +36,13 @@ public class VersionInfoAdapter extends ArrayAdapter {
 
         TextView text = (TextView) mView.findViewById(R.id.textView);
 
-        if (items.get(position) != null) {
+/*        if (items.get(position) != null) {
             text.setTextColor(Color.WHITE);
             text.setText(items.get(position));
             text.setBackgroundColor(#0078c9);
             int color = Color.argb(200, 255, 64, 64);
             text.setBackgroundColor(color);
-        }
+        }*/
         return mView;
     }
 }
