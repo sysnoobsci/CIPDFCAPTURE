@@ -25,7 +25,6 @@ import java.util.List;
 
 /**
  * Created by john.williams on 9/17/2014.
- *
  */
 public class File_Explorer_Fragment extends ListFragment {
 
@@ -40,7 +39,8 @@ public class File_Explorer_Fragment extends ListFragment {
     public Context getContext() {
         return context;
     }
-    public void setContext(Activity activity){
+
+    public void setContext(Activity activity) {
         context = activity;
     }
 
@@ -131,10 +131,10 @@ public class File_Explorer_Fragment extends ListFragment {
 
     private void onFileClick(Item o) {
         //Toast.makeText(this, "Folder Clicked: "+ currentDir, Toast.LENGTH_SHORT).show();
-        if(o.getName().endsWith(".jpg") || o.getName().endsWith(".jpeg") || o.getName().endsWith(".png")){
+        if (o.getName().endsWith(".jpg") || o.getName().endsWith(".jpeg") || o.getName().endsWith(".png")) {
             setImageFragment(o);
         }
-        if(o.getName().endsWith(".pdf")){
+        if (o.getName().endsWith(".pdf")) {
             setPDFFragment(o);
         }
 
@@ -162,7 +162,7 @@ public class File_Explorer_Fragment extends ListFragment {
 
     private void sendFile(Fragment fragment, Item o) {
         Bundle bundle = new Bundle();
-        bundle.putString("stringUri", "file://"+o.getPath());
+        bundle.putString("stringUri", "file://" + o.getPath());
         fragment.setArguments(bundle);
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction()

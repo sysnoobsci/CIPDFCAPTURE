@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,8 +28,8 @@ public class PDF_Upload_Fragment extends Fragment {
     private static Context context;
     private ProgressDialog ringProgressDialog;
     private WebView pdfViewer;
-    private ImageButton editButton;
-    private ImageButton uploadButton;
+    //private ImageButton editButton;
+    //private ImageButton uploadButton;
     private String name;
     private Uri fileUri;
 
@@ -71,8 +70,8 @@ public class PDF_Upload_Fragment extends Fragment {
 
     private void initializeViews(View rootView) {
         pdfViewer = (WebView)rootView.findViewById(R.id.pdf_view);
-        editButton = (ImageButton)rootView.findViewById(R.id.pdf_edit_button);
-        uploadButton = (ImageButton)rootView.findViewById(R.id.pdf_upload_button);
+        //editButton = (ImageButton)rootView.findViewById(R.id.pdf_edit_button);
+        //uploadButton = (ImageButton)rootView.findViewById(R.id.pdf_upload_button);
     }
 
     private void uploadListener() {
@@ -88,21 +87,6 @@ public class PDF_Upload_Fragment extends Fragment {
         name = stringUri.substring(stringUri.lastIndexOf('/') + 1, stringUri.indexOf('.'));
         //description.setText(stringUri.substring(stringUri.lastIndexOf('/') + 1, stringUri.indexOf('.')));
         setImage();
-    }
-
-    public String getRealPathFromURI(Uri imageUri)    {
-        String realPath = "";
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getActivity().getContentResolver().query(imageUri, filePathColumn, null, null, null);
-        if(cursor.moveToFirst()){
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            realPath = cursor.getString(columnIndex);
-        } else {
-            Log.d("Path =", "path not found...");
-        }
-        //realPath = realPath.replace("/storage/emulated/0", "/sdcard");
-        Log.d("RealPath imageUri =", realPath);
-        return realPath;
     }
 
     private void setImage() {
