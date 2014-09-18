@@ -63,12 +63,12 @@ public class Image_Upload_Fragment extends Fragment {
 
     private void setUriAndImage() {
         Bundle bundle = this.getArguments();
-        if(bundle.getString("fileName") != null) {
+        if (bundle.getString("fileName") != null) {
             String fileName = bundle.getString("fileName");
             File existingImage = new File(fp.getImageFilePath() + fileName);
             imageUri = Uri.fromFile(existingImage);
             description.setText(fileName);
-        }else if(bundle.getString("stringUri") != null){
+        } else if (bundle.getString("stringUri") != null) {
             String stringUri = bundle.getString("stringUri");
             imageUri = Uri.parse(stringUri);
             description.setText(stringUri.substring(stringUri.lastIndexOf('/') + 1, stringUri.indexOf('.')));
@@ -81,8 +81,8 @@ public class Image_Upload_Fragment extends Fragment {
     private void initializeViews(View rootView) {
         imageView = (GestureImageView) rootView.findViewById(R.id.upload_image_view);
         description = (EditText) rootView.findViewById(R.id.upload_name_input);
-        uploadOption = (Spinner)rootView.findViewById(R.id.upload_option_spinner);
-        imageButton = (ImageButton)rootView.findViewById(R.id.image_upload_button);
+        uploadOption = (Spinner) rootView.findViewById(R.id.upload_option_spinner);
+        imageButton = (ImageButton) rootView.findViewById(R.id.image_upload_button);
         fp = new FilePath();
     }
 
@@ -98,7 +98,8 @@ public class Image_Upload_Fragment extends Fragment {
                 .centerCrop()
                 .into(imageView);
     }
-    private void upload(){
+
+    private void upload() {
         ringProgressDialog.show();
         new Thread() {
             public void run() {
