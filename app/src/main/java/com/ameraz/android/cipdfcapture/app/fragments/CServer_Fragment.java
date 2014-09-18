@@ -156,6 +156,7 @@ public class CServer_Fragment extends Fragment {
                     }
                 }.start();
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
                 //do nothing
             }
@@ -263,7 +264,6 @@ public class CServer_Fragment extends Fragment {
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);//turn caching mode on
         webView.loadUrl(url);
-
     }
 
     @Override

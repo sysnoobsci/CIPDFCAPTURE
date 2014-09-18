@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app.filebrowser;
+package com.ameraz.android.cipdfcapture.app.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -13,8 +13,8 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.fragments.Image_Upload_Fragment;
-import com.ameraz.android.cipdfcapture.app.fragments.PDF_Upload_Fragment;
+import com.ameraz.android.cipdfcapture.app.filebrowser.FileArrayAdapter;
+import com.ameraz.android.cipdfcapture.app.filebrowser.Item;
 
 import java.io.File;
 import java.sql.Date;
