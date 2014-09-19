@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 
 import com.ameraz.android.cipdfcapture.app.APIQueries;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
@@ -30,11 +29,10 @@ import java.io.File;
 
 public class Image_Upload_Fragment extends Fragment {
 
-    private Uri imageUri;
+    private Uri fileUri;
     private GestureImageView imageView;
     private ImageButton imageButton;
-    private EditText description;
-    private Spinner uploadOption;
+    private EditText name;
     private ProgressDialog ringProgressDialog;
     static Context context;
     private FilePath fp;
@@ -66,13 +64,13 @@ public class Image_Upload_Fragment extends Fragment {
         if (bundle.getString("fileName") != null) {
             String fileName = bundle.getString("fileName");
             File existingImage = new File(fp.getImageFilePath() + fileName);
-            imageUri = Uri.fromFile(existingImage);
-            description.setText(fileName);
+            fileUri = Uri.fromFile(existingImage);
+            name.setText(fileName);
         } else if (bundle.getString("stringUri") != null) {
             String stringUri = bundle.getString("stringUri");
-            imageUri = Uri.parse(stringUri);
-            description.setText(stringUri.substring(stringUri.lastIndexOf('/') + 1, stringUri.indexOf('.')));
-            Log.d("imageUri = ", imageUri.toString());
+            fileUri = Uri.parse(stringUri);
+            name.setText(stringUri.substring(stringUri.lastIndexOf('/') + 1, stringUri.indexOf('.')));
+            Log.d("fileUri = ", fileUri.toString());
         }
         //Using the Picasso library, loads the image onto the screen.
         setImage();
@@ -80,8 +78,7 @@ public class Image_Upload_Fragment extends Fragment {
 
     private void initializeViews(View rootView) {
         imageView = (GestureImageView) rootView.findViewById(R.id.upload_image_view);
-        description = (EditText) rootView.findViewById(R.id.upload_name_input);
-        uploadOption = (Spinner) rootView.findViewById(R.id.upload_option_spinner);
+        name = (EditText) rootView.findViewById(R.id.upload_name_input);
         imageButton = (ImageButton) rootView.findViewById(R.id.image_upload_button);
         fp = new FilePath();
     }
@@ -93,7 +90,7 @@ public class Image_Upload_Fragment extends Fragment {
 
     private void setImage() {
         Picasso.with(getContext())
-                .load(imageUri)
+                .load(fileUri)
                 .fit()
                 .centerCrop()
                 .into(imageView);
@@ -104,7 +101,7 @@ public class Image_Upload_Fragment extends Fragment {
         new Thread() {
             public void run() {
                 try {
-                    UploadProcess upobj = new UploadProcess(getContext(), description, imageUri, ringProgressDialog);
+                    UploadProcess upobj = new UploadProcess(getContext(), name, fileUri, ringProgressDialog);
                     upobj.uploadProcess();
                 } catch (Exception e) {
                     e.printStackTrace();

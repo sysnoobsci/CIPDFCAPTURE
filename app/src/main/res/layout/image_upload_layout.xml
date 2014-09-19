@@ -1,55 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/upload_input_button_layout"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:id="@+id/upload_image_view"/>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:background="#009dd9"
-        android:id="@+id/upload_input_button_layout"
-        android:layout_centerHorizontal="true">
+        android:id="@+id/upload_input_button_layout">
 
         <EditText
             android:layout_margin="4dp"
-            android:inputType="textMultiLine"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:id="@+id/upload_name_input"
-            android:padding="5dp"
-            android:minLines="1"
-            android:maxLines="2"
             android:hint="Name: 40 character max"
             android:gravity="top"
-            android:layout_gravity="center"
             android:background="#ffffff"
             android:maxLength="40" />
 
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/upload_option_spinner"
-            android:layout_gravity="center"
-            android:layout_margin="4dp" />
-
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="?android:attr/actionBarSize"
+            android:layout_height="?android:attr/actionBarSize"
             android:id="@+id/image_upload_button"
-            android:layout_gravity="center"
             android:layout_margin="4dp"
-            android:background="#00000000"
+            android:background="#0099CC"
             android:src="@drawable/ic_action_upload"/>
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>
