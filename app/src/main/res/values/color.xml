@@ -140,4 +140,9 @@
     <color name="DarkBlue">#00008B</color>
     <color name="Navy">#000080</color>
     <color name="Black">#000000</color>
+
+    <color name="edit_text_background_light">#ffffff</color>
+    <color name="font_color_light">#000000</color>
+    <color name="edit_text_background_dark">#111111</color>
+    <color name="font_color_dark">#bbbbbb</color>
 </resources>

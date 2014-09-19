@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app.fragments;
+package com.ameraz.android.cipdfcapture.app.filebrowser;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -13,8 +13,9 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.filebrowser.FileArrayAdapter;
-import com.ameraz.android.cipdfcapture.app.filebrowser.Item;
+import com.ameraz.android.cipdfcapture.app.fragments.Image_Upload_Fragment;
+import com.ameraz.android.cipdfcapture.app.fragments.PDF_Upload_Fragment;
+import com.ameraz.android.cipdfcapture.app.fragments.Text_XML_Upload_Fragment;
 
 import java.io.File;
 import java.sql.Date;
@@ -134,20 +135,17 @@ public class File_Explorer_Fragment extends ListFragment {
         if (o.getName().endsWith(".jpg") || o.getName().endsWith(".jpeg") || o.getName().endsWith(".png")) {
             setImageFragment(o);
         }
-        if (o.getName().endsWith(".pdf")) {
+        else if (o.getName().endsWith(".pdf")) {
             setPDFFragment(o);
         }
+        else if(o.getName().endsWith(".txt") || o.getName().endsWith(".xml")){
+            setTXTXMLFragment(o);
+        }
+    }
 
-/*        Intent intent = new Intent();
-        intent.putExtra("GetPath", currentDir.toString());
-        intent.putExtra("GetFileName", o.getName());
-        setFileName(o.getName());//setting the file name
-        setFullFilePath(currentDir.toString() + "/" + o.getName());//setting the full file path
-        Log.d("Message", "File path is " + currentDir.toString() + "/" + o.getName());
-        File newImage = new File(getFullFilePath());
-        setItemURI(Uri.fromFile(newImage));
-        setResult(RESULT_OK, intent);
-        finish();*/
+    private void setTXTXMLFragment(Item o) {
+        Fragment fragment = new Text_XML_Upload_Fragment();
+        sendFile(fragment, o);
     }
 
     private void setPDFFragment(Item o) {

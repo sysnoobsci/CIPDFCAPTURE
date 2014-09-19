@@ -100,7 +100,7 @@ public class PDF_Upload_Fragment extends Fragment {
         pdfViewer.setWebChromeClient(new WebChromeClient());
 
         //Uri path = Uri.parse(Environment.getExternalStorageDirectory().toString() + "/data/test.pdf");
-        pdfViewer.loadUrl("file:///android_asset/pdfviewer/index.html?file=" + fileUri);
+        pdfViewer.loadUrl("http://docs.google.com/gview?embedded=true&url=" + fileUri);
     }
 
     private void setUploadProgressDialog() {
