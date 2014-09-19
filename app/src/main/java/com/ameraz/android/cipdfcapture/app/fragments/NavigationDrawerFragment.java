@@ -21,6 +21,7 @@ import android.widget.ExpandableListView;
 
 import com.ameraz.android.cipdfcapture.app.ExpandableListAdapter;
 import com.ameraz.android.cipdfcapture.app.R;
+import com.ameraz.android.cipdfcapture.app.filebrowser.File_Explorer_Fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;

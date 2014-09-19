@@ -32,7 +32,7 @@
             android:layout_height="?android:attr/actionBarSize"
             android:layout_gravity="center"
             android:src="@drawable/ic_action_upload"
-            android:background="#0099CC"/>
+            android:background="#00000000"/>
 
         </LinearLayout>
 </LinearLayout>
