@@ -143,10 +143,10 @@ public class NavigationDrawerFragment extends Fragment {
                     case 2://need to flesh out fragments that go under Content Server
                         switch (childPosition) {
                             case 0:
-                                fragment = new CServer_Fragment();
+                                fragment = new DownloadView_Fragment();
                                 break;
                             case 1:
-                                fragment = new CServer_Fragment();
+                                fragment = new DownloadView_Fragment();
                                 break;
                         }
                         break;

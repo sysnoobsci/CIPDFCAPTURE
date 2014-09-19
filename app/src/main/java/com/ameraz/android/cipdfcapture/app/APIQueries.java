@@ -308,11 +308,28 @@ public class APIQueries {
         return versionInfo;
     }
 
-    public static ArrayList<String> showItems(ArrayList<String> lvers, int sel) {
+    public static ArrayList<String> getMetadata(ArrayList<String> lvers, String selection) {
+        int choose = -1;//selects the version info to grab
+        if (selection == "DSID") {//dsid of report version
+            choose = 0;
+        } else if (selection == "CTS") {//timestamp when report version was created
+            choose = 1;
+        } else if (selection == "BYTES") {//size in bytes of report version
+            choose = 2;
+        } else if (selection == "FMT") {//format of report version
+            choose = 3;
+        } else if (selection == "VER") {//version number of report version
+            choose = 4;
+        } else if (selection == "TID") {//topic instance id of report version
+            choose = 5;
+        }
+        if (choose == -1) {
+            Log.d("getMetadata()", "Error. Invalid Metadata Tag.");
+        }
         ArrayList<String> vers = new ArrayList<String>();
         for (String v : lvers) {
             String[] pieces = v.split(",");
-            vers.add(pieces[sel]);//0=dsid,1=cts,2=bytes,3=fmt,4=ver,5=tid
+            vers.add(pieces[choose]);//0=dsid,1=cts,2=bytes,3=fmt,4=ver,5=tid
         }
         return vers;
     }
