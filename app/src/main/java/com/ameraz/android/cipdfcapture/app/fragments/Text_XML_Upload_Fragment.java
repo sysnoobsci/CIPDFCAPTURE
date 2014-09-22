@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.ameraz.android.cipdfcapture.app.FilePath;
 import com.ameraz.android.cipdfcapture.app.R;
@@ -32,7 +33,7 @@ import java.io.InputStreamReader;
 public class Text_XML_Upload_Fragment extends Fragment {
 
     private Context context;
-    private EditText editText;
+    private TextView editText;
     private EditText name;
     private ImageButton uploadButton;
     private ProgressDialog ringProgressDialog;
@@ -66,7 +67,7 @@ public class Text_XML_Upload_Fragment extends Fragment {
     }
 
     private void initializeViews(View rootView) {
-        editText = (EditText)rootView.findViewById(R.id.editText);
+        editText = (TextView)rootView.findViewById(R.id.editText);
         name = (EditText)rootView.findViewById(R.id.txt_xml_name);
         uploadButton = (ImageButton)rootView.findViewById(R.id.txt_xml_upload_button);
         ringProgressDialog = new ProgressDialog(getContext());

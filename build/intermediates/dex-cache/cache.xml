@@ -62,18 +62,6 @@
         revision="20.0.0"
         sha1="081fee01fb0d7da7665261ac0e005f583985087d"/>
     <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\android-pdfview-1.0.2-34cbca8a977791379d7e98267dac7ab861a151ab.jar"
-        jar="C:\Users\john.williams\.gradle\caches\modules-2\files-2.1\com.joanzapata.pdfview\android-pdfview\1.0.2\50061e40f2f4246e84869e9388a243ac82167b1e\android-pdfview-1.0.2.apklib"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="50061e40f2f4246e84869e9388a243ac82167b1e"/>
-    <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\pdf-js-1.0.277-ff0b89d2202d2dba1cacaf5bc13ebf7ca0bbeb79.jar"
-        jar="C:\Users\john.williams\.gradle\caches\modules-2\files-2.1\org.webjars\pdf-js\1.0.277\9da497bae06c3f412157855bfc5387ff9060815d\pdf-js-1.0.277.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="9da497bae06c3f412157855bfc5387ff9060815d"/>
-    <item
         dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\httpcore-4.3.2-bfe3781a12d8b08315d8a65642f73bc1c504c6ce.jar"
         jar="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\libs\httpcore-4.3.2.jar"
         jumboMode="false"

@@ -29,7 +29,7 @@ public class Home_Fragment extends Fragment {
         cloudBackground = (ImageView) rootView.findViewById(R.id.imageView2);
         setCloudBackground();
         setFonts();
-        setText(preferences.getString("pref_date", "n/a"));
+//        setText(preferences.getString("pref_date", "n/a"));
         return rootView;
     }
 
@@ -41,16 +41,16 @@ public class Home_Fragment extends Fragment {
                 .into(cloudBackground);
     }
 
-    public void setText(String date) {
+/*    public void setText(String date) {
         TextView textView = (TextView) rootView.findViewById(R.id.textView2);
         textView.setText("You were last here\n" + date);
-    }
+    }*/
 
     public void setFonts() {
         TextView txt = (TextView) rootView.findViewById(R.id.textView);
-        TextView txt1 = (TextView) rootView.findViewById(R.id.textView2);
-        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
+        //TextView txt1 = (TextView) rootView.findViewById(R.id.textView2);
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "GOTHIC.TTF");
         txt.setTypeface(font);
-        txt1.setTypeface(font);
+        //txt1.setTypeface(font);
     }
 }

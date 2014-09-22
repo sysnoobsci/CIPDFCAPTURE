@@ -123,15 +123,7 @@ public class NavigationDrawerFragment extends Fragment {
                 Fragment fragment = new Home_Fragment();
                 FragmentManager fragmentManager = getFragmentManager();
                 switch (groupPosition) {
-                    case 0:
-                        switch (childPosition) {
-                            case 0:
-                                //captureImage();
-                                fragment = new Camera_Capture_Fragment();
-                                break;
-                        }
-                        break;
-                    case 1://placeholder until Device Explorer Fragments get added
+                    case 0://placeholder until Device Explorer Fragments get added
                         switch (childPosition) {
                             case 0:
                                 fragment = new InternalGalleryFragment();
@@ -141,7 +133,7 @@ public class NavigationDrawerFragment extends Fragment {
                                 break;
                         }
                         break;
-                    case 2://need to flesh out fragments that go under Content Server
+                    case 1://need to flesh out fragments that go under Content Server
                         switch (childPosition) {
                             case 0:
                                 fragment = new DownloadView_Fragment();
@@ -154,7 +146,6 @@ public class NavigationDrawerFragment extends Fragment {
                 }
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, fragment)
-                        .addToBackStack(null)
                         .commit();
                 return false;
             }
@@ -164,86 +155,26 @@ public class NavigationDrawerFragment extends Fragment {
         return mDrawerListView;
     }
 
-/*    private void captureImage() {
-        if (createFile()) {
-            startCamera();
-        }
-    }
-
-
-    private boolean createFile() {
-        FilePath fp = new FilePath();
-        String storageState = Environment.getExternalStorageState();
-        if (storageState.equals(Environment.MEDIA_MOUNTED)) {
-            fileName = "sys_image" + System.currentTimeMillis() + ".jpg";
-            String incImage = fp.getImageFilePath() + fileName;
-            //outImage = fp.getImageFilePath() + "PDF/" + "sys_pdf" + System.currentTimeMillis() + ".pdf";
-            File newImage = new File(incImage);
-            try {
-                if (!newImage.exists()) {
-                    newImage.getParentFile().mkdirs();
-                    newImage.createNewFile();
-                    imageUri = Uri.fromFile(newImage);
-                }
-            } catch (IOException e) {
-                ToastMessageTask.fileNotWritten(this.getActivity());
-                Log.e("File: ", "Could not create file.", e);
-                return false;
-            }
-        } else {
-            ToastMessageTask.fileNotWritten(this.getActivity());
-            Log.e("File: ", "Storage not mounted.");
-            return false;
-        }
-        return true;
-    }
-
-    private void startCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        startActivityForResult(intent, 0);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == getActivity().RESULT_OK) {
-            Log.d("onActivityResult ", imageUri.toString());
-            Fragment fragment = new Image_Upload_Fragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("fileName", fileName);
-            fragment.setArguments(bundle);
-            FragmentManager fm = getFragmentManager();
-            fm.beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .commit();
-        }
-    }*/
-
     private void prepareListData() {
 
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
 
         //Header like Find, about...etc.  Call command and put it here
-        listDataHeader.add(getString(R.string.navdrawer1));
-        listDataHeader.add("Device Explorer");
-        listDataHeader.add("Content Server Explorer");
+        listDataHeader.add("Capture");
+        listDataHeader.add("Content Cloud");
 
         //Populate Find here with the submenu
-        List<String> capture_pdf = new ArrayList<String>();
-        capture_pdf.add("Capture/Upload");
+        List<String> capture = new ArrayList<String>();
+        capture.add("Capture Image");
+        capture.add("File Explorer");
 
-        List<String> view_images = new ArrayList<String>();
-        view_images.add("Gallery");
-        view_images.add("File Explorer");
+        List<String> content_cloud = new ArrayList<String>();
+        content_cloud.add("Images");
+        content_cloud.add("Documents");
 
-        List<String> content_server = new ArrayList<String>();
-        content_server.add("Images");
-        content_server.add("Documents");
-
-        listDataChild.put(listDataHeader.get(0), capture_pdf);
-        listDataChild.put(listDataHeader.get(1), view_images);
-        listDataChild.put(listDataHeader.get(2), content_server);
+        listDataChild.put(listDataHeader.get(0), capture);
+        listDataChild.put(listDataHeader.get(1), content_cloud);
     }
 
     public boolean isDrawerOpen() {

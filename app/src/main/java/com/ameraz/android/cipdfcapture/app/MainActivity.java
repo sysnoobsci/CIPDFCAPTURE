@@ -104,6 +104,10 @@ public class MainActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActionBar actionBar = getActionBar();
+        if(actionBar != null) {
+            getActionBar().setDisplayShowTitleEnabled(false);
+        }
         db = new DatabaseHandler(getApplicationContext());//create a db if one doesn't exist
         //navigation drawer stuff
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -193,6 +197,10 @@ public class MainActivity extends Activity
             }).start();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onActivityCreated(){
+
     }
 
 }//end of MainActivity
