@@ -47,7 +47,6 @@ public class Camera_Capture_Fragment extends Fragment {
         if (storageState.equals(Environment.MEDIA_MOUNTED)) {
             fileName = "sys_image" + System.currentTimeMillis() + ".jpg";
             String incImage = fp.getImageFilePath() + fileName;
-            //outImage = fp.getImageFilePath() + "PDF/" + "sys_pdf" + System.currentTimeMillis() + ".pdf";
             File newImage = new File(incImage);
             try {
                 if (!newImage.exists()) {

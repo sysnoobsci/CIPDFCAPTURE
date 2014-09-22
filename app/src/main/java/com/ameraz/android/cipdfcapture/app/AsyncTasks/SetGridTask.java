@@ -18,10 +18,9 @@ public class SetGridTask extends AsyncTask {
     private LinearLayout galleryProgress;
     private GridView gridView;
 
-    public SetGridTask(Context context, GalleryAdapter ga, LinearLayout gp, GridView gv) {
+    public SetGridTask(Context context, GalleryAdapter ga, GridView gv) {
         setContext(context);
         setGalleryAdapter(ga);
-        setGalleryProgress(gp);
         setGridView(gv);
     }
 
@@ -41,14 +40,6 @@ public class SetGridTask extends AsyncTask {
         this.galleryAdapter = galleryAdapter;
     }
 
-    public LinearLayout getGalleryProgress() {
-        return galleryProgress;
-    }
-
-    public void setGalleryProgress(LinearLayout galleryProgress) {
-        this.galleryProgress = galleryProgress;
-    }
-
     public GridView getGridView() {
         return gridView;
     }
@@ -59,7 +50,6 @@ public class SetGridTask extends AsyncTask {
 
     @Override
     protected void onPreExecute() {
-        galleryProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -73,7 +63,6 @@ public class SetGridTask extends AsyncTask {
     protected void onPostExecute(Object result) {
         getGridView().setAdapter(getGalleryAdapter());
         getGalleryAdapter().notifyDataSetChanged();
-        getGalleryProgress().setVisibility(View.INVISIBLE);
         this.cancel(true);
     }
 

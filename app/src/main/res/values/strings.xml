@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Phone Capture</string>
+    <string name="app_name">CloudCapture</string>
     <string name="title_section1">About</string>
     <string name="title_section2">Capture PDF</string>
     <string name="title_section3">Upload PDF</string>
@@ -98,9 +98,7 @@
     <string name="topicdesc">Description</string>
     <string name="topicdescval">Description</string>
 
-    <string-array name="upload_type_choice">
-        <item>Image</item>
-        <item>PDF</item>
-    </string-array>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

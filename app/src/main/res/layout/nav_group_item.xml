@@ -6,12 +6,17 @@
 
     <TextView
         android:layout_width="fill_parent"
-        android:layout_height="30dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textSize="24sp"
         android:text="Large Text"
-        android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
         android:id="@+id/group_item"
         android:gravity="center_vertical"
         android:textStyle="bold"
-        android:textColor="#ffffff"/>
+        android:textColor="#ffffff"
+        android:background="@drawable/actionbar_background"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#111111"/>
 </LinearLayout>

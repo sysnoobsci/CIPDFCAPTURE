@@ -6,11 +6,12 @@
 
     <TextView
         android:layout_width="fill_parent"
-        android:layout_height="30dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
-        android:text="Large Text"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textSize="22sp"
+        android:text="badfgagafha"
         android:id="@+id/child_item"
         android:gravity="center_vertical"
-        android:textColor="#ffffff"/>
+        android:textColor="#ffffff"
+        android:background="@drawable/actionbar_background"/>
 </LinearLayout>

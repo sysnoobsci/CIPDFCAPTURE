@@ -16,7 +16,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#009dd9"
+        android:background="#0078c9"
         android:id="@+id/upload_input_button_layout">
 
         <EditText
@@ -27,7 +27,8 @@
             android:id="@+id/upload_name_input"
             android:hint="Name: 40 character max"
             android:gravity="top"
-            android:maxLength="40" />
+            android:maxLength="40"
+            android:background="#ffffff"/>
 
         <ImageButton
             android:layout_width="?android:attr/actionBarSize"
