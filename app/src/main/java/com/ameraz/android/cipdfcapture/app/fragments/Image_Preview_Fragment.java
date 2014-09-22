@@ -51,7 +51,7 @@ public class Image_Preview_Fragment extends Fragment {
     public void loadImage() {
         Bundle bundle = this.getArguments();
         uri = bundle.getString("retrieve_url");
-        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);//turns off hardware accelerated canvas
+        //webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);//turns off hardware accelerated canvas
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.setInitialScale(1);

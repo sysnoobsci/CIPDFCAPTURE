@@ -7,12 +7,16 @@ package com.ameraz.android.cipdfcapture.app;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.joanzapata.pdfview.PDFView;
 import com.joanzapata.pdfview.listener.OnPageChangeListener;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import static java.lang.String.format;
 
@@ -40,30 +44,42 @@ public class PDFViewActivity extends Activity implements OnPageChangeListener {
         setContentView(R.layout.activity_pdfview);
         setContext(getApplicationContext());
         instantiateViews();
-        afterViews();
+        try {
+            afterViews();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }//end of oncreate
 
     void instantiateViews() {
         pdfView = (PDFView) findViewById(R.id.pdfView);
-        ;
+
     }
 
-    void afterViews() {
+    void afterViews() throws FileNotFoundException {
         display(pdfName, false);
     }
 
-    public void about() {
+    public void about() throws FileNotFoundException {
         if (!displaying(ABOUT_FILE))
             display(ABOUT_FILE, true);
     }
 
-    private void display(String assetFileName, boolean jumpToFirstPage) {
+    private void display(String assetFileName, boolean jumpToFirstPage) throws FileNotFoundException {
         if (jumpToFirstPage) pageNumber = 1;
         setTitle(pdfName = assetFileName);
-        pdfView.fromAsset(assetFileName)
+        File testpdf = new File(FilePath.getSyswareFilePath() + "sys1404932462039.pdf");
+        Log.d("display()", "opening " + FilePath.getSyswareFilePath() + "sys1404932462039.pdf");
+        //FileInputStream fis = openFileInput(testpdf);
+        pdfView.fromFile(testpdf)//test loading frim
                 .defaultPage(pageNumber)
                 .onPageChange(this)
                 .load();
+        /*pdfView.fromAsset(assetFileName)
+                .defaultPage(pageNumber)
+                .onPageChange(this)
+                .load();
+        */
     }
 
     @Override
@@ -75,7 +91,11 @@ public class PDFViewActivity extends Activity implements OnPageChangeListener {
     @Override
     public void onBackPressed() {
         if (ABOUT_FILE.equals(pdfName)) {
-            display(SAMPLE_FILE, true);
+            try {
+                display(SAMPLE_FILE, true);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         } else {
             super.onBackPressed();
         }

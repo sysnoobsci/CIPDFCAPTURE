@@ -4,8 +4,8 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -27,13 +27,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ameraz.android.cipdfcapture.app.APIQueries;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.DownloadFileTask;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.LogonSession;
-import com.ameraz.android.cipdfcapture.app.PDFViewActivity;
 import com.ameraz.android.cipdfcapture.app.QueryArguments;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.VersionInfoAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -63,6 +64,7 @@ public class DownloadView_Fragment extends Fragment {
     ArrayList<String> listOfReportVersions = new ArrayList<String>();
     ProgressDialog ringProgressDialog;
     SharedPreferences preferences;
+
 
     public static Context getContext() {
         return context;
@@ -109,7 +111,7 @@ public class DownloadView_Fragment extends Fragment {
         enlargeImageGroup = (LinearLayout) rootView.findViewById(R.id.grouped_Layout);
         sItems = (Spinner) rootView.findViewById(R.id.spinner);
         webView = (WebView) rootView.findViewById(R.id.webView);
-        webView.setWebViewClient(new MyBrowser());
+
         listView = (ListView) rootView.findViewById(R.id.listView);
     }
 
@@ -141,6 +143,11 @@ public class DownloadView_Fragment extends Fragment {
         ringProgressDialog.setMessage("Searching for report ...");
     }
 
+    private void setDownloadingViewDialog() {
+        ringProgressDialog.setTitle("Performing Action ...");
+        ringProgressDialog.setMessage("Downloading View ...");
+    }
+
     public void searchButton() throws Exception {
         LogonSession lsobj = new LogonSession(getContext());
         ringProgressDialog.show();
@@ -167,7 +174,11 @@ public class DownloadView_Fragment extends Fragment {
                         Log.d("spinnerItemListener()", "resp value: " + resp);
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
-                                open(view);
+                                try {
+                                    open(webView);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 createVersInfoAdapter();//fill the adapter with the report version's info
                             }
                         });
@@ -213,13 +224,10 @@ public class DownloadView_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("downloadButtonListener()", "downloadButtonListener() clicked");
-                Intent a = new Intent(getActivity(), PDFViewActivity.class);
-                startActivity(a);
-                /*try {
-                    callIP_Fragment();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }*/
+                /*Intent a = new Intent(getActivity(), PDFViewActivity.class);
+                startActivity(a);*/
+                DownloadFileTask dltask = new DownloadFileTask(resp);//download response and create a new file
+                dltask.execute();
             }
         });
     }
@@ -273,18 +281,20 @@ public class DownloadView_Fragment extends Fragment {
         sItems.setAdapter(adapter);
     }
 
-    public void open(View view) {
-        Log.d("DownloadView_Fragment.open()", "open() called.");
-        String url = resp;
-        Log.d("open()", "Value of url: " + url);
-        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);//turns off hardware accelerated canvas
+    public void open(final WebView webView) throws IOException {
+        setWebViewSettings(webView);
+        webView.loadUrl(resp);
+    }
+
+    public void setWebViewSettings(WebView webView) {
+        webView.setWebViewClient(new MyBrowser());
+        //webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);//turns off hardware accelerated canvas
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.setInitialScale(1);
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);//turn caching mode on
-        webView.loadUrl(url);
     }
 
     @Override
@@ -294,11 +304,41 @@ public class DownloadView_Fragment extends Fragment {
         super.onDestroy();
     }
 
+    boolean loadingFinished = true;
+    boolean redirect = false;
+
     private class MyBrowser extends WebViewClient {
         @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
+        public boolean shouldOverrideUrlLoading(WebView view, String urlNewString) {
+            if (!loadingFinished) {
+                redirect = true;
+            }
+            loadingFinished = false;
+            view.loadUrl(urlNewString);
             return true;
         }
+
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            loadingFinished = false;
+            Log.d("onPageStarted()", "WebView is starting to load");
+            setDownloadingViewDialog();//prepare dialog to show downloading view message
+            ringProgressDialog.show();
+            //SHOW LOADING IF IT ISNT ALREADY VISIBLE
+        }
+
+        public void onPageFinished(WebView view, String url) {
+            if (!redirect) {
+                loadingFinished = true;
+            }
+            if (loadingFinished && !redirect) {
+                //HIDE LOADING IT HAS FINISHED
+            } else {
+                redirect = false;
+            }
+            Log.d("onPageFinished()", "WebView is done loading");
+            ringProgressDialog.dismiss();//dismiss loading screen after webView is done loading
+            // do your stuff here
+        }
+
     }
 }
