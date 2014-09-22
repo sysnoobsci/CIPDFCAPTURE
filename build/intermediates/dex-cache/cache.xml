@@ -2,88 +2,76 @@
 <pre-dex-items>
 
     <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\httpmime-4.3.5-2dc9796774c8e16cb4ac30409de926c561ba1a69.jar"
-        jar="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\libs\httpmime-4.3.5.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="1dd0d38df9c6d21e893f2e52403f1cd99e91cd81"/>
-    <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\apache-mime4j-core-0.7.2-a2f3b3e29b8b07bb10bc15883b1d34380463da67.jar"
-        jar="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\libs\apache-mime4j-core-0.7.2.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="a81264fe0265ebe8fd1d8128aad06dc320de6eef"/>
-    <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\support-v4-19.1.0-4fdb794677a1d5bdd7aadaee55f2c461da6c022d.jar"
-        jar="C:\Users\john.williams\AppData\Local\Android\android-studio1\sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
-    <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\httpclient-4.3.5-8d1d151e76add2aa75fe8c6de2f092392f001f63.jar"
-        jar="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\libs\httpclient-4.3.5.jar"
+        dex="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\httpclient-4.3.5-8269e217cbb1a0948e2ada3ae257217cd350e751.jar"
+        jar="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\libs\httpclient-4.3.5.jar"
         jumboMode="false"
         revision="20.0.0"
         sha1="9783d89b8eea20a517a4afc5f979bd2882b54c44"/>
     <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\okhttp-urlconnection-2.0.0-874917004130b2194bace8e17e87789cae9a6688.jar"
-        jar="C:\Users\john.williams\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp-urlconnection\2.0.0\afe8399d352713b66e597e9670c741d1e60ae923\okhttp-urlconnection-2.0.0.jar"
+        dex="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\apache-mime4j-core-0.7.2-99dc8886cbad9cc942aa54e96f040187457b3e7e.jar"
+        jar="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\libs\apache-mime4j-core-0.7.2.jar"
         jumboMode="false"
         revision="20.0.0"
-        sha1="afe8399d352713b66e597e9670c741d1e60ae923"/>
+        sha1="a81264fe0265ebe8fd1d8128aad06dc320de6eef"/>
     <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\classes-a476ddfa2571949cb2c931145438303ac0d29c7f.jar"
-        jar="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\19.1.0\classes.jar"
+        dex="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\picasso-2.3.4-399b02a5d573e8850963d377b2c6c4c3955b2ca5.jar"
+        jar="C:\Users\John\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.3.4\3b646ddbdac8a33fc45b64564011da81d23e4635\picasso-2.3.4.jar"
         jumboMode="false"
         revision="20.0.0"
-        sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28"/>
+        sha1="3b646ddbdac8a33fc45b64564011da81d23e4635"/>
     <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\okio-1.0.0-1cbe1339a577710518a961ff5fa4c68b6829de43.jar"
-        jar="C:\Users\john.williams\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.0.0\2534c458682c73f5b9871131ab3098d3f987ca3\okio-1.0.0.jar"
+        dex="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\okio-1.0.0-b50891da6733b30813b3ac168a02578f325f6755.jar"
+        jar="C:\Users\John\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.0.0\2534c458682c73f5b9871131ab3098d3f987ca3\okio-1.0.0.jar"
         jumboMode="false"
         revision="20.0.0"
         sha1="02534c458682c73f5b9871131ab3098d3f987ca3"/>
     <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\wire-runtime-1.5.1-a2c2f546c9f0629974c8325f38d6905799c76c96.jar"
-        jar="C:\Users\john.williams\.gradle\caches\modules-2\files-2.1\com.squareup.wire\wire-runtime\1.5.1\e29e966a7f81a2c6bc2c947fb80d26121ec81592\wire-runtime-1.5.1.jar"
+        dex="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\wire-runtime-1.5.1-91543d7a50a5e201cc5dd2d0885f1108a0693386.jar"
+        jar="C:\Users\John\.gradle\caches\modules-2\files-2.1\com.squareup.wire\wire-runtime\1.5.1\e29e966a7f81a2c6bc2c947fb80d26121ec81592\wire-runtime-1.5.1.jar"
         jumboMode="false"
         revision="20.0.0"
         sha1="e29e966a7f81a2c6bc2c947fb80d26121ec81592"/>
     <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\okhttp-2.0.0-182922c846d4b4d6a9866a559b2ed4f9a5430ec1.jar"
-        jar="C:\Users\john.williams\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp\2.0.0\4c8d1536dba3812cc1592090dc20c47a4ed3c35e\okhttp-2.0.0.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="4c8d1536dba3812cc1592090dc20c47a4ed3c35e"/>
-    <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\itextpdf-5.5.1-1f590ddc5fa75b29ee8cb903405670779ae2e0b0.jar"
-        jar="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\libs\itextpdf-5.5.1.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="081fee01fb0d7da7665261ac0e005f583985087d"/>
-    <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\android-pdfview-1.0.2-34cbca8a977791379d7e98267dac7ab861a151ab.jar"
-        jar="C:\Users\john.williams\.gradle\caches\modules-2\files-2.1\com.joanzapata.pdfview\android-pdfview\1.0.2\50061e40f2f4246e84869e9388a243ac82167b1e\android-pdfview-1.0.2.apklib"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="50061e40f2f4246e84869e9388a243ac82167b1e"/>
-    <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\pdf-js-1.0.277-ff0b89d2202d2dba1cacaf5bc13ebf7ca0bbeb79.jar"
-        jar="C:\Users\john.williams\.gradle\caches\modules-2\files-2.1\org.webjars\pdf-js\1.0.277\9da497bae06c3f412157855bfc5387ff9060815d\pdf-js-1.0.277.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="9da497bae06c3f412157855bfc5387ff9060815d"/>
-    <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\httpcore-4.3.2-bfe3781a12d8b08315d8a65642f73bc1c504c6ce.jar"
-        jar="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\libs\httpcore-4.3.2.jar"
+        dex="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\httpcore-4.3.2-d22f791e67115529370a626988d239d6ab45e855.jar"
+        jar="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\libs\httpcore-4.3.2.jar"
         jumboMode="false"
         revision="20.0.0"
         sha1="31fbbff1ddbf98f3aa7377c94d33b0447c646b6e"/>
     <item
-        dex="C:\Users\john.williams\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\picasso-2.3.4-9039d948e296fb37b48780af7d3db659eb8df3ae.jar"
-        jar="C:\Users\john.williams\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.3.4\3b646ddbdac8a33fc45b64564011da81d23e4635\picasso-2.3.4.jar"
+        dex="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\support-v4-19.1.0-e311e493b238b75da4095bd5ee7b69d76d73dc42.jar"
+        jar="C:\Program Files (x86)\Android\android-studio\sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"
         jumboMode="false"
         revision="20.0.0"
-        sha1="3b646ddbdac8a33fc45b64564011da81d23e4635"/>
+        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
+    <item
+        dex="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\okhttp-2.0.0-3c6aac72d63f43b593c0a848e913a144068a1c85.jar"
+        jar="C:\Users\John\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp\2.0.0\4c8d1536dba3812cc1592090dc20c47a4ed3c35e\okhttp-2.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="4c8d1536dba3812cc1592090dc20c47a4ed3c35e"/>
+    <item
+        dex="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\itextpdf-5.5.1-79e7a8d087d5fc7c42e16379c4b900e43c4f4e04.jar"
+        jar="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\libs\itextpdf-5.5.1.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="081fee01fb0d7da7665261ac0e005f583985087d"/>
+    <item
+        dex="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\okhttp-urlconnection-2.0.0-a4acb70aacb564617a2b7c38120184e9467ec257.jar"
+        jar="C:\Users\John\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp-urlconnection\2.0.0\afe8399d352713b66e597e9670c741d1e60ae923\okhttp-urlconnection-2.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="afe8399d352713b66e597e9670c741d1e60ae923"/>
+    <item
+        dex="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\httpmime-4.3.5-d65fd04b03c9ce19647332038bf5c4106ce24a91.jar"
+        jar="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\libs\httpmime-4.3.5.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="1dd0d38df9c6d21e893f2e52403f1cd99e91cd81"/>
+    <item
+        dex="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\pre-dexed\debug\classes-bc5aa9511a24bb8dae586eadf28def5f4428af3a.jar"
+        jar="C:\Users\John\AndroidStudioProjects\CIPDFCAPTURE\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\19.1.0\classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28"/>
 
 </pre-dex-items>

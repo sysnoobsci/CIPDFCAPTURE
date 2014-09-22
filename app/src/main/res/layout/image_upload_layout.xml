@@ -27,7 +27,6 @@
             android:id="@+id/upload_name_input"
             android:hint="Name: 40 character max"
             android:gravity="top"
-            android:background="#ffffff"
             android:maxLength="40" />
 
         <ImageButton

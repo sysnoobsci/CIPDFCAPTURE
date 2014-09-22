@@ -5,17 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/editText"
         android:gravity="top"
-        android:overScrollMode="ifContentScrolls"/>
+        android:isScrollContainer="true"/>
     <LinearLayout
         android:id="@+id/upload_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?android:attr/actionBarSize"
         android:background="#0099CC">
         <EditText
             android:id="@+id/txt_xml_name"
@@ -23,13 +23,12 @@
             android:layout_weight="1"
             android:gravity="top"
             android:layout_height="match_parent"
-            android:background="#ffffff"
             android:layout_margin="4dp"
             android:maxLength="40"/>
         <ImageButton
             android:id="@+id/txt_xml_upload_button"
             android:layout_width="?android:attr/actionBarSize"
-            android:layout_height="?android:attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/ic_action_upload"
             android:background="#00000000"/>

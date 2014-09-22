@@ -20,7 +20,6 @@ import com.ameraz.android.cipdfcapture.app.APIQueries;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.ameraz.android.cipdfcapture.app.FilePath;
-import com.ameraz.android.cipdfcapture.app.ImageToPDF;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.UploadProcess;
 import com.squareup.picasso.Picasso;
@@ -82,12 +81,6 @@ public class Capture_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 ringProgressDialog.show();
-                ImageToPDF itp = new ImageToPDF(incImage,outImage);
-                if(itp.convertImagetoPDF()){
-                    imageUri = itp.getImageUri();
-                    Log.d(imageUri.toString(), "shrug");
-                }
-                Log.d(imageUri.toString(), "shrug");
                 new Thread() {
                     public void run() {
                         try {
