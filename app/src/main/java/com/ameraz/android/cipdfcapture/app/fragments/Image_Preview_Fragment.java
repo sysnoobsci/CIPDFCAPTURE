@@ -1,6 +1,7 @@
 package com.ameraz.android.cipdfcapture.app.fragments;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.webkit.WebView;
 import android.widget.ImageButton;
 
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+import com.ameraz.android.cipdfcapture.app.MyBrowser;
 import com.ameraz.android.cipdfcapture.app.R;
 
 import java.io.File;
@@ -25,6 +27,7 @@ public class Image_Preview_Fragment extends Fragment {
     ImageButton saveButton;
     Context context;
     String uri;
+    ProgressDialog ringProgressDialog;
 
     public Context getContext() {
         return context;
@@ -52,6 +55,7 @@ public class Image_Preview_Fragment extends Fragment {
         Bundle bundle = this.getArguments();
         uri = bundle.getString("retrieve_url");
         //webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);//turns off hardware accelerated canvas
+        webView.setWebViewClient(new MyBrowser(ringProgressDialog));
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.setInitialScale(1);

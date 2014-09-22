@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -30,6 +28,7 @@ import com.ameraz.android.cipdfcapture.app.APIQueries;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.DownloadFileTask;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.LogonSession;
+import com.ameraz.android.cipdfcapture.app.MyBrowser;
 import com.ameraz.android.cipdfcapture.app.QueryArguments;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.VersionInfoAdapter;
@@ -235,6 +234,7 @@ public class DownloadView_Fragment extends Fragment {
     private void callIP_Fragment() {
         Bundle bundle = new Bundle();
         bundle.putString("retrieve_url", resp);
+        bundle.putString("progress_dialog", ringProgressDialog);
         Fragment fragment = new Image_Preview_Fragment();
         fragment.setArguments(bundle);
         FragmentManager fragmentManager = getFragmentManager();
@@ -287,7 +287,7 @@ public class DownloadView_Fragment extends Fragment {
     }
 
     public void setWebViewSettings(WebView webView) {
-        webView.setWebViewClient(new MyBrowser());
+        webView.setWebViewClient(new MyBrowser(ringProgressDialog));
         //webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);//turns off hardware accelerated canvas
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
@@ -304,41 +304,4 @@ public class DownloadView_Fragment extends Fragment {
         super.onDestroy();
     }
 
-    boolean loadingFinished = true;
-    boolean redirect = false;
-
-    private class MyBrowser extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String urlNewString) {
-            if (!loadingFinished) {
-                redirect = true;
-            }
-            loadingFinished = false;
-            view.loadUrl(urlNewString);
-            return true;
-        }
-
-        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            loadingFinished = false;
-            Log.d("onPageStarted()", "WebView is starting to load");
-            setDownloadingViewDialog();//prepare dialog to show downloading view message
-            ringProgressDialog.show();
-            //SHOW LOADING IF IT ISNT ALREADY VISIBLE
-        }
-
-        public void onPageFinished(WebView view, String url) {
-            if (!redirect) {
-                loadingFinished = true;
-            }
-            if (loadingFinished && !redirect) {
-                //HIDE LOADING IT HAS FINISHED
-            } else {
-                redirect = false;
-            }
-            Log.d("onPageFinished()", "WebView is done loading");
-            ringProgressDialog.dismiss();//dismiss loading screen after webView is done loading
-            // do your stuff here
-        }
-
-    }
 }
