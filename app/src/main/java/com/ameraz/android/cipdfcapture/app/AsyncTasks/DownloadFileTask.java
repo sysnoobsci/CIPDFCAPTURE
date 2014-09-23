@@ -22,7 +22,8 @@ import java.util.Calendar;
 public class DownloadFileTask extends AsyncTask<String, Void, String> {
 
     String url;
-    String pathName;
+    String path;
+    String filePathName;
     String extension;
     HttpClient httpClient = new DefaultHttpClient();
     HttpPost request;
@@ -31,9 +32,10 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     Calendar cal = Calendar.getInstance();
     ProgressDialog ringProgressDialog;
 
-    public DownloadFileTask(String url, String pathName, String extension, Context context) {
+    public DownloadFileTask(String url, String path, String filePathName, String extension, Context context) {
         this.url = url;
-        this.pathName = pathName;
+        this.path = path;
+        this.filePathName = filePathName;
         this.extension = "." + extension;
         request = new HttpPost(url);
         ringProgressDialog = new ProgressDialog(context);
@@ -62,9 +64,9 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
         if (response.getStatusLine().getStatusCode() != 401) {
-            checkDirExists(pathName);
+            checkDirExists(path);
             if (response != null) {
-                String fullFilename = pathName + cal.getTimeInMillis() + extension.toLowerCase();
+                String fullFilename = path + cal.getTimeInMillis() + extension.toLowerCase();
                 File file = new File(fullFilename);
                 Log.d("dlAndWriteFile()", "File name: " + fullFilename);
                 try {

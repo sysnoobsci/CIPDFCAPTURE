@@ -32,10 +32,12 @@ import com.ameraz.android.cipdfcapture.app.LogonSession;
 import com.ameraz.android.cipdfcapture.app.MyBrowser;
 import com.ameraz.android.cipdfcapture.app.QueryArguments;
 import com.ameraz.android.cipdfcapture.app.R;
+import com.ameraz.android.cipdfcapture.app.TempFileTracker;
 import com.ameraz.android.cipdfcapture.app.VersionInfoAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by adrian.meraz on 8/26/2014.
@@ -53,7 +55,7 @@ public class DownloadView_Fragment extends Fragment {
     private WebView webView;
     private LinearLayout enlargeImageGroup;
     static Context context;
-    String resp;
+    String topicIdUrl;
     String versionFormat;
     int position;
     APIQueries apiobj = null;
@@ -64,6 +66,7 @@ public class DownloadView_Fragment extends Fragment {
     ArrayList<String> listOfReportVersions = new ArrayList<String>();
     ProgressDialog ringProgressDialog;
     SharedPreferences preferences;
+    Calendar cal = Calendar.getInstance();
 
 
     public static Context getContext() {
@@ -170,15 +173,20 @@ public class DownloadView_Fragment extends Fragment {
                 new Thread() {
                     public void run() {
                         position = pos;//store the position of the item clicked
-                        resp = apiobj.retrieveQuery(tidArrayList.get(pos));//get the right tid
-                        Log.d("spinnerItemListener()", "resp value: " + resp);
+                        topicIdUrl = apiobj.retrieveQuery(tidArrayList.get(pos));//get the right tid
+                        Log.d("spinnerItemListener()", "topicIdUrl value: " + topicIdUrl);
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
-                                try {
+                                /*try {
                                     open(webView);
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                }
+                                }*/
+                                String fullFilename = FilePath.getTempFilePath() + cal.getTimeInMillis() + getVersionFormat().toLowerCase();
+                                DownloadFileTask dltask = new DownloadFileTask(topicIdUrl,
+                                        FilePath.getTempFilePath(), getVersionFormat(), getContext());
+                                dltask.execute();//download the file to a temp path, effectively caching it
+                                TempFileTracker
                                 createVersInfoAdapter();//fill the adapter with the report version's info
                             }
                         });
@@ -225,7 +233,7 @@ public class DownloadView_Fragment extends Fragment {
             public void onClick(View v) {
                 Log.d("downloadButtonListener()", "downloadButtonListener() clicked");
                 String vFormat = getVersionFormat();
-                DownloadFileTask dltask = new DownloadFileTask(resp, chooseDownloadFilePath(vFormat), vFormat, getContext());//download response and create a new file
+                DownloadFileTask dltask = new DownloadFileTask(topicIdUrl, chooseDownloadFilePath(vFormat), vFormat, getContext());//download response and create a new file
                 dltask.execute();
             }
         });
@@ -245,7 +253,7 @@ public class DownloadView_Fragment extends Fragment {
 
     private void callIP_Fragment() {
         Bundle bundle = new Bundle();
-        bundle.putString("retrieve_url", resp);
+        bundle.putString("retrieve_url", topicIdUrl);
         Fragment fragment = new Image_Preview_Fragment();
         fragment.setArguments(bundle);
         FragmentManager fragmentManager = getFragmentManager();
@@ -294,7 +302,7 @@ public class DownloadView_Fragment extends Fragment {
 
     public void open(final WebView webView) throws IOException {
         setWebViewSettings(webView);
-        webView.loadUrl(resp);
+        webView.loadUrl(topicIdUrl);
     }
 
     public void setWebViewSettings(WebView webView) {

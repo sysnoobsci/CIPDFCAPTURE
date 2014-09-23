@@ -20,9 +20,9 @@ public class MyBrowser extends WebViewClient {
         ringProgressDialog = pd;
     }
 
-    private void setDownloadingViewDialog() {
+    private void setLoadingViewDialog() {
         ringProgressDialog.setTitle("Performing Action ...");
-        ringProgressDialog.setMessage("Downloading View ...");
+        ringProgressDialog.setMessage("Loading View ...");
     }
 
     @Override
@@ -38,7 +38,7 @@ public class MyBrowser extends WebViewClient {
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         loadingFinished = false;
         Log.d("onPageStarted()", "WebView is starting to load");
-        setDownloadingViewDialog();//prepare dialog to show downloading view message
+        setLoadingViewDialog();//prepare dialog to show downloading view message
         ringProgressDialog.show();
         //SHOW LOADING IF IT ISNT ALREADY VISIBLE
     }
