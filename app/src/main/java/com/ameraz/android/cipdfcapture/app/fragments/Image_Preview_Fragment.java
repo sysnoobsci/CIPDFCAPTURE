@@ -55,6 +55,11 @@ public class Image_Preview_Fragment extends Fragment {
         Bundle bundle = this.getArguments();
         uri = bundle.getString("retrieve_url");
         //webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);//turns off hardware accelerated canvas
+        setWebViewSettings(webView);
+        webView.loadUrl(uri);
+    }
+
+    public void setWebViewSettings(WebView webView) {
         webView.setWebViewClient(new MyBrowser(ringProgressDialog));
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
@@ -62,7 +67,6 @@ public class Image_Preview_Fragment extends Fragment {
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//load the image from cache
-        webView.loadUrl(uri);
     }
 
     private void saveButtonListener() {//searches for the report and displays the versions
@@ -72,7 +76,6 @@ public class Image_Preview_Fragment extends Fragment {
                 try {
                     ToastMessageTask tmtask = new ToastMessageTask(getContext(), "Save button pressed");
                     tmtask.execute();
-                    downloadAndSave();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -80,9 +83,5 @@ public class Image_Preview_Fragment extends Fragment {
         });
     }
 
-    private void downloadAndSave() {
-        String hashCode = String.format("%08x", uri.hashCode());
-        File file = new File(new File(getContext().getCacheDir(), "savedfiletest"), hashCode);
-    }
 
 }

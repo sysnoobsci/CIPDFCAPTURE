@@ -22,13 +22,14 @@ import java.util.Calendar;
 public class DownloadFileTask extends AsyncTask<String, Void, String> {
 
     String url;
+    String pathName;
     HttpClient httpClient = new DefaultHttpClient();
     HttpPost request;
     HttpResponse response;
     Boolean success = false;
     Calendar cal = Calendar.getInstance();
 
-    public DownloadFileTask(String url) {
+    public DownloadFileTask(String url,String pathName) {
         this.url = url;
         request = new HttpPost(url);
     }

@@ -234,7 +234,6 @@ public class DownloadView_Fragment extends Fragment {
     private void callIP_Fragment() {
         Bundle bundle = new Bundle();
         bundle.putString("retrieve_url", resp);
-        bundle.putString("progress_dialog", ringProgressDialog);
         Fragment fragment = new Image_Preview_Fragment();
         fragment.setArguments(bundle);
         FragmentManager fragmentManager = getFragmentManager();
