@@ -9,7 +9,7 @@ public class TempFileTracker {
     static ArrayList<String> tempFileInfo;
     StringBuilder fullFileInfo;
 
-    void addTempFileToList(String filePath, int version) {//add temp files and versions
+    public static void addTempFileToList(String filePath, int version) {//add temp files and versions
         tempFileInfo = new ArrayList<String>();
         fullFileInfo = new StringBuilder();
         fullFileInfo.append(filePath).append(",").append(version);

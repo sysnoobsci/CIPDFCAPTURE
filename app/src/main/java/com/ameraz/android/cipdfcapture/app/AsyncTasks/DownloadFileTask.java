@@ -22,23 +22,23 @@ import java.util.Calendar;
 public class DownloadFileTask extends AsyncTask<String, Void, String> {
 
     String url;
-    String path;
-    String filePathName;
-    String extension;
+    String dirPath;
+    String fullFilePathName;
     HttpClient httpClient = new DefaultHttpClient();
     HttpPost request;
     HttpResponse response;
     Boolean success = false;
     Calendar cal = Calendar.getInstance();
     ProgressDialog ringProgressDialog;
+    Context context;
 
-    public DownloadFileTask(String url, String path, String filePathName, String extension, Context context) {
+    public DownloadFileTask(String url, String dirPath, String fullFilePathName, Context context) {
         this.url = url;
-        this.path = path;
-        this.filePathName = filePathName;
-        this.extension = "." + extension;
+        this.dirPath = dirPath;
+        this.fullFilePathName = fullFilePathName;
         request = new HttpPost(url);
-        ringProgressDialog = new ProgressDialog(context);
+        this.context = context;
+        ringProgressDialog = new ProgressDialog(this.context);
     }
 
     private void setDownloadingFileDialog() {
@@ -46,13 +46,13 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
         ringProgressDialog.setMessage("Downloading File ...");
     }
 
-    protected void checkDirExists(String pathName) {
-        File file = new File(pathName);
+    protected void checkDirExists(String dirPath) {
+        File file = new File(dirPath);
         if (file.isDirectory() && file.exists()) {
-            Log.d("checkDirExists()", pathName + " exists");
+            Log.d("checkDirExists()", dirPath + " exists");
         } else {
-            Log.d("checkDirExists()", pathName + " does not exist");
-            Log.d("checkDirExists()", "creating directory: " + pathName);
+            Log.d("checkDirExists()", dirPath + " does not exist");
+            Log.d("checkDirExists()", "creating directory: " + dirPath);
             file.mkdir();
         }
     }
@@ -64,11 +64,10 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
         if (response.getStatusLine().getStatusCode() != 401) {
-            checkDirExists(path);
+            checkDirExists(dirPath);//check if dir exists, otherwise create it
             if (response != null) {
-                String fullFilename = path + cal.getTimeInMillis() + extension.toLowerCase();
-                File file = new File(fullFilename);
-                Log.d("dlAndWriteFile()", "File name: " + fullFilename);
+                File file = new File(fullFilePathName);
+                Log.d("dlAndWriteFile()", "File name: " + fullFilePathName);
                 try {
                     file.getParentFile().mkdirs();
                     file.createNewFile();
@@ -92,6 +91,7 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         ringProgressDialog.dismiss();
+        ToastMessageTask.downloadFileSuccessful(context);
     }
 
     @Override

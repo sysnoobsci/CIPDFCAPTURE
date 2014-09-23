@@ -57,6 +57,7 @@ public class DownloadView_Fragment extends Fragment {
     static Context context;
     String topicIdUrl;
     String versionFormat;
+    int versionNumber;
     int position;
     APIQueries apiobj = null;
     Spinner sItems;
@@ -87,6 +88,14 @@ public class DownloadView_Fragment extends Fragment {
         this.versionFormat = versionFormat;
     }
 
+    public int getVersionNumber() {
+        return versionNumber;
+    }
+
+    public void setVersionNumber(int versionNumber) {
+        this.versionNumber = versionNumber;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.downloadview_fragment, container, false);
@@ -114,7 +123,6 @@ public class DownloadView_Fragment extends Fragment {
         enlargeImageGroup = (LinearLayout) rootView.findViewById(R.id.grouped_Layout);
         sItems = (Spinner) rootView.findViewById(R.id.spinner);
         webView = (WebView) rootView.findViewById(R.id.webView);
-
         listView = (ListView) rootView.findViewById(R.id.listView);
     }
 
@@ -137,8 +145,9 @@ public class DownloadView_Fragment extends Fragment {
         versionInfo.add("Created Timestamp\t\t\n" + infoPieces[1]);
         versionInfo.add("Bytes\t\t\n" + infoPieces[2]);
         versionInfo.add("Format\t\t\n" + infoPieces[3]);
-        setVersionFormat(infoPieces[3]);
+        setVersionFormat(infoPieces[3]);//set format of doc
         versionInfo.add("Version\t\t\n" + infoPieces[4]);
+        setVersionNumber(Integer.parseInt(infoPieces[4]));//set version number of doc
     }
 
     private void setSearchProgressDialog() {
@@ -182,11 +191,11 @@ public class DownloadView_Fragment extends Fragment {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }*/
-                                String fullFilename = FilePath.getTempFilePath() + cal.getTimeInMillis() + getVersionFormat().toLowerCase();
+                                String fullFilePathName = FilePath.getTempFilePath() + cal.getTimeInMillis() + getVersionFormat().toLowerCase();
                                 DownloadFileTask dltask = new DownloadFileTask(topicIdUrl,
-                                        FilePath.getTempFilePath(), getVersionFormat(), getContext());
+                                        FilePath.getTempFilePath(), fullFilePathName, getContext());
                                 dltask.execute();//download the file to a temp path, effectively caching it
-                                TempFileTracker
+                                TempFileTracker.addTempFileToList(fullFilePathName,getVersionNumber());//add temp file and version number to list
                                 createVersInfoAdapter();//fill the adapter with the report version's info
                             }
                         });
@@ -233,7 +242,8 @@ public class DownloadView_Fragment extends Fragment {
             public void onClick(View v) {
                 Log.d("downloadButtonListener()", "downloadButtonListener() clicked");
                 String vFormat = getVersionFormat();
-                DownloadFileTask dltask = new DownloadFileTask(topicIdUrl, chooseDownloadFilePath(vFormat), vFormat, getContext());//download response and create a new file
+                String fullFilename = chooseDownloadFilePath(vFormat) + cal.getTimeInMillis() + vFormat.toLowerCase();
+                DownloadFileTask dltask = new DownloadFileTask(topicIdUrl, chooseDownloadFilePath(vFormat), fullFilename, getContext());//download response and create a new file
                 dltask.execute();
             }
         });

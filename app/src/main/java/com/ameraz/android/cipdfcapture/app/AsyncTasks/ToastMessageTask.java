@@ -108,5 +108,11 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
         tmtask.execute();
     }
 
+    public static void downloadFileSuccessful(Context context) {
+        setmContext(context);
+        ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "File has been downloaded.");
+        tmtask.execute();
+    }
+
 
 }
