@@ -98,7 +98,7 @@ public class InternalGalleryFragment extends Fragment {
         if (isTablet(getContext())) {
             numColumns = pref.getInt("gallery_preference", 0);
             if (numColumns == 0) {
-                numColumns = 10;
+                numColumns = 6;
             }
         } else {
             numColumns = pref.getInt("gallery_preference", 0);
