@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.ameraz.android.cipdfcapture.app.APIQueries;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.DownloadFileTask;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+import com.ameraz.android.cipdfcapture.app.FilePath;
 import com.ameraz.android.cipdfcapture.app.LogonSession;
 import com.ameraz.android.cipdfcapture.app.MyBrowser;
 import com.ameraz.android.cipdfcapture.app.QueryArguments;
@@ -223,12 +224,23 @@ public class DownloadView_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("downloadButtonListener()", "downloadButtonListener() clicked");
-                /*Intent a = new Intent(getActivity(), PDFViewActivity.class);
-                startActivity(a);*/
-                DownloadFileTask dltask = new DownloadFileTask(resp);//download response and create a new file
+                String vFormat = getVersionFormat();
+                DownloadFileTask dltask = new DownloadFileTask(resp, chooseDownloadFilePath(vFormat), vFormat, getContext());//download response and create a new file
                 dltask.execute();
             }
         });
+    }
+
+    private String chooseDownloadFilePath(String versionFormat) {
+        String fp;
+        if (versionFormat.equals("PDF")) {
+            fp = FilePath.getPDFFilePath();
+        } else if (versionFormat.equals("XML") || versionFormat.equals("TXT") || versionFormat.equals("ASC")) {
+            fp = FilePath.getTxtFilePath();
+        } else {
+            fp = FilePath.getImageFilePath();
+        }
+        return fp;
     }
 
     private void callIP_Fragment() {

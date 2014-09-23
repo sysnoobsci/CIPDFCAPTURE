@@ -1,9 +1,9 @@
 package com.ameraz.android.cipdfcapture.app.AsyncTasks;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-
-import com.ameraz.android.cipdfcapture.app.FilePath;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -23,15 +23,36 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
 
     String url;
     String pathName;
+    String extension;
     HttpClient httpClient = new DefaultHttpClient();
     HttpPost request;
     HttpResponse response;
     Boolean success = false;
     Calendar cal = Calendar.getInstance();
+    ProgressDialog ringProgressDialog;
 
-    public DownloadFileTask(String url,String pathName) {
+    public DownloadFileTask(String url, String pathName, String extension, Context context) {
         this.url = url;
+        this.pathName = pathName;
+        this.extension = "." + extension;
         request = new HttpPost(url);
+        ringProgressDialog = new ProgressDialog(context);
+    }
+
+    private void setDownloadingFileDialog() {
+        ringProgressDialog.setTitle("Performing Action ...");
+        ringProgressDialog.setMessage("Downloading File ...");
+    }
+
+    protected void checkDirExists(String pathName) {
+        File file = new File(pathName);
+        if (file.isDirectory() && file.exists()) {
+            Log.d("checkDirExists()", pathName + " exists");
+        } else {
+            Log.d("checkDirExists()", pathName + " does not exist");
+            Log.d("checkDirExists()", "creating directory: " + pathName);
+            file.mkdir();
+        }
     }
 
     protected String doInBackground(String... params) {
@@ -41,9 +62,11 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
         if (response.getStatusLine().getStatusCode() != 401) {
+            checkDirExists(pathName);
             if (response != null) {
-                File file = new File(FilePath.getTempFilePath() + cal.getTime());
-                Log.d("dlAndWriteFile()", "File name: " + FilePath.getTempFilePath() + cal.getTime());
+                String fullFilename = pathName + cal.getTimeInMillis() + extension.toLowerCase();
+                File file = new File(fullFilename);
+                Log.d("dlAndWriteFile()", "File name: " + fullFilename);
                 try {
                     file.getParentFile().mkdirs();
                     file.createNewFile();
@@ -66,10 +89,13 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
+        ringProgressDialog.dismiss();
     }
 
     @Override
     protected void onPreExecute() {
+        setDownloadingFileDialog();
+        ringProgressDialog.show();
     }
 
     @Override

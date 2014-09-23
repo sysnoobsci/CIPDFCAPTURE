@@ -10,7 +10,14 @@ public class FilePath {
     public static final String SYSWARE_FILEPATH = root + "/Systemware/";
     public static final String IMAGE_FILEPATH = root + "/Systemware/Images/";
     public static final String PDF_FILEPATH = root + "/Systemware/PDF/";
+    public static final String TXT_FILEPATH = root + "/Systemware/TXT/";
     public static final String TEMP_FILEPATH = root + "/Systemware/Temp/";
+    public static final String SYSWARE_DIR = "/Systemware/";
+    public static final String IMAGE_DIR = "/Systemware/Images/";
+    public static final String PDF_DIR = "/Systemware/PDF/";
+    public static final String TXT_DIR = "/Systemware/TXT/";
+    public static final String TEMP_DIR = "/Systemware/Temp/";
+
 
     public static String getRootPath() {
         return root;
@@ -26,6 +33,10 @@ public class FilePath {
 
     public static String getPDFFilePath() {
         return PDF_FILEPATH;
+    }
+
+    public static String getTxtFilePath() {
+        return TXT_FILEPATH;
     }
 
     public static String getTempFilePath() {
