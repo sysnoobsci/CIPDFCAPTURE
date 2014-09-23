@@ -1,21 +1,23 @@
-package com.ameraz.android.cipdfcapture.app.filebrowser;
+package com.ameraz.android.cipdfcapture.app.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.fragments.Image_Upload_Fragment;
-import com.ameraz.android.cipdfcapture.app.fragments.PDF_Upload_Fragment;
-import com.ameraz.android.cipdfcapture.app.fragments.Text_XML_Upload_Fragment;
+import com.ameraz.android.cipdfcapture.app.filebrowser.CustomArrayAdapter;
+import com.ameraz.android.cipdfcapture.app.filebrowser.Item;
 
 import java.io.File;
 import java.sql.Date;
@@ -27,15 +29,14 @@ import java.util.List;
 /**
  * Created by john.williams on 9/17/2014.
  */
-public class File_Explorer_Fragment extends ListFragment {
+public class File_Explorer_Fragment extends Fragment {
 
 
     private File currentDir;
-    private FileArrayAdapter adapter;
-    private static String fullFilePath;
-    private static String fileName;
-    private static Uri itemURI;
+    private CustomArrayAdapter adapter;
     private Context context;
+    private ListView browser;
+    private ArrayList<Item> content;
 
     public Context getContext() {
         return context;
@@ -45,43 +46,21 @@ public class File_Explorer_Fragment extends ListFragment {
         context = activity;
     }
 
-    public static String getFullFilePath() {
-        return fullFilePath;
-    }
-
-    public void setFullFilePath(String fullFilePath) {
-        this.fullFilePath = fullFilePath;
-    }
-
-    public static String getFileName() {
-        return fileName;
-    }
-
-    public static void setFileName(String fileName) {
-        File_Explorer_Fragment.fileName = fileName;
-    }
-
-    public static Uri getItemURI() {
-        return itemURI;
-    }
-
-    public static void setItemURI(Uri itemURI) {
-        File_Explorer_Fragment.itemURI = itemURI;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.file_explorer_list, container, false);
         setContext(getActivity());
+        browser = (ListView)rootView.findViewById(R.id.file_explorer);
         currentDir = new File(Environment.getExternalStorageDirectory().getPath());
-        fill(currentDir);
+        setArrayList(currentDir);
+        setListAdapter();
+        setListListener();
+        return rootView;
     }
 
-    private void fill(File f) {
+    private void setArrayList(File f) {
         File[] dirs = f.listFiles();
-        //this.setTitle("Current Dir: " + f.getName());
-        List<Item> dir = new ArrayList<Item>();
-        List<Item> fls = new ArrayList<Item>();
+        content = new ArrayList<Item>();
         try {
             for (File ff : dirs) {
                 Date lastModDate = new Date(ff.lastModified());
@@ -97,37 +76,72 @@ public class File_Explorer_Fragment extends ListFragment {
                     String num_item = String.valueOf(buf);
                     if (buf == 0) num_item = num_item + " item";
                     else num_item = num_item + " items";
-
-                    //String formated = lastModDate.toString();
-                    dir.add(new Item(ff.getName(), num_item, date_modify, ff.getAbsolutePath(), "directory_icon"));
-                } else {
-                    fls.add(new Item(ff.getName(), ff.length() + " Byte", date_modify, ff.getAbsolutePath(), "file_icon"));
+                    Item item = new Item(ff.getName(), num_item, date_modify, ff.getAbsolutePath(), R.drawable.directory_icon, true);
+                    content.add(item);
                 }
             }
+            for (File ff : dirs) {
+                Date lastModDate = new Date(ff.lastModified());
+                DateFormat formater = DateFormat.getDateTimeInstance();
+                String date_modify = formater.format(lastModDate);
+                if (!ff.isDirectory()) {
+
+                    File[] fbuf = ff.listFiles();
+                    int buf;
+                    if (fbuf != null) {
+                        buf = fbuf.length;
+                    } else buf = 0;
+                    String num_item = String.valueOf(buf);
+                    if (buf == 0) num_item = num_item + " item";
+                    else num_item = num_item + " items";
+                    Item item = new Item(ff.getName(), num_item, date_modify, ff.getAbsolutePath(), R.drawable.directory_icon, true);
+                    content.add(item);
+                }
+            }
+
         } catch (Exception e) {
             Log.e("Error", e.toString());
         }
-        Collections.sort(dir);
-        Collections.sort(fls);
-        dir.addAll(fls);
-        if (!f.getName().equalsIgnoreCase("sdcard"))
-            dir.add(0, new Item("..", "Parent Directory", "", f.getParent(), "directory_up"));
-        adapter = new FileArrayAdapter(getContext(), R.layout.file_view, dir);
-        this.setListAdapter(adapter);
+
+        if (!f.getName().equalsIgnoreCase("sdcard")) {
+            Item item = new Item("..", "Parent Directory", "", f.getParent(), R.drawable.directory_up, true);
+            content.add(item);
+        }
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        // TODO Auto-generated method stub
-        super.onListItemClick(l, v, position, id);
-        Item o = adapter.getItem(position);
-        if (o.getImage().equalsIgnoreCase("directory_icon") || o.getImage().equalsIgnoreCase("directory_up")) {
-            currentDir = new File(o.getPath());
-            Log.d("Message", " Directory path is " + o.getPath());
-            fill(currentDir);
-        } else {
-            onFileClick(o);
-        }
+    private void setCodeAdapter() {
+        Log.d("Setting adapter","");
+        adapter = new CustomArrayAdapter(getContext(), content);
+        Log.d("Adapter set","");
+
+    }
+
+    private void setListListener() {
+        browser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+/*                Item o = adapter.getItem(position);
+                if (o.getNeedsNewPath()) {
+                    currentDir = new File(o.getPath());
+                    Log.d("Message", " Directory path is " + o.getPath());
+                    setListAdapter(currentDir);
+                } else {
+                    onFileClick(o);
+                }
+            }*/
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void setListAdapter() {
+        setCodeAdapter();
+        browser.setAdapter(adapter);
+        Log.d("Adapter set for the browser", "");
     }
 
     private void onFileClick(Item o) {

@@ -1,45 +1,42 @@
 package com.ameraz.android.cipdfcapture.app.filebrowser;
 
-public class Item implements Comparable<Item>{
+import android.util.Log;
+
+public class Item{
 	private String name;
 	private String data;
 	private String date;
 	private String path;
-	private String image;
+	private int image;
+    private boolean newPathNeeded;
 	
-	public Item(String n,String d, String dt, String p, String img)
+	public Item(String name,String data, String date, String path, int image, boolean newPathNeeded)
 	{
-		name = n;
-		data = d;
-		date = dt;
-		path = p; 
-		image = img;
-		
+		this.name = name;
+		this.data = data;
+		this.date = date;
+		this.path = path;
+		this.image = image;
+        this.newPathNeeded = newPathNeeded;
+
+        Log.d("file name = ", name);
 	}
-	public String getName()
-	{
+	public String getName(){
 		return name;
 	}
-	public String getData()
-	{
+	public String getData(){
 		return data;
 	}
-	public String getDate()
-	{
+	public String getDate(){
 		return date;
 	}
-	public String getPath()
-	{
+	public String getPath(){
 		return path;
 	}
-	public String getImage() {
+	public int getImage() {
 		return image;
 	}
-	
-	public int compareTo(Item o) {
-		if(this.name != null)
-			return this.name.toLowerCase().compareTo(o.getName().toLowerCase()); 
-		else 
-			throw new IllegalArgumentException();
-	}
+    public boolean getNeedsNewPath(){
+        return newPathNeeded;
+    }
 }

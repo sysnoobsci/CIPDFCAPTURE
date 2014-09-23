@@ -21,7 +21,6 @@ import android.widget.ExpandableListView;
 
 import com.ameraz.android.cipdfcapture.app.ExpandableListAdapter;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.filebrowser.File_Explorer_Fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,7 +122,7 @@ public class NavigationDrawerFragment extends Fragment {
                 Fragment fragment = new Home_Fragment();
                 FragmentManager fragmentManager = getFragmentManager();
                 switch (groupPosition) {
-                    case 0://placeholder until Device Explorer Fragments get added
+                    case 0:
                         switch (childPosition) {
                             case 0:
                                 fragment = new InternalGalleryFragment();
@@ -146,11 +145,11 @@ public class NavigationDrawerFragment extends Fragment {
                 }
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, fragment)
+                        .addToBackStack(null)
                         .commit();
                 return false;
             }
         });
-
 
         return mDrawerListView;
     }
@@ -160,15 +159,16 @@ public class NavigationDrawerFragment extends Fragment {
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
 
-        //Header like Find, about...etc.  Call command and put it here
+        //Group Items Capture and Contend Cloud
         listDataHeader.add("Capture");
         listDataHeader.add("Content Cloud");
 
-        //Populate Find here with the submenu
+        //Capture group items
         List<String> capture = new ArrayList<String>();
         capture.add("Capture Image");
         capture.add("File Explorer");
 
+        //ContentCloud group items
         List<String> content_cloud = new ArrayList<String>();
         content_cloud.add("Images");
         content_cloud.add("Documents");
@@ -319,6 +319,7 @@ public class NavigationDrawerFragment extends Fragment {
             Fragment fragment = new Home_Fragment();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment, "HOME")
+                    .addToBackStack(null)
                     .commit();
             return true;
         }

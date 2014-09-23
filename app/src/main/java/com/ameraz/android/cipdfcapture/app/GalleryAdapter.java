@@ -100,7 +100,6 @@ public class GalleryAdapter extends BaseAdapter {
         Picasso.with(getContext())
                 .load(Uri.parse("file://" + fp.getImageFilePath() + names[position]))
                 .resize(width, width)
-                .placeholder(R.drawable.sw_placeholder)
                 .centerCrop()
                 .into(imageView);
 
