@@ -48,19 +48,6 @@ public class MainActivity extends Activity
         this.first_open = first_open;
     }
 
-
-    public void saveTimestamp() {//save current timestamp
-        SharedPreferences timestampPrefs = context.getSharedPreferences("timestamp", MODE_PRIVATE);
-        Log.d("PrefDate", timestampPrefs.getString("pref_date", "n/a"));
-        //setting up date and time on Home_Fragment before closing app
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String currentTimeStamp = dateFormat.format(new Date()); // Find todays date
-        Log.d("Date", currentTimeStamp);//log the time stamp
-        SharedPreferences.Editor edit = timestampPrefs.edit();
-        edit.putString("pref_date", currentTimeStamp);//added date to preferences for next app open
-        edit.commit();
-    }
-
     public static void buttonClickListener(final Context context) {
         button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -104,10 +91,12 @@ public class MainActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ActionBar actionBar = getActionBar();
         if(actionBar != null) {
             getActionBar().setDisplayShowTitleEnabled(false);
         }
+        TempFileTracker.clearTempFiles();//clears all temp files
         db = new DatabaseHandler(getApplicationContext());//create a db if one doesn't exist
         //navigation drawer stuff
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -145,9 +134,9 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onStop() {
-        saveTimestamp();
-        super.onStop();
+    public void onDestroy() {
+        TempFileTracker.clearTempFiles();//clears all temp files on app close
+        super.onDestroy();
     }
 
     public void restoreActionBar() {

@@ -70,7 +70,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="150dp"
+        android:layout_height="130dp"
         android:layout_below="@+id/tableLayout"
         android:layout_centerHorizontal="true"
         android:id="@+id/linearLayout">
@@ -81,7 +81,8 @@
             android:text="File Information"
             android:id="@+id/textView2"
             android:textSize="18sp"
-            android:textColor="#0078c9" />
+            android:textColor="#0078c9"
+            android:layout_marginLeft="25dp" />
 
         <ListView
             android:layout_width="wrap_content"
@@ -95,13 +96,6 @@
             android:layout_gravity="right" />
     </LinearLayout>
 
-    <WebView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:id="@+id/webView"
-        android:isScrollContainer="false"
-        android:layout_below="@+id/linearLayout"
-        android:layout_centerHorizontal="true" />
     <!--Blue bar on bottom of screen-->
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -148,6 +142,27 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
 
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:id="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/sw_background" />
+
+        <com.joanzapata.pdfview.PDFView
+            android:id="@+id/pdfview"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible" />
     </RelativeLayout>
 
 

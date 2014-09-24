@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -28,7 +29,6 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     HttpPost request;
     HttpResponse response;
     Boolean success = false;
-    Calendar cal = Calendar.getInstance();
     ProgressDialog ringProgressDialog;
     Context context;
 
