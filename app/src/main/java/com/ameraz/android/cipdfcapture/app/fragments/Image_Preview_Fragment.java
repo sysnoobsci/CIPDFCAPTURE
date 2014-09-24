@@ -10,12 +10,17 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.MyBrowser;
 import com.ameraz.android.cipdfcapture.app.R;
+import com.ameraz.android.cipdfcapture.app.ViewLoader;
+import com.joanzapata.pdfview.PDFView;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by adrian.meraz on 9/18/2014.
@@ -23,11 +28,14 @@ import java.io.File;
 public class Image_Preview_Fragment extends Fragment {
 
     static View rootView;
-    WebView webView;
+    private PDFView pdfViewer;
+    private TextView textViewer;
+    private ImageView imageView;
     ImageButton saveButton;
     Context context;
     String uri;
-    ProgressDialog ringProgressDialog;
+    String format;
+
 
     public Context getContext() {
         return context;
@@ -47,27 +55,25 @@ public class Image_Preview_Fragment extends Fragment {
     }
 
     public void instantiateViews() {
-        webView = (WebView) rootView.findViewById(R.id.webView);
+        pdfViewer = (PDFView) rootView.findViewById(R.id.pdfview);
+        textViewer = (TextView) rootView.findViewById(R.id.textView2);
+        imageView = (ImageView) rootView.findViewById(R.id.imageView);
         saveButton = (ImageButton) rootView.findViewById(R.id.download_and_save);
     }
 
     public void loadImage() {
         Bundle bundle = this.getArguments();
-        uri = bundle.getString("retrieve_url");
-        //webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);//turns off hardware accelerated canvas
-        setWebViewSettings(webView);
-        webView.loadUrl(uri);
+        uri = bundle.getString("retrieve_fileName");
+        format = bundle.getString("retrieve_fileFormat");
+        try {
+            ViewLoader vl = new ViewLoader(format,pdfViewer,textViewer,imageView,context);
+            vl.loadFileIntoView(uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void setWebViewSettings(WebView webView) {
-        webView.setWebViewClient(new MyBrowser(ringProgressDialog));
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.setInitialScale(1);
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//load the image from cache
-    }
+
 
     private void saveButtonListener() {//searches for the report and displays the versions
         saveButton.setOnClickListener(new View.OnClickListener() {

@@ -19,7 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import com.ameraz.android.cipdfcapture.app.ExpandableListAdapter;
+import com.ameraz.android.cipdfcapture.app.Adapters.ExpandableListAdapter;
 import com.ameraz.android.cipdfcapture.app.R;
 
 import java.util.ArrayList;

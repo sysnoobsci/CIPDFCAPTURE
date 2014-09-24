@@ -24,7 +24,7 @@ public class Home_Fragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.home_fragment, container, false);
+        rootView = inflater.inflate(R.layout.fragment_home, container, false);
         preferences = getActivity().getSharedPreferences("timestamp", Context.MODE_PRIVATE);
         cloudBackground = (ImageView) rootView.findViewById(R.id.imageView2);
         setCloudBackground();

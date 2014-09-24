@@ -23,7 +23,7 @@ public class TempFileTracker {
         return tempFileInfo;
     }
 
-    public String getTempFilePath(int version){
+    public static String getTempFilePath(int version){
         String tempFilePath = tempFileInfo.get(version);
         return tempFilePath;
     }

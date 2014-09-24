@@ -7,14 +7,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,24 +30,21 @@ import com.ameraz.android.cipdfcapture.app.AsyncTasks.DownloadFileTask;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.FilePath;
 import com.ameraz.android.cipdfcapture.app.LogonSession;
-import com.ameraz.android.cipdfcapture.app.MyBrowser;
 import com.ameraz.android.cipdfcapture.app.QueryArguments;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.TempFileTracker;
-import com.ameraz.android.cipdfcapture.app.VersionInfoAdapter;
+import com.ameraz.android.cipdfcapture.app.Adapters.VersionInfoAdapter;
+import com.ameraz.android.cipdfcapture.app.ViewLoader;
 import com.joanzapata.pdfview.PDFView;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by adrian.meraz on 8/26/2014.
@@ -62,17 +58,16 @@ public class DownloadView_Fragment extends Fragment {
     private ListView listView;
     private ImageButton searchButton;
     private ImageButton downloadButton;
-    private TextView textViewer;
-    private WebView webView;
-    private LinearLayout enlargeImageGroup;
     private PDFView pdfViewer;
+    private TextView textViewer;
     private ImageView imageView;
+    private LinearLayout enlargeImageGroup;
     static Context context;
     String topicIdUrl;
     String versionFormat;
+    Boolean first_opened = true;
     int versionNumber;
     String versionDSID;
-    int position;
     APIQueries apiobj = null;
     Spinner sItems;
     ArrayList<String> spinnerVerArrayList = new ArrayList<String>();
@@ -81,7 +76,7 @@ public class DownloadView_Fragment extends Fragment {
     ArrayList<String> listOfReportVersions = new ArrayList<String>();
     ProgressDialog ringProgressDialog;
     SharedPreferences preferences;
-    Calendar cal = Calendar.getInstance();
+
 
 
     public static Context getContext() {
@@ -120,7 +115,7 @@ public class DownloadView_Fragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.downloadview_fragment, container, false);
+        rootView = inflater.inflate(R.layout.fragment_downloadview, container, false);
         setContext(getActivity());
         apiobj = new APIQueries(getContext());
         instantiateViews();
@@ -130,6 +125,7 @@ public class DownloadView_Fragment extends Fragment {
         enlargeImgButtonListener();
         downloadButtonListener();
         spinnerItemListener();
+        first_opened = false;//stops spinner code from prematurely executing - must be set to true after call to spinnerItemListener()
         return rootView;
     }
 
@@ -139,14 +135,13 @@ public class DownloadView_Fragment extends Fragment {
         reportName.setText(preferences.getString("report_preference", null));//set the filed to default report name if there is one
         txt1 = (TextView) rootView.findViewById(R.id.textView);
         txt2 = (TextView) rootView.findViewById(R.id.textView2);
-        textViewer = (TextView) rootView.findViewById(R.id.textView2);
         searchButton = (ImageButton) rootView.findViewById(R.id.searchButton);
         downloadButton = (ImageButton) rootView.findViewById(R.id.download_and_save);
         enlargeImageGroup = (LinearLayout) rootView.findViewById(R.id.grouped_Layout);
         sItems = (Spinner) rootView.findViewById(R.id.spinner);
-        webView = (WebView) rootView.findViewById(R.id.webView);
         listView = (ListView) rootView.findViewById(R.id.listView);
         pdfViewer = (PDFView) rootView.findViewById(R.id.pdfview);
+        textViewer = (TextView) rootView.findViewById(R.id.textView2);
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
     }
 
@@ -185,46 +180,17 @@ public class DownloadView_Fragment extends Fragment {
         }
     }
 
-
     private void spinnerItemListener() {
         sItems.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, final View view,
-                                       final int pos, long id) {
-                setVersionInfo(pos);
-                new Thread() {
-                    public void run() {
-                        position = pos;//store the position of the item clicked
-                        topicIdUrl = apiobj.retrieveQuery(tidArrayList.get(pos));//get the right tid
-                        Log.d("spinnerItemListener()", "topicIdUrl value: " + topicIdUrl);
-                        getActivity().runOnUiThread(new Runnable() {
-                            public void run() {
-                            /*try {
-                                open(webView);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }*/
-                            createVersInfoAdapter();//fill the adapter with the report version's info
-                            String fullFilePathName = FilePath.getTempFilePath() + getVersionDSID()
-                                    + "." + getVersionFormat().toLowerCase();
-                            DownloadFileTask dltask = new DownloadFileTask(topicIdUrl,
-                                    FilePath.getTempFilePath(), fullFilePathName, getContext());//store file in temp file path
-                            try {
-                                dltask.execute().get(7000, TimeUnit.MILLISECONDS);//download the file to a temp path, effectively caching it
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            TempFileTracker.addTempFileToList(fullFilePathName,getVersionNumber());//add temp file and version number to list
-                            try {
-                                loadFileIntoView(fullFilePathName);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            }
-                        });
-                    }
-                }.start();
+                                       int pos, long id) {
+                if(!first_opened){//stops code from prematurely executing
+                    setVersionInfo(pos);//gets information about the particular version selected
+                    String fullFilePathName = FilePath.getTempFilePath() + getVersionDSID()
+                            + "." + getVersionFormat().toLowerCase();
+                    new DownloadFileAndLoadView(pos,fullFilePathName).execute();
+                }
             }
-
             public void onNothingSelected(AdapterView<?> parent) {
                 //do nothing
             }
@@ -264,28 +230,18 @@ public class DownloadView_Fragment extends Fragment {
             public void onClick(View v) {
                 Log.d("downloadButtonListener()", "downloadButtonListener() clicked");
                 String vFormat = getVersionFormat();
-                String fullFilename = chooseDownloadFilePath(vFormat) + getVersionDSID() + vFormat.toLowerCase();
-                DownloadFileTask dltask = new DownloadFileTask(topicIdUrl, chooseDownloadFilePath(vFormat), fullFilename, getContext());//download response and create a new file
+                String fullFilename = FilePath.chooseDownloadFilePath(vFormat) + getVersionDSID() + vFormat.toLowerCase();
+                DownloadFileTask dltask = new DownloadFileTask(topicIdUrl, FilePath.chooseDownloadFilePath(vFormat),
+                        fullFilename, getContext());//download response and create a new file
                 dltask.execute();
             }
         });
     }
 
-    private String chooseDownloadFilePath(String versionFormat) {
-        String fp;
-        if (versionFormat.equals("PDF")) {
-            fp = FilePath.getPDFFilePath();
-        } else if (versionFormat.equals("XML") || versionFormat.equals("TXT") || versionFormat.equals("ASC")) {
-            fp = FilePath.getTxtFilePath();
-        } else {
-            fp = FilePath.getImageFilePath();
-        }
-        return fp;
-    }
-
     private void callIP_Fragment() {
         Bundle bundle = new Bundle();
-        bundle.putString("retrieve_url", topicIdUrl);
+        bundle.putString("retrieve_fileName", TempFileTracker.getTempFilePath(getVersionNumber()));
+        bundle.putString("retrieve_fileFormat", getVersionFormat());
         Fragment fragment = new Image_Preview_Fragment();
         fragment.setArguments(bundle);
         FragmentManager fragmentManager = getFragmentManager();
@@ -304,8 +260,8 @@ public class DownloadView_Fragment extends Fragment {
                         QueryArguments.addArg("sid," + LogonSession.getSid());
                         listOfReportVersions = apiobj.getVersionInfo(apiobj.listversionQuery(QueryArguments.getArgslist()));
                         if (listOfReportVersions != null) {
-                            spinnerVerArrayList = APIQueries.getMetadata(listOfReportVersions, "VER");//get version numbers via 4
-                            tidArrayList = APIQueries.getMetadata(listOfReportVersions, "TID");//get tids via 5
+                            spinnerVerArrayList = APIQueries.getMetadata(listOfReportVersions, "VER");//get version numbers
+                            tidArrayList = APIQueries.getMetadata(listOfReportVersions, "TID");//get tids
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -332,78 +288,49 @@ public class DownloadView_Fragment extends Fragment {
         sItems.setAdapter(adapter);
     }
 
-    public void loadFileIntoView(String fullFilePath) throws IOException {
-        if(getVersionFormat().equals("PDF")){//if format is PDF
-            File pdfFile = new File(fullFilePath);
-            viewVisibilityChecker();
-            pdfViewer.fromFile(pdfFile)
-                    .defaultPage(1)
-                    .showMinimap(false)
-                    .enableSwipe(true)
-                    .load();
+    private class DownloadFileAndLoadView extends AsyncTask<String, Void, String> {
+
+        int pos;
+        String fullFilePathName;
+
+        private DownloadFileAndLoadView(int pos, String fullFilePathName) {
+            this.pos = pos;
+            this.fullFilePathName = fullFilePathName;
         }
-        else if(getVersionFormat().equals("TXT") || getVersionFormat().equals("ASC") ||
-                getVersionFormat().equals("XML")) {//if format is ascii-text
-            viewVisibilityChecker();
-            BufferedReader r = new BufferedReader(new FileReader(fullFilePath));
-            StringBuilder total = new StringBuilder();
-            String line;
-            while((line = r.readLine()) != null) {
-                total.append(line);
+
+        @Override
+        protected String doInBackground(String... params) {
+            topicIdUrl = apiobj.retrieveQuery(tidArrayList.get(pos));//get the right tid
+            Log.d("spinnerItemListener()", "topicIdUrl value: " + topicIdUrl);
+            DownloadFileTask dltask = new DownloadFileTask(topicIdUrl,
+                    FilePath.getTempFilePath(), fullFilePathName, getContext());//store file in temp file path
+            try {
+                dltask.execute().get(30000, TimeUnit.MILLISECONDS);//download the file to a temp path, effectively caching it
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            textViewer.setText(total.toString());
+            TempFileTracker.addTempFileToList(fullFilePathName, getVersionNumber());//add temp file and version number to list
+            return "success";
         }
-        else {//if format is an image
-            viewVisibilityChecker();
-            Picasso.with(getContext())
-                    .load(Uri.fromFile(new File(fullFilePath)))
-                    .fit()
-                    .centerInside()
-                    .into(imageView);
+
+        @Override
+        protected void onPostExecute(String result) {
+            createVersInfoAdapter();//fill the adapter with the report version's info
+            try {
+                ViewLoader vl = new ViewLoader(getVersionFormat(),pdfViewer,textViewer,imageView,context);
+                vl.loadFileIntoView(fullFilePathName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
 
-    public void viewVisibilityChecker(){//makes views visible depending on the file format
-        if(getVersionFormat().equals("PDF")){
-            pdfViewer.setVisibility(View.VISIBLE);//makes pdfviewer visible
-            textViewer.setVisibility(View.GONE);//removes textView from view
-            imageView.setVisibility(View.GONE);//removes imageView from view
-        }
-        else if(getVersionFormat().equals("TXT") || getVersionFormat().equals("ASC") ||
-                getVersionFormat().equals("XML")) {
-            pdfViewer.setVisibility(View.GONE);
-            textViewer.setVisibility(View.VISIBLE);
-            imageView.setVisibility(View.GONE);
-        }
-        else{
-            pdfViewer.setVisibility(View.GONE);
-            textViewer.setVisibility(View.GONE);
-            imageView.setVisibility(View.VISIBLE);
-        }
-    }
-    /*
-    public void open(final WebView webView) throws IOException {
-        setWebViewSettings(webView);
-        webView.loadUrl(topicIdUrl);
-    }
 
-    public void setWebViewSettings(WebView webView) {
-        webView.setWebViewClient(new MyBrowser(ringProgressDialog));
-        //webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);//turns off hardware accelerated canvas
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.setInitialScale(1);
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);//turn caching mode on
-    }
-    */
-
-    @Override
-    public void onDestroy() {
-        // Clear the cache (this clears the WebViews cache for the entire application)
-        //webView.clearCache(true);
-        super.onDestroy();
-    }
 
 }

@@ -56,7 +56,7 @@ public class Capture_Fragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.capture_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_capture, container, false);
         initializeViews(rootView);
         setContext(getActivity());
         apiobj = new APIQueries(getContext());

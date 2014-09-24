@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.Adapters;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.ameraz.android.cipdfcapture.app.FilePath;
+import com.ameraz.android.cipdfcapture.app.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;

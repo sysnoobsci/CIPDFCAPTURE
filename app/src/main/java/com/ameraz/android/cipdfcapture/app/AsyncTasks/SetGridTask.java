@@ -2,11 +2,10 @@ package com.ameraz.android.cipdfcapture.app.AsyncTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
-import com.ameraz.android.cipdfcapture.app.GalleryAdapter;
+import com.ameraz.android.cipdfcapture.app.Adapters.GalleryAdapter;
 
 /**
  * Created by adrian.meraz on 9/9/2014.

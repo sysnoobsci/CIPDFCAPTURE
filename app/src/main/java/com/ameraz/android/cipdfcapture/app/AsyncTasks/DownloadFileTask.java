@@ -29,7 +29,6 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     HttpPost request;
     HttpResponse response;
     Boolean success = false;
-    ProgressDialog ringProgressDialog;
     Context context;
 
     public DownloadFileTask(String url, String dirPath, String fullFilePathName, Context context) {
@@ -38,13 +37,8 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
         this.fullFilePathName = fullFilePathName;
         request = new HttpPost(url);
         this.context = context;
-        ringProgressDialog = new ProgressDialog(this.context);
     }
 
-    private void setDownloadingFileDialog() {
-        ringProgressDialog.setTitle("Performing Action ...");
-        ringProgressDialog.setMessage("Downloading File ...");
-    }
 
     protected void checkDirExists(String dirPath) {
         File file = new File(dirPath);
@@ -90,14 +84,12 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        ringProgressDialog.dismiss();
         ToastMessageTask.downloadFileSuccessful(context);
     }
 
     @Override
     protected void onPreExecute() {
-        setDownloadingFileDialog();
-        ringProgressDialog.show();
+        ToastMessageTask.downloadFileStarted(context);
     }
 
     @Override

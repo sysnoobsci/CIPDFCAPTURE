@@ -42,4 +42,16 @@ public class FilePath {
     public static String getTempFilePath() {
         return TEMP_FILEPATH;
     }
+
+    public static String chooseDownloadFilePath(String versionFormat) {
+        String fp;
+        if (versionFormat.equals("PDF")) {
+            fp = getPDFFilePath();
+        } else if (versionFormat.equals("XML") || versionFormat.equals("TXT") || versionFormat.equals("ASC")) {
+            fp = getTxtFilePath();
+        } else {
+            fp = getImageFilePath();
+        }
+        return fp;
+    }
 }

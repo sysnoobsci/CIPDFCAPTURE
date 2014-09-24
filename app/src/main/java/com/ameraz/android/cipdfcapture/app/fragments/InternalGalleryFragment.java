@@ -22,7 +22,7 @@ import android.widget.ImageButton;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.SetGridTask;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.FilePath;
-import com.ameraz.android.cipdfcapture.app.GalleryAdapter;
+import com.ameraz.android.cipdfcapture.app.Adapters.GalleryAdapter;
 import com.ameraz.android.cipdfcapture.app.R;
 
 import java.io.File;
