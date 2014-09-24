@@ -13,22 +13,39 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.ameraz.android.cipdfcapture.app.APIQueries;
 import com.ameraz.android.cipdfcapture.app.R;
+import com.ameraz.android.cipdfcapture.app.UploadProcess;
+import com.joanzapata.pdfview.PDFView;
+import com.joanzapata.pdfview.listener.OnPageChangeListener;
+
+import java.io.File;
+
+import static java.lang.String.format;
 
 /**
- * Created by John on 9/13/2014.
+ * Created by John Williams
+ * This fragment receives a fileUri and shows a preview of the PDF to be uploaded.
+ * It then provides the process for uploading the PDF.
  */
-public class PDF_Upload_Fragment extends Fragment {
+public class PDF_Upload_Fragment extends Fragment implements OnPageChangeListener {
 
     private static Context context;
     private ProgressDialog ringProgressDialog;
-    private WebView pdfViewer;
-    //private ImageButton editButton;
-    //private ImageButton uploadButton;
+    private PDFView pdfView;
+    private ImageButton editButton;
+    private EditText nameView;
+    private ImageButton uploadButton;
+    private TextView pageCountView;
     private String name;
     private Uri fileUri;
+    private File pdf;
+    private int pageNumber;
+    private boolean isVisible;
 
     public static Context getContext() {
         return context;
@@ -56,23 +73,50 @@ public class PDF_Upload_Fragment extends Fragment {
         setUploadProgressDialog();
         uploadListener();
         editListener();
-        //gets the data passed to it from InternalGalleryFragment and creates the uri.
         setUriAndPreview();
         return rootView;
     }
 
     private void editListener() {
-
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(viewVisible()){
+                    nameView.setVisibility(View.INVISIBLE);
+                }else {
+                    nameView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private void initializeViews(View rootView) {
-        pdfViewer = (WebView) rootView.findViewById(R.id.pdf_view);
-        //editButton = (ImageButton)rootView.findViewById(R.id.pdf_edit_button);
-        //uploadButton = (ImageButton)rootView.findViewById(R.id.pdf_upload_button);
+        pdfView = (PDFView) rootView.findViewById(R.id.pdf_view);
+        editButton = (ImageButton)rootView.findViewById(R.id.pdf_edit_button);
+        uploadButton = (ImageButton)rootView.findViewById(R.id.pdf_upload_button);
+        nameView = (EditText)rootView.findViewById(R.id.pdf_name_input);
+        pageCountView = (TextView)rootView.findViewById(R.id.pdf_page_counter);
+        isVisible = false;
+        pageNumber = 1;
+    }
+
+    private boolean viewVisible(){
+        if(isVisible){
+            isVisible = false;
+            return true;
+        }else{
+            isVisible = true;
+            return false;
+        }
     }
 
     private void uploadListener() {
-
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                upload();
+            }
+        });
     }
 
     private void setUriAndPreview() {
@@ -82,25 +126,17 @@ public class PDF_Upload_Fragment extends Fragment {
         fileUri = Uri.parse(stringUri);
         Log.d("setUriAndPreview()", "Value of stringUri: " + stringUri);
         name = stringUri.substring(stringUri.lastIndexOf('/') + 1, stringUri.indexOf('.'));
-        //description.setText(stringUri.substring(stringUri.lastIndexOf('/') + 1, stringUri.indexOf('.')));
+        pdf = new File(fileUri.getPath());
+        nameView.setText(stringUri.substring(stringUri.lastIndexOf('/') + 1, stringUri.indexOf('.')));
         setImage();
     }
 
     private void setImage() {
-        WebSettings settings = pdfViewer.getSettings();
-        settings.setJavaScriptEnabled(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) //required for running javascript on android 4.1 or later
-        {
-            settings.setAllowFileAccessFromFileURLs(true);
-            settings.setAllowUniversalAccessFromFileURLs(true);
-        }
-        settings.setBuiltInZoomControls(true);
-
-        pdfViewer.setWebChromeClient(new WebChromeClient());
-
-        //Uri path = Uri.parse(Environment.getExternalStorageDirectory().toString() + "/data/test.pdf");
-        pdfViewer.loadUrl("http://docs.google.com/gview?embedded=true&url=" + fileUri);
+        pdfView.fromFile(pdf)//test loading frim
+                .defaultPage(pageNumber)
+                .onPageChange(this)
+                .load();
+        pageCountView.setText(Integer.toString(pageNumber));
     }
 
     private void setUploadProgressDialog() {
@@ -113,12 +149,19 @@ public class PDF_Upload_Fragment extends Fragment {
         new Thread() {
             public void run() {
                 try {
-                    //UploadProcess upobj = new UploadProcess(getContext(), description, fileUri, ringProgressDialog);
-                    //upobj.uploadProcess();
+                    UploadProcess upobj = new UploadProcess(getContext(), nameView, fileUri, ringProgressDialog);
+                    upobj.uploadProcess();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }.start();
+    }
+
+    @Override
+    public void onPageChanged(int page, int pageCount) {
+        pageNumber = page;
+        pageCountView.setText(Integer.toString(page));
+        //setTitle(format("%s %s / %s", name, page, pageCount));
     }
 }
