@@ -151,16 +151,21 @@
         android:layout_centerHorizontal="true">
 
         <ImageView
-            android:layout_width="220dp"
-            android:layout_height="220dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:id="@+id/imageView"
             android:layout_centerHorizontal="true"
             android:src="@drawable/sw_background" />
 
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/textView4" />
+
         <com.joanzapata.pdfview.PDFView
             android:id="@+id/pdfview"
-            android:layout_width="220dp"
-            android:layout_height="220dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_centerHorizontal="true"
             android:visibility="invisible" />
     </RelativeLayout>

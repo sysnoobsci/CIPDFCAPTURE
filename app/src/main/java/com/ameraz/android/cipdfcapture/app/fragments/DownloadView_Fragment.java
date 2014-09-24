@@ -39,7 +39,10 @@ import com.ameraz.android.cipdfcapture.app.VersionInfoAdapter;
 import com.joanzapata.pdfview.PDFView;
 import com.squareup.picasso.Picasso;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,10 +59,10 @@ public class DownloadView_Fragment extends Fragment {
     private EditText reportName;
     TextView txt1;
     TextView txt2;
-    WebChromeClient webChromeClient;
     private ListView listView;
     private ImageButton searchButton;
     private ImageButton downloadButton;
+    private TextView textViewer;
     private WebView webView;
     private LinearLayout enlargeImageGroup;
     private PDFView pdfViewer;
@@ -136,6 +139,7 @@ public class DownloadView_Fragment extends Fragment {
         reportName.setText(preferences.getString("report_preference", null));//set the filed to default report name if there is one
         txt1 = (TextView) rootView.findViewById(R.id.textView);
         txt2 = (TextView) rootView.findViewById(R.id.textView2);
+        textViewer = (TextView) rootView.findViewById(R.id.textView2);
         searchButton = (ImageButton) rootView.findViewById(R.id.searchButton);
         downloadButton = (ImageButton) rootView.findViewById(R.id.download_and_save);
         enlargeImageGroup = (LinearLayout) rootView.findViewById(R.id.grouped_Layout);
@@ -171,26 +175,13 @@ public class DownloadView_Fragment extends Fragment {
         setVersionNumber(Integer.parseInt(infoPieces[4]));//set version number of doc
     }
 
-    private void setSearchProgressDialog() {
-        ringProgressDialog.setTitle("Performing Action ...");
-        ringProgressDialog.setMessage("Searching for report ...");
-    }
-
-    private void setDownloadingViewDialog() {
-        ringProgressDialog.setTitle("Performing Action ...");
-        ringProgressDialog.setMessage("Downloading View ...");
-    }
-
     public void searchButton() throws Exception {
         LogonSession lsobj = new LogonSession(getContext());
-        ringProgressDialog.show();
         if (lsobj.tryLogin(getContext())) {
             Log.d("Message", "CI Login successful and ready to search for reports.");
             fillSpinner(apiobj);
-            ringProgressDialog.dismiss();
         } else {//if login attempt fails from trying the CI server profile, prompt user to check profile
             ToastMessageTask.noConnectionMessage(getContext());
-            ringProgressDialog.dismiss();
         }
     }
 
@@ -223,7 +214,11 @@ public class DownloadView_Fragment extends Fragment {
                                 e.printStackTrace();
                             }
                             TempFileTracker.addTempFileToList(fullFilePathName,getVersionNumber());//add temp file and version number to list
-                            loadFileIntoView(fullFilePathName);
+                            try {
+                                loadFileIntoView(fullFilePathName);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                             }
                         });
                     }
@@ -241,7 +236,6 @@ public class DownloadView_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                    setSearchProgressDialog();
                     searchButton();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -338,11 +332,10 @@ public class DownloadView_Fragment extends Fragment {
         sItems.setAdapter(adapter);
     }
 
-    public void loadFileIntoView(String fullFilePath){
+    public void loadFileIntoView(String fullFilePath) throws IOException {
         if(getVersionFormat().equals("PDF")){//if format is PDF
             File pdfFile = new File(fullFilePath);
-            imageView.setVisibility(View.INVISIBLE);//make imageView invisible
-            pdfViewer.setVisibility(View.VISIBLE);//make pdfviewer visible
+            viewVisibilityChecker();
             pdfViewer.fromFile(pdfFile)
                     .defaultPage(1)
                     .showMinimap(false)
@@ -351,16 +344,41 @@ public class DownloadView_Fragment extends Fragment {
         }
         else if(getVersionFormat().equals("TXT") || getVersionFormat().equals("ASC") ||
                 getVersionFormat().equals("XML")) {//if format is ascii-text
-
+            viewVisibilityChecker();
+            BufferedReader r = new BufferedReader(new FileReader(fullFilePath));
+            StringBuilder total = new StringBuilder();
+            String line;
+            while((line = r.readLine()) != null) {
+                total.append(line);
+            }
+            textViewer.setText(total.toString());
         }
         else {//if format is an image
-            imageView.setVisibility(View.VISIBLE);//make imageView visible
-            pdfViewer.setVisibility(View.INVISIBLE);//make pdfviewer invisible
+            viewVisibilityChecker();
             Picasso.with(getContext())
                     .load(Uri.fromFile(new File(fullFilePath)))
                     .fit()
                     .centerInside()
                     .into(imageView);
+        }
+    }
+
+    public void viewVisibilityChecker(){//makes views visible depending on the file format
+        if(getVersionFormat().equals("PDF")){
+            pdfViewer.setVisibility(View.VISIBLE);//makes pdfviewer visible
+            textViewer.setVisibility(View.GONE);//removes textView from view
+            imageView.setVisibility(View.GONE);//removes imageView from view
+        }
+        else if(getVersionFormat().equals("TXT") || getVersionFormat().equals("ASC") ||
+                getVersionFormat().equals("XML")) {
+            pdfViewer.setVisibility(View.GONE);
+            textViewer.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.GONE);
+        }
+        else{
+            pdfViewer.setVisibility(View.GONE);
+            textViewer.setVisibility(View.GONE);
+            imageView.setVisibility(View.VISIBLE);
         }
     }
     /*
