@@ -11,10 +11,10 @@ public class TempFileTracker {
 
     public static void addTempFileToList(String filePath, int version) {//add temp files and versions
         tempFileInfo = new ArrayList<String>();
-        fullFileInfo = new StringBuilder();
+/*        fullFileInfo = new StringBuilder();
         fullFileInfo.append(filePath).append(",").append(version);
         tempFileInfo.add(String.valueOf(fullFileInfo));
-        fullFileInfo.setLength(0);//empty the StringBuilder buffer
+        fullFileInfo.setLength(0);//empty the StringBuilder buffer*/
     }
 
     public ArrayList<String> getTempFileInfo() {

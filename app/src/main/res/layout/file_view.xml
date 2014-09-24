@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@drawable/actionbar_background"
     android:layout_width="match_parent">
 <ImageView
     android:id="@+id/fd_Icon1"
-    android:layout_width="50dp"
-    android:layout_height="match_parent"
-    android:layout_margin="4dp">
-</ImageView>
+    android:layout_width="?android:attr/actionBarSize"
+    android:layout_height="?android:attr/actionBarSize"
+    android:layout_margin="4dp"/>
                 
 <TextView android:text="TextView01"
     android:id="@+id/TextView01" 
@@ -18,27 +17,26 @@
     android:layout_weight="1"
     android:layout_height="match_parent"
     android:singleLine="true"
-    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:textAppearance="?android:attr/textAppearanceSmall"
     android:layout_margin="4dp"
     android:gravity="center_vertical"
-    android:textColor="#ffffff">
+    android:textColor="#ffffff"/>
     
     
-</TextView>
-<TextView android:text="TextView02"
+
+<!--<TextView android:text="TextView02"
     android:id="@+id/TextView02" 
     android:layout_width="0dp"
     android:layout_height="0dp">
     
-</TextView>
+</TextView>-->
 <TextView android:text="TextViewDate"
     android:id="@+id/TextViewDate" 
     android:layout_width="wrap_content" 
     android:layout_height="match_parent"
     android:gravity="center_vertical|end"
-    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:textAppearance="?android:attr/textAppearanceSmall"
     android:layout_margin="4dp"
-    android:textColor="#ffffff">
-    
-</TextView>
+    android:textColor="#ffffff"/>
+
 </LinearLayout>
