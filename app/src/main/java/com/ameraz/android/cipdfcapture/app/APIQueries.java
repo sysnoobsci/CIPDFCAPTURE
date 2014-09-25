@@ -303,7 +303,7 @@ public class APIQueries {
             sbuild.append(dsidsarr[i] + ",").append(ctsarr[i] + ",").append(bytesarr[i] + ",").append(fmtarr[i] + ",")
                     .append(verarr[i] + ",").append("V~" + xidarr[i] + "~" + dsidsarr[i] + "~" + pathsarr[i] +
                     "~" + verarr[i]);
-            Log.d("getVersionInfo()", "version " + verarr[i] + " attributes: " + sbuild.toString());
+            //Log.d("getVersionInfo()", "version " + verarr[i] + " attributes: " + sbuild.toString()); //just for debug purposes
             versionInfo.add(sbuild.toString());
         }
         return versionInfo;

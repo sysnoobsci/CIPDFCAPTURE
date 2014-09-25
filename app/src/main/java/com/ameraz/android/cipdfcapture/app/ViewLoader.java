@@ -34,32 +34,39 @@ public class ViewLoader {
     }
 
     public static void loadFileIntoView(String fullFilePath) throws IOException {
-                if (versionFormat.equals("PDF")) {//if format is PDF
-                    File pdfFile = new File(fullFilePath);
-                    viewVisibilityChecker();
-                    pdfViewer.fromFile(pdfFile)
-                            .defaultPage(1)
-                            .showMinimap(false)
-                            .enableSwipe(true)
-                            .load();
-                } else if (versionFormat.equals("TXT") || versionFormat.equals("ASC") ||
-                        versionFormat.equals("XML")) {//if format is ascii-text
-                    viewVisibilityChecker();
-                    BufferedReader r = new BufferedReader(new FileReader(fullFilePath));
-                    StringBuilder total = new StringBuilder();
-                    String line;
-                    while ((line = r.readLine()) != null) {
-                        total.append(line);
-                    }
-                    textViewer.setText(total.toString());
-                } else {//if format is an image
-                    viewVisibilityChecker();
-                    Picasso.with(context)
-                            .load(Uri.fromFile(new File(fullFilePath)))
-                            .fit()
-                            .centerInside()
-                            .into(imageView);
+        try {
+            if (versionFormat.equals("PDF")) {//if format is PDF
+                File pdfFile = new File(fullFilePath);
+                viewVisibilityChecker();
+
+                pdfViewer.fromFile(pdfFile)
+                        .defaultPage(1)
+                        .showMinimap(false)
+                        .enableSwipe(true)
+                        .load();
+
+            } else if (versionFormat.equals("TXT") || versionFormat.equals("ASC") ||
+                    versionFormat.equals("XML")) {//if format is ascii-text
+                viewVisibilityChecker();
+                BufferedReader r = new BufferedReader(new FileReader(fullFilePath));
+                StringBuilder total = new StringBuilder();
+                String line;
+                while ((line = r.readLine()) != null) {
+                    total.append(line);
                 }
+                textViewer.setText(total.toString());
+            } else {//if format is an image
+                viewVisibilityChecker();
+                Picasso.with(context)
+                        .load(Uri.fromFile(new File(fullFilePath)))
+                        .fit()
+                        .centerInside()
+                        .into(imageView);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static void viewVisibilityChecker(){//makes views visible depending on the file format

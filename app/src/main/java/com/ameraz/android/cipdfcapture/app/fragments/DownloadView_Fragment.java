@@ -65,7 +65,6 @@ public class DownloadView_Fragment extends Fragment {
     static Context context;
     String topicIdUrl;
     String versionFormat;
-    Boolean first_opened = true;
     int versionNumber;
     String versionDSID;
     APIQueries apiobj = null;
@@ -125,7 +124,6 @@ public class DownloadView_Fragment extends Fragment {
         enlargeImgButtonListener();
         downloadButtonListener();
         spinnerItemListener();
-        first_opened = false;//stops spinner code from prematurely executing - must be set to true after call to spinnerItemListener()
         return rootView;
     }
 
@@ -181,15 +179,17 @@ public class DownloadView_Fragment extends Fragment {
     }
 
     private void spinnerItemListener() {
+        sItems.setTag(R.id.position, 0);
         sItems.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, final View view,
                                        int pos, long id) {
-                if(!first_opened){//stops code from prematurely executing
+                if((Integer) sItems.getTag(R.id.position) != pos){//stops code from prematurely executing
                     setVersionInfo(pos);//gets information about the particular version selected
                     String fullFilePathName = FilePath.getTempFilePath() + getVersionDSID()
                             + "." + getVersionFormat().toLowerCase();
                     new DownloadFileAndLoadView(pos,fullFilePathName).execute();
                 }
+                sItems.setTag(R.id.position, pos);
             }
             public void onNothingSelected(AdapterView<?> parent) {
                 //do nothing
@@ -301,11 +301,11 @@ public class DownloadView_Fragment extends Fragment {
         @Override
         protected String doInBackground(String... params) {
             topicIdUrl = apiobj.retrieveQuery(tidArrayList.get(pos));//get the right tid
-            Log.d("spinnerItemListener()", "topicIdUrl value: " + topicIdUrl);
+            Log.d("DownloadFileAndLoadView", "topicIdUrl value: " + topicIdUrl);
             DownloadFileTask dltask = new DownloadFileTask(topicIdUrl,
                     FilePath.getTempFilePath(), fullFilePathName, getContext());//store file in temp file path
             try {
-                dltask.execute().get(30000, TimeUnit.MILLISECONDS);//download the file to a temp path, effectively caching it
+                dltask.execute().get(60000, TimeUnit.MILLISECONDS);//download the file to a temp path, effectively caching it
             } catch (Exception e) {
                 e.printStackTrace();
             }

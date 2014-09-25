@@ -52,6 +52,7 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     }
 
     protected String doInBackground(String... params) {
+        Log.d("DownloadFileTask","Task is executing");
         try {
             response = httpClient.execute(request);
         } catch (IOException e) {
@@ -83,14 +84,18 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected void onPostExecute(String result) {
-        ToastMessageTask.downloadFileSuccessful(context);
+    protected void onPreExecute() {
+        Log.d("DownloadFileTask","Download starting");
+        ToastMessageTask.downloadFileStarted(context);
     }
 
     @Override
-    protected void onPreExecute() {
-        ToastMessageTask.downloadFileStarted(context);
+    protected void onPostExecute(String result) {
+        Log.d("DownloadFileTask","Download finished");
+        ToastMessageTask.downloadFileSuccessful(context);
     }
+
+
 
     @Override
     protected void onProgressUpdate(Void... values) {

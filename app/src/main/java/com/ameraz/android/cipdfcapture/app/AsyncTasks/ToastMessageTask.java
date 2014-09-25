@@ -40,8 +40,6 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
 
     // This is executed in the context of the main GUI thread
     protected void onPostExecute(String result) {
-        Log.d("onPostExecute()", "Value of result: " + result);
-        Log.d("ToastMessageTask.onPostExecute()", "Value of getContext(): " + String.valueOf(getmContext()));
         Toast toast = Toast.makeText(getmContext(), getToastMessage(), Toast.LENGTH_SHORT);
         toast.show();
     }

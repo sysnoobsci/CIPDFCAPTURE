@@ -73,8 +73,6 @@ public class Image_Preview_Fragment extends Fragment {
         }
     }
 
-
-
     private void saveButtonListener() {//searches for the report and displays the versions
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
