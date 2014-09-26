@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:id="@+id/imageView"
-        android:layout_centerHorizontal="true"
         android:src="@drawable/sw_background" />
 
     <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:id="@+id/textView4"
         android:visibility="gone"/>
 
     <com.joanzapata.pdfview.PDFView
         android:id="@+id/pdfview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:visibility="gone" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#009dd9"
-        android:layout_alignParentBottom="true"
+        android:background="@drawable/actionbar_background"
         android:id="@+id/input_layout">
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="?android:attr/actionBarSize"
+            android:layout_height="?android:attr/actionBarSize"
             android:id="@+id/download_and_save"
-            android:background="#00ffffff"
-            android:src="@android:drawable/ic_menu_save"
+            android:background="#00000000"
+            android:src="@drawable/ic_action_download"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
-</RelativeLayout>
+</LinearLayout>

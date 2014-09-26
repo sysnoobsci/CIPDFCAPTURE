@@ -6,15 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-
 import com.ameraz.android.cipdfcapture.app.R;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by john.williams on 6/16/2014.
+ * Created by John Williams
+ * ExpandableListAdapter extends BaseExpandableListAdapter to populate the view and provide a means to interact with it.
  */
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 

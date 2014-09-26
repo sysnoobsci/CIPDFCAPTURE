@@ -53,24 +53,18 @@ public class NavigationDrawerFragment extends Fragment {
      * Helper component that ties the action bar to the navigation drawer.
      */
 
-
-    ExpandableListAdapter listAdapter;
-    ExpandableListView mDrawerListView;
-    List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
-
+    private ExpandableListAdapter listAdapter;
+    private ExpandableListView mDrawerListView;
+    private List<String> listDataHeader;
+    private HashMap<String, List<String>> listDataChild;
     private ActionBarDrawerToggle mDrawerToggle;
-
     private DrawerLayout mDrawerLayout;
-    //private ListView mDrawerListView;
     private View mFragmentContainerView;
 
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-/*    private Uri imageUri;
-    private String fileName;*/
 
     public NavigationDrawerFragment() {
     }
@@ -138,7 +132,7 @@ public class NavigationDrawerFragment extends Fragment {
                                 fragment = new DownloadView_Fragment();
                                 break;
                             case 1:
-                                fragment = new DownloadView_Fragment();
+                                fragment = new File_Downloader();
                                 break;
                         }
                         break;

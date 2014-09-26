@@ -3,7 +3,9 @@ package com.ameraz.android.cipdfcapture.app.fragments;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +16,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+import com.ameraz.android.cipdfcapture.app.FilePath;
 import com.ameraz.android.cipdfcapture.app.MyBrowser;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.ViewLoader;
 import com.joanzapata.pdfview.PDFView;
+import com.squareup.picasso.Picasso;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 
 /**
@@ -33,7 +40,8 @@ public class Image_Preview_Fragment extends Fragment {
     private ImageView imageView;
     ImageButton saveButton;
     Context context;
-    String uri;
+    Uri fileUri;
+    String filePath;
     String format;
 
 
@@ -63,14 +71,65 @@ public class Image_Preview_Fragment extends Fragment {
 
     public void loadImage() {
         Bundle bundle = this.getArguments();
-        uri = bundle.getString("retrieve_fileName");
+        String uri = bundle.getString("retrieve_fileName");
+        Log.d("filename= ", uri);
+        FilePath fp = new FilePath();
+        fileUri = Uri.parse("file://" + fp.getTempFilePath() + uri);
+        filePath = fileUri.getPath();
         format = bundle.getString("retrieve_fileFormat");
+        if(format == "PDF"){
+            pdfViewer.setVisibility(View.VISIBLE);
+            textViewer.setVisibility(View.GONE);
+            imageView.setVisibility(View.GONE);
+            setPDF();
+        }else if(format == "TXT" || format == "XML" | format == "ASC"){
+            pdfViewer.setVisibility(View.GONE);
+            textViewer.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.GONE);
+            setText();
+        }else{
+            pdfViewer.setVisibility(View.GONE);
+            textViewer.setVisibility(View.GONE);
+            imageView.setVisibility(View.VISIBLE);
+            setImage();
+        }
+    }
+
+    public void setPDF(){
+        File pdfFile = new File(filePath);
+        pdfViewer.fromFile(pdfFile)
+                .defaultPage(1)
+                .showMinimap(false)
+                .enableSwipe(true)
+                .load();
+    }
+
+    public void setText(){
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        BufferedReader in = null;
+
         try {
-            ViewLoader vl = new ViewLoader(format,pdfViewer,textViewer,imageView,context);
-            vl.loadFileIntoView(uri);
+            in = new BufferedReader(new FileReader(new File(filePath)));
+            while ((line = in.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append("\n");
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        textViewer.setText(stringBuilder.toString());
+    }
+
+    public void setImage(){
+        Picasso.with(context)
+                .load(Uri.fromFile(new File(filePath)))
+                .fit()
+                .centerInside()
+                .into(imageView);
     }
 
     private void saveButtonListener() {//searches for the report and displays the versions

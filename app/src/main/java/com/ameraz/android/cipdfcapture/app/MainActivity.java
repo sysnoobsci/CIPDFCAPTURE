@@ -187,8 +187,4 @@ public class MainActivity extends Activity
         return super.onOptionsItemSelected(item);
     }
 
-    public void onActivityCreated(){
-
-    }
-
 }//end of MainActivity
