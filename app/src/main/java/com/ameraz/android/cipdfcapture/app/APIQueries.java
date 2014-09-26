@@ -81,9 +81,10 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,createtopic");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(), entity, context);
+        APITask apitaskobj = new APITask(entity, getContext());
         try {
-            apitaskobj.execute().get(action_timeout, TimeUnit.MILLISECONDS);
+            apitaskobj.execute(targetCIQuery())
+                      .get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask.noConnectionMessage(getContext());
         }
@@ -101,9 +102,10 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,listnode");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(), entity, getContext());
+        APITask apitaskobj = new APITask(entity, getContext());
         try {
-            apitaskobj.execute().get(action_timeout, TimeUnit.MILLISECONDS);
+            apitaskobj.execute(targetCIQuery())
+                      .get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask.noConnectionMessage(getContext());
         }
@@ -130,9 +132,10 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,listversion");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(), entity, getContext());
+        APITask apitaskobj = new APITask(entity, getContext());
         try {
-            apitaskobj.execute().get(action_timeout, TimeUnit.MILLISECONDS);
+            apitaskobj.execute(targetCIQuery())
+                      .get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask.noConnectionMessage(getContext());
         }
@@ -151,22 +154,19 @@ public class APIQueries {
             QueryArguments.clearList();//clear argslist after query
             return null;
         }
-
-
     }
-
 
     //logon
     public Boolean logonQuery(ArrayList<Object> args) throws Exception {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,logon");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(), entity, getContext());
+        APITask apitaskobj = new APITask(entity, getContext());
         try {
-            apitaskobj.execute().get(lilo_timeout, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
+            apitaskobj.execute(targetCIQuery())
+                      .get(lilo_timeout, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException te) {
             ToastMessageTask.noConnectionMessage(getContext());
-            e.printStackTrace();
         }
         Log.d("logonQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
@@ -190,9 +190,10 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,logoff");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(targetCIQuery(), entity, getContext());
+        APITask apitaskobj = new APITask(entity, getContext());
         try {
-            apitaskobj.execute().get(lilo_timeout, TimeUnit.MILLISECONDS);
+            apitaskobj.execute(targetCIQuery())
+                      .get(lilo_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMessageTask.noConnectionMessage(getContext());
         }
@@ -220,11 +221,12 @@ public class APIQueries {
         QueryArguments.addArg("act,ping");
         QueryArguments.addArg("sid," + LogonSession.getSid());
         HttpEntity entity = mebBuilder(QueryArguments.getArgslist());
-        APITask apitaskobj = new APITask(targetCIQuery(), entity, getContext());
+        APITask apitaskobj = new APITask(entity, getContext());
         try {
-            apitaskobj.execute().get(action_timeout, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            e.printStackTrace();
+            apitaskobj.execute(targetCIQuery())
+                      .get(action_timeout, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException te) {
+            ToastMessageTask.noConnectionMessage(getContext());
         }
         Log.d("pingQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());

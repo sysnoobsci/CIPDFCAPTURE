@@ -70,7 +70,7 @@ public class Image_Upload_Fragment extends Fragment {
             String stringUri = bundle.getString("stringUri");
             fileUri = Uri.parse(stringUri);
             name.setText(stringUri.substring(stringUri.lastIndexOf('/') + 1, stringUri.indexOf('.')));
-            Log.d("fileUri = ", fileUri.toString());
+            Log.d("setUriAndImage()", "value of uri:" + fileUri.toString());
         }
         //Using the Picasso library, loads the image onto the screen.
         setImage();

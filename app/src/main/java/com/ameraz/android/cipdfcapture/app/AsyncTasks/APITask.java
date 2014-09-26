@@ -24,7 +24,6 @@ public class APITask extends AsyncTask<String, Void, String> {
     HttpPost httppost;
 
     private static String response;
-    private static String query;
     private static Context mContext;
     private static HttpEntity entity;
     private static int ID = 0;
@@ -38,13 +37,7 @@ public class APITask extends AsyncTask<String, Void, String> {
         this.response = result;
     }
 
-    public String getQuery() {
-        return query;
-    }
 
-    public void setQuery(String query) {
-        this.query = query;
-    }
 
     public static Context getmContext() {
         return mContext;
@@ -70,8 +63,7 @@ public class APITask extends AsyncTask<String, Void, String> {
         this.taskID = taskID;
     }
 
-    public APITask(String query, HttpEntity entity, Context context) {
-        setQuery(query);
+    public APITask(HttpEntity entity, Context context) {
         setEntity(entity);
         setmContext(context);
         setTaskID(this.ID);//set unique ID for task
@@ -84,10 +76,9 @@ public class APITask extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected String doInBackground(String... args) {
+    protected String doInBackground(String... aurl) {
         StringBuilder total = new StringBuilder();
-        Log.d("APITask.doInBackground()", "query value: " + getQuery());
-        httppost = new HttpPost(getQuery());
+        httppost = new HttpPost(aurl[0]);
         httppost.setEntity(getEntity());
         try {
             HttpResponse response = httpclient.execute(httppost);

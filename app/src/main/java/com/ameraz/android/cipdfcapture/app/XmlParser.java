@@ -66,7 +66,6 @@ public class XmlParser {
 
     public String parseXMLfunc() throws XmlPullParserException, IOException{
         String xresp = getXmlResponse();
-        Log.d("parseXMLfunc()", "parseXMLfunc() xmlVals value: " + xresp);
         clearXMLString();//clear the String before adding a new XMLString
         clearXMLTags();
         ArrayList<String> listOfTextTags = new ArrayList<String>();//a list contain all the text inside XML tags
@@ -84,7 +83,7 @@ public class XmlParser {
         }
         setTextTag(listOfTextTags);
         setxmlVals(total.toString());
-        Log.d("XML", "Contents of XML Response: " + getxmlVals());
+        Log.d("XML", "Contents of CSV XML Response: " + getxmlVals());
         return total.toString();//return parsed contents of XML
     }
 

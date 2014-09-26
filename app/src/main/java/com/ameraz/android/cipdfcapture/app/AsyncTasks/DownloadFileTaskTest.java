@@ -1,5 +1,6 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.AsyncTasks;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -45,7 +46,6 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... aurl) {
         int count;
-
         try {
             URL url = new URL(aurl[0]);
             URLConnection conexion = url.openConnection();

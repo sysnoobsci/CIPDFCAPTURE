@@ -1,174 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:divider="@drawable/horizontal_divider"
+    android:showDividers="middle">
 
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tableLayout">
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/actionbar_background"
+        android:id="@+id/version_list" />
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Report Name"
-                android:id="@+id/textView5"
-                android:layout_marginLeft="25dp"
-                android:textSize="18sp"
-                android:textColor="#0078c9" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/reportName"
-                android:layout_marginLeft="25dp"
-                android:hint="Fully Qualified Report Name" />
-
-            <ImageButton
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:id="@+id/searchButton"
-                android:src="@android:drawable/ic_menu_search" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Version Number"
-                android:id="@+id/textView"
-                android:layout_marginLeft="25dp"
-                android:textSize="18sp"
-                android:textColor="#0078c9" />
-
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
-
-        </TableRow>
-
-    </TableLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="130dp"
-        android:layout_below="@+id/tableLayout"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/linearLayout">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="File Information"
-            android:id="@+id/textView2"
-            android:textSize="18sp"
-            android:textColor="#0078c9"
-            android:layout_marginLeft="25dp" />
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:id="@+id/listView"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:textSize="15sp"
-            android:textColor="#0078c9"
-            android:layout_gravity="right" />
-    </LinearLayout>
-
-    <!--Blue bar on bottom of screen-->
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?android:attr/actionBarSize"
         android:orientation="horizontal"
-        android:background="#009dd9"
-        android:layout_alignParentBottom="true"
+        android:background="@drawable/actionbar_background"
         android:id="@+id/input_layout">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:id="@+id/grouped_Layout">
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/enlarge_img"
-                android:background="#00ffffff"
-                android:src="@drawable/abc_ic_commit_search_api_holo_light"
-                android:gravity="center_vertical"
-                android:layout_gravity="center_vertical" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Enlarge"
-                android:id="@+id/textView3"
-                android:textColor="@color/White"
-                android:textSize="15sp"
-                android:gravity="center_vertical"
-                android:layout_gravity="center_vertical" />
-        </LinearLayout>
-
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/download_and_save"
-            android:background="#00ffffff"
-            android:src="@android:drawable/ic_menu_save"
+            android:layout_width="?android:attr/actionBarSize"
+            android:layout_height="fill_parent"
+            android:id="@+id/searchButton"
+            android:background="#00000000"
+            android:src="@drawable/ic_action_search"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="center_vertical" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:ems="15"
+            android:textSize="22sp"
+            android:id="@+id/report_search_input"
+            android:textColor="@color/Black"
+            android:hint="Report Name"
+            android:layout_toLeftOf="@+id/searchButton"
+            android:layout_toStartOf="@+id/searchButton"
+            android:padding="4dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="4dp"
+            android:background="#ffffff"/>
 
     </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        android:layout_below="@+id/linearLayout"
-        android:layout_centerHorizontal="true">
-
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/imageView"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/sw_background" />
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/textView4" />
-
-        <com.joanzapata.pdfview.PDFView
-            android:id="@+id/pdfview"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_centerHorizontal="true"
-            android:visibility="invisible" />
-    </RelativeLayout>
-
-
-</RelativeLayout>
+</LinearLayout>

@@ -9,18 +9,18 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:id="@+id/imageView"
+        android:id="@+id/imageViewer"
         android:src="@drawable/sw_background" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:id="@+id/textView4"
+        android:id="@+id/textViewer"
         android:visibility="gone"/>
 
     <com.joanzapata.pdfview.PDFView
-        android:id="@+id/pdfview"
+        android:id="@+id/pdfViewer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -36,7 +36,7 @@
         <ImageButton
             android:layout_width="?android:attr/actionBarSize"
             android:layout_height="?android:attr/actionBarSize"
-            android:id="@+id/download_and_save"
+            android:id="@+id/downloadButton"
             android:background="#00000000"
             android:src="@drawable/ic_action_download"
             android:layout_alignParentRight="true"
