@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
+import com.ameraz.android.cipdfcapture.app.FilePath;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -22,7 +24,7 @@ import java.util.Calendar;
  */
 public class DownloadFileTask extends AsyncTask<String, Void, String> {
 
-    String url;
+
     String dirPath;
     String fullFilePathName;
     HttpClient httpClient = new DefaultHttpClient();
@@ -31,11 +33,9 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     Boolean success = false;
     Context context;
 
-    public DownloadFileTask(String url, String dirPath, String fullFilePathName, Context context) {
-        this.url = url;
+    public DownloadFileTask(String dirPath, String fullFilePathName, Context context) {
         this.dirPath = dirPath;
         this.fullFilePathName = fullFilePathName;
-        request = new HttpPost(url);
         this.context = context;
     }
 
@@ -51,9 +51,22 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
         }
     }
 
+    @Override
+    protected void onPreExecute() {
+        if(dirPath.equals(FilePath.getTempFilePath())){
+            ToastMessageTask.downloadTempFileStarted(context);
+            Log.d("DownloadFileTask","Temp File download starting");
+        }
+        else{
+            Log.d("DownloadFileTask","Download starting");
+            ToastMessageTask.downloadFileStarted(context);
+        }
+    }
+
     protected String doInBackground(String... params) {
         Log.d("DownloadFileTask","Task is executing");
         try {
+            request = new HttpPost(params[0]);
             response = httpClient.execute(request);
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,18 +97,10 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected void onPreExecute() {
-        Log.d("DownloadFileTask","Download starting");
-        ToastMessageTask.downloadFileStarted(context);
-    }
-
-    @Override
     protected void onPostExecute(String result) {
         Log.d("DownloadFileTask","Download finished");
         ToastMessageTask.downloadFileSuccessful(context);
     }
-
-
 
     @Override
     protected void onProgressUpdate(Void... values) {

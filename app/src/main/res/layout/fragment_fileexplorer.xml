@@ -17,7 +17,7 @@
         <EditText
             android:layout_alignParentLeft="true" 
             android:hint="@string/filename"
-            android:id="@+id/editText" 
+            android:id="@+id/reportName"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_marginLeft="5dp"

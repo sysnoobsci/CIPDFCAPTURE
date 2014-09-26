@@ -118,5 +118,11 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
         tmtask.execute();
     }
 
+    public static void downloadTempFileStarted(Context context) {
+        setmContext(context);
+        ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Beginning download of temp file.");
+        tmtask.execute();
+    }
+
 
 }

@@ -33,18 +33,16 @@ public class ViewLoader {
         this.context = context;
     }
 
-    public static void loadFileIntoView(String fullFilePath) throws IOException {
+    public void loadFileIntoView(String fullFilePath) throws IOException {
         try {
             if (versionFormat.equals("PDF")) {//if format is PDF
                 File pdfFile = new File(fullFilePath);
                 viewVisibilityChecker();
-
                 pdfViewer.fromFile(pdfFile)
                         .defaultPage(1)
                         .showMinimap(false)
                         .enableSwipe(true)
                         .load();
-
             } else if (versionFormat.equals("TXT") || versionFormat.equals("ASC") ||
                     versionFormat.equals("XML")) {//if format is ascii-text
                 viewVisibilityChecker();
@@ -69,7 +67,7 @@ public class ViewLoader {
         }
     }
 
-    public static void viewVisibilityChecker(){//makes views visible depending on the file format
+    public void viewVisibilityChecker(){//makes views visible depending on the file format
         if(versionFormat.equals("PDF")){
             pdfViewer.setVisibility(View.VISIBLE);//makes pdfviewer visible
             textViewer.setVisibility(View.GONE);//removes textView from view

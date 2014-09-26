@@ -102,7 +102,6 @@ public class XmlParser {
             return getxmlVals();
         }
         String xmlstring = getXmlResponse();
-        Log.d("SearchTag", "Value of tag: " + tag);
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
         XmlPullParser xpp = factory.newPullParser();
@@ -126,12 +125,6 @@ public class XmlParser {
             eventType = xpp.next();
         }
         return tagText.toString();
-    }
-
-    protected Boolean isXMLformat(String xmlstring){
-        String str2 = "<?xml version=";
-        setIs_xml(xmlstring.toLowerCase().contains(str2.toLowerCase()));
-        return getIs_xml();
     }
 
 }

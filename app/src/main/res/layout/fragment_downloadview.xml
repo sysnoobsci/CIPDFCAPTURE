@@ -31,7 +31,7 @@
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText"
+                android:id="@+id/reportName"
                 android:layout_marginLeft="25dp"
                 android:hint="Fully Qualified Report Name" />
 

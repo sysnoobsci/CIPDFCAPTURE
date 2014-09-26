@@ -12,11 +12,11 @@ import java.util.Map;
  */
 public class TempFileTracker {
     static Map<Integer, String> tempFileInfo = new HashMap<Integer, String>();
-
     static StringBuilder fullFileInfo;
 
     public static void addTempFileToList(String filePath, int version) {//add temp files and versions
         tempFileInfo.put(version, filePath);//version number is the key, filepath is the value
+        Log.d("addTempFileToList()","file " + filePath + " added to the list");
     }
 
     public Map getTempFileInfo() {
