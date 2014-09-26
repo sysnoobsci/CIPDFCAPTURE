@@ -1,15 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="50dp">
+    android:layout_height="wrap_content"
+    android:background="@drawable/actionbar_background">
 
     <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="?android:attr/actionBarSize"
+        android:id="@+id/download_type"
+        android:gravity="center_vertical"
+        android:text="PDF"
+        android:layout_margin="4dp"
         android:textSize="16sp"
+        android:textColor="@color/White" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="5"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
+        android:id="@+id/download_createdOn"
+        android:text="Aug 29, 2014 12:30:32 PM"
+        android:gravity="center_vertical"
+        android:textSize="16sp"
+        android:textColor="@color/White" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1.5"
+        android:layout_height="fill_parent"
+        android:id="@+id/download_version"
+        android:text="54000"
+        android:textSize="16sp"
+        android:gravity="center_vertical|end"
         android:textColor="@color/White"
-        android:paddingTop="10dip"
-        android:paddingBottom="10dip" />
+        android:layout_margin="4dp"/>
 
 </LinearLayout>

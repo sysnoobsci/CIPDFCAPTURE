@@ -26,7 +26,9 @@ import com.ameraz.android.cipdfcapture.app.QueryArguments;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.TempFileTracker;
 import com.ameraz.android.cipdfcapture.app.Adapters.VersionInfoAdapter;
+import com.ameraz.android.cipdfcapture.app.Version;
 import com.ameraz.android.cipdfcapture.app.VersionInfo;
+import com.ameraz.android.cipdfcapture.app.filebrowser.Item;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +52,8 @@ public class DownloadView_Fragment extends Fragment {
     ArrayList<String> listOfReportVersions = new ArrayList<String>();
     ProgressDialog ringProgressDialog;
     SharedPreferences preferences;
+
+    private ArrayList<Version> content;
 
     public static Context getContext() {
         return context;
@@ -79,7 +83,7 @@ public class DownloadView_Fragment extends Fragment {
     }
 
     public void createListAdapter() {
-        VersionInfoAdapter listAdapter = new VersionInfoAdapter(getContext(), R.layout.versioninfo_list, versionLimitedInfoList);
+        VersionInfoAdapter listAdapter = new VersionInfoAdapter(getContext(), content);
         listView.setAdapter(listAdapter);
     }
 
@@ -118,7 +122,7 @@ public class DownloadView_Fragment extends Fragment {
                 + "." + VersionInfo.getFormat().toLowerCase();
         Log.d("DownloadFileAndLoadView", "topicIdUrl value: " + topicIdUrl);
         new DownloadFileTaskTest(FilePath.getTempFilePath(), fullFilePathName,getContext())
-                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,topicIdUrl);
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, topicIdUrl);
         Log.d("DownloadFileAndLoadView", "DownloadFileTask finished executing");
         TempFileTracker.addTempFileToList(fullFilePathName, VersionInfo.getVersion());//add temp file and version number to list
     }
@@ -168,6 +172,8 @@ public class DownloadView_Fragment extends Fragment {
         }
         @Override
         protected String doInBackground(String... params) {
+            content = null;
+            content = new ArrayList<Version>();
             Log.d("FillListViewTask", "FillListViewTask asynctask starting execution.");
             APIQueries apiobj = new APIQueries(getContext());
             try {
@@ -188,11 +194,12 @@ public class DownloadView_Fragment extends Fragment {
                 StringBuilder combinedInfo = new StringBuilder();
                 Log.d("FillListViewTask.doInBackground()","Starting iteration through versions");
                 for(int i=0;i<ctsArrayList.size();i++){
-                    combinedInfo.append(ctsArrayList.get(i) + "\t\t")
+                    content.add(new Version(ctsArrayList.get(i), fmtArrayList.get(i), verArrayList.get(i)));
+/*                    combinedInfo.append(ctsArrayList.get(i) + "\t\t")
                                 .append(fmtArrayList.get(i) + "\t\t")
                                 .append(verArrayList.get(i) + "\t\t");
                     versionLimitedInfoList.add(combinedInfo.toString());
-                    combinedInfo.setLength(0);//clear out StringBuilder each iteration
+                    combinedInfo.setLength(0);*///clear out StringBuilder each iteration
                 }
             }
             return "true";
