@@ -117,8 +117,8 @@ public class DownloadView_Fragment extends Fragment {
         String fullFilePathName = FilePath.getTempFilePath() + VersionInfo.getDsid()
                 + "." + VersionInfo.getFormat().toLowerCase();
         Log.d("DownloadFileAndLoadView", "topicIdUrl value: " + topicIdUrl);
-        new DownloadFileTaskTest(FilePath.getTempFilePath(), fullFilePathName,getContext())
-                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,topicIdUrl);
+        new DownloadFileTaskTest(FilePath.getTempFilePath(), fullFilePathName,getActivity(),getContext())
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,topicIdUrl,String.valueOf(1));
         Log.d("DownloadFileAndLoadView", "DownloadFileTask finished executing");
         TempFileTracker.addTempFileToList(fullFilePathName, VersionInfo.getVersion());//add temp file and version number to list
     }
@@ -146,7 +146,7 @@ public class DownloadView_Fragment extends Fragment {
         });
     }
 
-    private void callIP_Fragment() {
+    public void callIP_Fragment() {
         Bundle bundle = new Bundle();
         bundle.putString("retrieve_fileName", TempFileTracker.getTempFilePath(VersionInfo.getVersion()));
         bundle.putString("retrieve_fileFormat", VersionInfo.getFormat());

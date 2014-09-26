@@ -133,7 +133,7 @@ public class Image_Preview_Fragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            new DownloadFileTaskTest(FilePath.chooseDownloadFilePath(format),fileUri.toString(), getContext())
+            new DownloadFileTaskTest(FilePath.chooseDownloadFilePath(format),fileUri.toString(),getActivity(),getContext())
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fileUri.toString());//download response and create a new file
             }
         });
