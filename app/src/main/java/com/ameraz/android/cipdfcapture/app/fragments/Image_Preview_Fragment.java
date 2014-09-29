@@ -23,6 +23,9 @@ import com.squareup.picasso.Picasso;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by adrian.meraz on 9/18/2014.
@@ -36,9 +39,21 @@ public class Image_Preview_Fragment extends Fragment {
     ImageButton saveButton;
     Context context;
     Uri fileUri;
-    String filePath;
+    String fullFilePath;
     String format;
-
+    ArrayList<String> textFormats = new ArrayList<String>() {{
+        add("ASC");
+        add("TXT");
+        add("XML");
+    }};
+    ArrayList<String> imageFormats = new ArrayList<String>() {{
+        add("IMG");
+        add("BMP");
+        add("JPG");
+        add("GIF");
+        add("PNG");
+        add("TIF");
+    }};
 
     public Context getContext() {
         return context;
@@ -67,31 +82,37 @@ public class Image_Preview_Fragment extends Fragment {
     public void loadImage() {
         Bundle bundle = this.getArguments();
         String uri = bundle.getString("retrieve_fileName");
-        format = bundle.getString("retrieve_fileFormat");
-        Log.d("filename= ", uri);
-        FilePath fp = new FilePath();
-        fileUri = Uri.parse("file://" + fp.getTempFilePath() + uri);
-        filePath = fileUri.getPath();
-        if(format == "PDF"){
+        format = bundle.getString("retrieve_fileFormat").toUpperCase();
+        Log.d("loadImage()","Value of format: " + format);
+        Log.d("loadImage()", "Value of uri: " + uri);
+        fileUri = Uri.parse("file://" + uri);
+        fullFilePath = fileUri.getPath();
+        if(format.equals("PDF")){
             pdfViewer.setVisibility(View.VISIBLE);
             textViewer.setVisibility(View.GONE);
             imageViewer.setVisibility(View.GONE);
             setPDF();
-        }else if(format == "TXT" || format == "XML" | format == "ASC"){
+            Log.d("loadImage()","setPDF() called");
+        }else if(textFormats.contains(format)){
             pdfViewer.setVisibility(View.GONE);
             textViewer.setVisibility(View.VISIBLE);
             imageViewer.setVisibility(View.GONE);
             setText();
-        }else{
+            Log.d("loadImage()","setText() called");
+        }else if(imageFormats.contains(format)){
             pdfViewer.setVisibility(View.GONE);
             textViewer.setVisibility(View.GONE);
             imageViewer.setVisibility(View.VISIBLE);
             setImage();
+            Log.d("loadImage()","setImage() called");
+        }else{
+            ToastMessageTask.invalidFileFormat(context);
         }
+
     }
 
     public void setPDF(){
-        File pdfFile = new File(filePath);
+        File pdfFile = new File(fullFilePath);
         pdfViewer.fromFile(pdfFile)
                 .defaultPage(1)
                 .showMinimap(false)
@@ -104,7 +125,7 @@ public class Image_Preview_Fragment extends Fragment {
         String line;
         BufferedReader in;
         try {
-            in = new BufferedReader(new FileReader(new File(filePath)));
+            in = new BufferedReader(new FileReader(new File(fullFilePath)));
             while ((line = in.readLine()) != null) {
                 stringBuilder.append(line)
                              .append("\n");
@@ -117,7 +138,7 @@ public class Image_Preview_Fragment extends Fragment {
 
     public void setImage(){
         Picasso.with(context)
-                .load(Uri.fromFile(new File(filePath)))
+                .load(Uri.fromFile(new File(fullFilePath)))
                 .fit()
                 .centerInside()
                 .into(imageViewer);

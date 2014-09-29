@@ -124,5 +124,11 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
         tmtask.execute();
     }
 
+    public static void invalidFileFormat(Context context) {
+        setmContext(context);
+        ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Error. Invalid file format. Cannot load file.");
+        tmtask.execute();
+    }
+
 
 }
