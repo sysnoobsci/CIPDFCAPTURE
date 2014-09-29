@@ -34,9 +34,7 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".PDFViewActivity"
-            android:label="@string/app_name" />
+
     </application>
 
 </manifest>

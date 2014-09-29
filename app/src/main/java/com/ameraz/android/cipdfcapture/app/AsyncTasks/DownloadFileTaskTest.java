@@ -62,11 +62,11 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
             URL url = new URL(args[0]);
             URLConnection conexion = url.openConnection();
             conexion.connect();
-
-            if(args[1] != null){
-                fragmentChooser = Integer.parseInt(args[1]);
+            if(args.length > 1) {
+                if (args[1] != null) {
+                    fragmentChooser = Integer.parseInt(args[1]);
+                }
             }
-
             int lengthOfFile = conexion.getContentLength();
             Log.d("ANDRO_ASYNC", "Length of file: " + lengthOfFile);
             InputStream input = new BufferedInputStream(url.openStream());

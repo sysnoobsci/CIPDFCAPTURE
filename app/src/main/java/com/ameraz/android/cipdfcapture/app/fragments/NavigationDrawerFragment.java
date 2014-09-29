@@ -307,7 +307,6 @@ public class NavigationDrawerFragment extends Fragment {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
         if (item.getItemId() == R.id.action_home) {
             FragmentManager fragmentManager = getFragmentManager();
             Fragment fragment = new Home_Fragment();
@@ -317,7 +316,6 @@ public class NavigationDrawerFragment extends Fragment {
                     .commit();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
