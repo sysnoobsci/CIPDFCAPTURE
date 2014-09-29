@@ -28,15 +28,13 @@ import com.ameraz.android.cipdfcapture.app.TempFileTracker;
 import com.ameraz.android.cipdfcapture.app.Adapters.VersionInfoAdapter;
 import com.ameraz.android.cipdfcapture.app.Version;
 import com.ameraz.android.cipdfcapture.app.VersionInfo;
-import com.ameraz.android.cipdfcapture.app.filebrowser.Item;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by adrian.meraz on 8/26/2014.
  */
-public class DownloadView_Fragment extends Fragment {
+public class ViewVersions_Fragment extends Fragment {
 
     static View rootView;
     private EditText reportName;
@@ -60,7 +58,7 @@ public class DownloadView_Fragment extends Fragment {
     }
 
     public static void setContext(Context context) {
-        DownloadView_Fragment.context = context;
+        ViewVersions_Fragment.context = context;
     }
 
     @Override
@@ -98,7 +96,6 @@ public class DownloadView_Fragment extends Fragment {
                 ToastMessageTask tmtask = new ToastMessageTask(getContext(),"ListViewListener() click detected");
                 tmtask.execute();
                 downloadTempFile(pos);
-                //callIP_Fragment();
             }
         });
     }
@@ -122,7 +119,7 @@ public class DownloadView_Fragment extends Fragment {
                 + "." + VersionInfo.getFormat().toLowerCase();
         Log.d("DownloadFileAndLoadView", "topicIdUrl value: " + topicIdUrl);
         new DownloadFileTaskTest(FilePath.getTempFilePath(), fullFilePathName,getActivity(), getContext())
-                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, topicIdUrl);
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, topicIdUrl, String.valueOf(1));
         Log.d("DownloadFileAndLoadView", "DownloadFileTask finished executing");
         TempFileTracker.addTempFileToList(fullFilePathName, VersionInfo.getVersion());//add temp file and version number to list
     }
@@ -148,19 +145,6 @@ public class DownloadView_Fragment extends Fragment {
                 }
             }
         });
-    }
-
-    private void callIP_Fragment() {
-        Bundle bundle = new Bundle();
-        bundle.putString("retrieve_fileName", TempFileTracker.getTempFilePath(VersionInfo.getVersion()));
-        bundle.putString("retrieve_fileFormat", VersionInfo.getFormat());
-        Fragment fragment = new Image_Preview_Fragment();
-        fragment.setArguments(bundle);
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, fragment)
-                .addToBackStack(null)
-                .commit();
     }
 
     private class FillListViewTask extends AsyncTask<String, Void, String> {
@@ -191,15 +175,9 @@ public class DownloadView_Fragment extends Fragment {
                 fmtArrayList = APIQueries.getMetadata(listOfReportVersions, "FMT");//get format
                 verArrayList = APIQueries.getMetadata(listOfReportVersions, "VER");//get version numbers
                 tidArrayList = APIQueries.getMetadata(listOfReportVersions, "TID");//get version numbers
-                StringBuilder combinedInfo = new StringBuilder();
                 Log.d("FillListViewTask.doInBackground()","Starting iteration through versions");
                 for(int i=0;i<ctsArrayList.size();i++){
                     content.add(new Version(ctsArrayList.get(i), fmtArrayList.get(i), verArrayList.get(i)));
-/*                    combinedInfo.append(ctsArrayList.get(i) + "\t\t")
-                                .append(fmtArrayList.get(i) + "\t\t")
-                                .append(verArrayList.get(i) + "\t\t");
-                    versionLimitedInfoList.add(combinedInfo.toString());
-                    combinedInfo.setLength(0);*///clear out StringBuilder each iteration
                 }
             }
             return "true";

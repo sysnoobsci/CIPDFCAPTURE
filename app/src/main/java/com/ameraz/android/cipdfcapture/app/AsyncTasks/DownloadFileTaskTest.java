@@ -12,7 +12,6 @@ import android.util.Log;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.TempFileTracker;
 import com.ameraz.android.cipdfcapture.app.VersionInfo;
-import com.ameraz.android.cipdfcapture.app.fragments.DownloadView_Fragment;
 import com.ameraz.android.cipdfcapture.app.fragments.Image_Preview_Fragment;
 
 import java.io.BufferedInputStream;
@@ -62,6 +61,8 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
             URL url = new URL(args[0]);
             URLConnection conexion = url.openConnection();
             conexion.connect();
+
+            Log.d("DownloadFileTaskTest","Number of args: " + args.length);
             if(args.length > 1) {
                 if (args[1] != null) {
                     fragmentChooser = Integer.parseInt(args[1]);
