@@ -30,6 +30,14 @@ public class GalleryAdapter extends BaseAdapter {
         setContext(context);
     }
 
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
     public void setUriArray() {
         fp = new FilePath();
         FILE_DIR = new File(fp.getImageFilePath());
@@ -62,14 +70,6 @@ public class GalleryAdapter extends BaseAdapter {
         return names[position];
     }
 
-    public Context getContext() {
-        return context;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
     @Override
     public int getCount() {
         return names.length;
@@ -91,7 +91,7 @@ public class GalleryAdapter extends BaseAdapter {
         Log.d("Loading images...", Uri.parse("file://" + fp.getImageFilePath() + names[position]).toString());
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
-            LayoutInflater in = (LayoutInflater) getContext()
+            LayoutInflater in = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = in.inflate(R.layout.thumbnail, null);
             imageView = (ImageView) convertView.findViewById(R.id.thumbnail_image);
@@ -99,7 +99,7 @@ public class GalleryAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
         Log.d("Loading images...", Uri.parse("file://" + fp.getImageFilePath() + names[position]).toString());
-        Picasso.with(getContext())
+        Picasso.with(context)
                 .load(Uri.parse("file://" + fp.getImageFilePath() + names[position]))
                 .resize(width, width)
                 .centerCrop()
@@ -107,4 +107,6 @@ public class GalleryAdapter extends BaseAdapter {
 
         return imageView;
     }
+
+
 }

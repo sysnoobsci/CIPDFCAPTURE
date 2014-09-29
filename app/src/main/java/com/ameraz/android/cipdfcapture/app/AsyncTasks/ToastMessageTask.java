@@ -130,5 +130,11 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
         tmtask.execute();
     }
 
+    public static void fileIsCached(Context context) {
+        setmContext(context);
+        ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Found cached file. Loading file.");
+        tmtask.execute();
+    }
+
 
 }

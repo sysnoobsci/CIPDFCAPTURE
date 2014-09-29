@@ -28,16 +28,26 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
 
     String dirPath;
     String fullFilePathName;
+    int versionNumber;
+    Activity activity;
     Context context;
     private ProgressDialog mProgressDialog;
     int fragmentChooser = 0;
-    Activity activity;
 
-    public DownloadFileTaskTest(String dirPath, String fullFilePathName, Activity activity, Context context) {
+    public DownloadFileTaskTest(String dirPath, String fullFilePathName, int versionNumber, Activity activity) {
         this.dirPath = dirPath;
         this.fullFilePathName = fullFilePathName;
+        this.versionNumber = versionNumber;
         this.activity = activity;
-        this.context = context;
+        this.context = activity;
+    }
+
+    Boolean checkIfFileCached(){
+        String tempFilePath = TempFileTracker.getTempFilePath(versionNumber);
+        if(tempFilePath != null){
+            return true;
+        }
+        return false;
     }
 
     void setDialogParms() {
@@ -56,37 +66,41 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
 
     @Override
     protected String doInBackground(String... args) {//1st arg is a url, 2nd is a flag
-        int count;
-        try {
-            URL url = new URL(args[0]);
-            URLConnection conexion = url.openConnection();
-            conexion.connect();
+        //if(!checkIfFileCached()) {//if file is already cached, don't download it again
+            int count;
+            try {
+                URL url = new URL(args[0]);
+                URLConnection conexion = url.openConnection();
+                conexion.connect();
 
-            Log.d("DownloadFileTaskTest","Number of args: " + args.length);
-            if(args.length > 1) {
-                if (args[1] != null) {
-                    fragmentChooser = Integer.parseInt(args[1]);
+                Log.d("DownloadFileTaskTest", "Number of args: " + args.length);
+                if (args.length > 1) {
+                    if (args[1] != null) {
+                        fragmentChooser = Integer.parseInt(args[1]);
+                    }
                 }
-            }
-            int lengthOfFile = conexion.getContentLength();
-            Log.d("ANDRO_ASYNC", "Length of file: " + lengthOfFile);
-            InputStream input = new BufferedInputStream(url.openStream());
-            OutputStream output = new FileOutputStream(fullFilePathName);
+                int lengthOfFile = conexion.getContentLength();
+                Log.d("ANDRO_ASYNC", "Length of file: " + lengthOfFile);
+                InputStream input = new BufferedInputStream(url.openStream());
+                OutputStream output = new FileOutputStream(fullFilePathName);
 
-            byte data[] = new byte[1024];
-            long total = 0;
-            while ((count = input.read(data)) != -1) {
-                total += count;
-                publishProgress(""+(int)((total*100)/lengthOfFile));
-                output.write(data, 0, count);
+                byte data[] = new byte[1024];
+                long total = 0;
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    publishProgress("" + (int) ((total * 100) / lengthOfFile));
+                    output.write(data, 0, count);
+                }
+                output.flush();
+                output.close();
+                input.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            output.flush();
-            output.close();
-            input.close();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        //}
+        //else{
+        //    ToastMessageTask.fileIsCached(context);
+        //}
         return null;
     }
 
@@ -95,7 +109,7 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
     }
 
     @Override
-    protected void onPostExecute(String unused) {
+    protected void onPostExecute(String result) {
         if(fragmentChooser != 0){
             if (fragmentChooser == 1){
                 callIP_Fragment();
@@ -112,6 +126,7 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
         Bundle bundle = new Bundle();
         bundle.putString("retrieve_fileName", TempFileTracker.getTempFilePath(VersionInfo.getVersion()));
         bundle.putString("retrieve_fileFormat", VersionInfo.getFormat());
+        bundle.putString("retrieve_versionNumber", String.valueOf(VersionInfo.getVersion()));
         Fragment fragment = new Image_Preview_Fragment();
         fragment.setArguments(bundle);
         FragmentManager fragmentManager = activity.getFragmentManager();

@@ -41,6 +41,7 @@ public class Image_Preview_Fragment extends Fragment {
     Uri fileUri;
     String fullFilePath;
     String format;
+    int versionNumber;
     ArrayList<String> textFormats = new ArrayList<String>() {{
         add("ASC");
         add("TXT");
@@ -55,17 +56,10 @@ public class Image_Preview_Fragment extends Fragment {
         add("TIF");
     }};
 
-    public Context getContext() {
-        return context;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
-    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_image_preview, container, false);
-        setContext(getActivity());
+        context = getActivity();
         instantiateViews();
         loadImage();
         saveButtonListener();
@@ -83,6 +77,7 @@ public class Image_Preview_Fragment extends Fragment {
         Bundle bundle = this.getArguments();
         String uri = bundle.getString("retrieve_fileName");
         format = bundle.getString("retrieve_fileFormat").toUpperCase();
+        versionNumber = Integer.parseInt(bundle.getString("retrieve_versionNumber"));
         Log.d("loadImage()","Value of format: " + format);
         Log.d("loadImage()", "Value of uri: " + uri);
         fileUri = Uri.parse("file://" + uri);
@@ -137,7 +132,7 @@ public class Image_Preview_Fragment extends Fragment {
     }
 
     public void setImage(){
-        Picasso.with(context)
+         Picasso.with(context)
                 .load(Uri.fromFile(new File(fullFilePath)))
                 .fit()
                 .centerInside()
@@ -148,13 +143,7 @@ public class Image_Preview_Fragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            try {
-                ToastMessageTask tmtask = new ToastMessageTask(getContext(), "Save button pressed");
-                tmtask.execute();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            new DownloadFileTaskTest(FilePath.chooseDownloadFilePath(format),fileUri.toString(),getActivity(),getContext())
+            new DownloadFileTaskTest(FilePath.chooseDownloadFilePath(format),fullFilePath, versionNumber, getActivity())
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fileUri.toString());//download response and create a new file
             }
         });

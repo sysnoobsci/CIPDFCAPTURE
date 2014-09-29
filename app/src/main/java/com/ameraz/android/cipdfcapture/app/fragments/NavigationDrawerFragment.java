@@ -131,9 +131,6 @@ public class NavigationDrawerFragment extends Fragment {
                             case 0:
                                 fragment = new ViewVersions_Fragment();
                                 break;
-                            case 1:
-                                fragment = new File_Downloader();
-                                break;
                         }
                         break;
                 }
@@ -164,8 +161,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         //ContentCloud group items
         List<String> content_cloud = new ArrayList<String>();
-        content_cloud.add("Images");
-        content_cloud.add("Documents");
+        content_cloud.add("Images/Documents");
 
         listDataChild.put(listDataHeader.get(0), capture);
         listDataChild.put(listDataHeader.get(1), content_cloud);
