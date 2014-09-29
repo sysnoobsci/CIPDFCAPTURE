@@ -6,10 +6,10 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight=".15"
         android:layout_height="?android:attr/actionBarSize"
         android:id="@+id/download_type"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|start"
         android:text="PDF"
         android:layout_margin="4dp"
         android:textSize="16sp"
@@ -17,7 +17,7 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_weight="5"
+        android:layout_weight="1"
         android:layout_height="match_parent"
         android:layout_margin="4dp"
         android:id="@+id/download_createdOn"
@@ -27,8 +27,7 @@
         android:textColor="@color/White" />
 
     <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1.5"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:id="@+id/download_version"
         android:text="54000"
