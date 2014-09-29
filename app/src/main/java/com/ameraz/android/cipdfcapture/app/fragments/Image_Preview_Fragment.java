@@ -58,7 +58,6 @@ public class Image_Preview_Fragment extends Fragment {
         add("TIF");
     }};
 
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_image_preview, container, false);
         context = getActivity();
@@ -106,7 +105,6 @@ public class Image_Preview_Fragment extends Fragment {
         }else{
             ToastMessageTask.invalidFileFormat(context);
         }
-
     }
 
     public void setPDF(){

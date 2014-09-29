@@ -121,7 +121,7 @@ public class ViewVersions_Fragment extends Fragment {
         new DownloadFileTaskTest(FilePath.getTempFilePath(), fullFilePathName, VersionInfo.getVersion(), getActivity())
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, topicIdUrl, String.valueOf(1));
         Log.d("DownloadFileAndLoadView", "DownloadFileTask finished executing");
-        TempFileTracker.addTempFileToList(fullFilePathName, VersionInfo.getVersion());//add temp file and version number to list
+
     }
 
     public void searchButton() throws Exception {

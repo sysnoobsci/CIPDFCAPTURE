@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.ameraz.android.cipdfcapture.app.FilePath;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.TempFileTracker;
 import com.ameraz.android.cipdfcapture.app.VersionInfo;
@@ -42,12 +43,25 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
         this.context = activity;
     }
 
+    void isFileTemporary(){
+        if(dirPath.equals(FilePath.getTempFilePath()))
+        TempFileTracker.addTempFileToList(fullFilePathName, VersionInfo.getVersion());//add temp file and version number to list
+    }
+
     Boolean checkIfFileCached(){
-        String tempFilePath = TempFileTracker.getTempFilePath(versionNumber);
-        if(tempFilePath != null){
-            return true;
+        if(dirPath.equals(FilePath.getTempFilePath())){//if the intended file path isn't Temp, don't even check
+            String tempFilePath = TempFileTracker.getTempFilePath(versionNumber);
+            Log.d("checkIfFileCached()", "tempFilePath value: " + tempFilePath);
+            if(tempFilePath != null){//if a filepath is returned, file is already cached
+                return true;
+            }
+            else{
+                return false;
+            }
         }
-        return false;
+        else{
+            return false;
+        }
     }
 
     void setDialogParms() {
@@ -66,13 +80,16 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
 
     @Override
     protected String doInBackground(String... args) {//1st arg is a url, 2nd is a flag
-        //if(!checkIfFileCached()) {//if file is already cached, don't download it again
+        if(checkIfFileCached()) {//if file is already cached, don't download it again
+            ToastMessageTask.fileIsCached(context);
+            return "cached";
+        }
+        else{
             int count;
             try {
                 URL url = new URL(args[0]);
                 URLConnection conexion = url.openConnection();
                 conexion.connect();
-
                 Log.d("DownloadFileTaskTest", "Number of args: " + args.length);
                 if (args.length > 1) {
                     if (args[1] != null) {
@@ -97,11 +114,8 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        //}
-        //else{
-        //    ToastMessageTask.fileIsCached(context);
-        //}
-        return null;
+            return null;
+        }//end of else
     }
 
     protected void onProgressUpdate(String... progress) {
@@ -110,15 +124,20 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        if(fragmentChooser != 0){
-            if (fragmentChooser == 1){
-                callIP_Fragment();
-            }
-            else{
-                Log.d("DownloadFileTask.onPostExecute","Invalid fragment chosen");
-            }
+        if(String.valueOf(result).equals("cached")){
+            callIP_Fragment();
         }
-        Log.d("DownloadFileTaskTest","File " + fullFilePathName + " written");
+        else{
+            if(fragmentChooser != 0){
+                if (fragmentChooser == 1){
+                    callIP_Fragment();
+                }
+                else{
+                    Log.d("DownloadFileTask.onPostExecute","Invalid fragment chosen");
+                }
+            }
+            Log.d("DownloadFileTaskTest","File " + fullFilePathName + " written");
+        }
         mProgressDialog.dismiss();
     }
 
