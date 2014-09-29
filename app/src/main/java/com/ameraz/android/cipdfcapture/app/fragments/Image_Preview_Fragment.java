@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.DownloadFileTaskTest;
@@ -36,6 +37,7 @@ public class Image_Preview_Fragment extends Fragment {
     private PDFView pdfViewer;
     private TextView textViewer;
     private ImageView imageViewer;
+    private ScrollView textScrollView;
     ImageButton saveButton;
     Context context;
     Uri fileUri;
@@ -71,6 +73,7 @@ public class Image_Preview_Fragment extends Fragment {
         textViewer = (TextView) rootView.findViewById(R.id.textViewer);
         imageViewer = (ImageView) rootView.findViewById(R.id.imageViewer);
         saveButton = (ImageButton) rootView.findViewById(R.id.downloadButton);
+        textScrollView = (ScrollView)rootView.findViewById(R.id.text_scroll_view);
     }
 
     public void loadImage() {
@@ -84,19 +87,19 @@ public class Image_Preview_Fragment extends Fragment {
         fullFilePath = fileUri.getPath();
         if(format.equals("PDF")){
             pdfViewer.setVisibility(View.VISIBLE);
-            textViewer.setVisibility(View.GONE);
+            textScrollView.setVisibility(View.GONE);
             imageViewer.setVisibility(View.GONE);
             setPDF();
             Log.d("loadImage()","setPDF() called");
         }else if(textFormats.contains(format)){
             pdfViewer.setVisibility(View.GONE);
-            textViewer.setVisibility(View.VISIBLE);
+            textScrollView.setVisibility(View.VISIBLE);
             imageViewer.setVisibility(View.GONE);
             setText();
             Log.d("loadImage()","setText() called");
         }else if(imageFormats.contains(format)){
             pdfViewer.setVisibility(View.GONE);
-            textViewer.setVisibility(View.GONE);
+            textScrollView.setVisibility(View.GONE);
             imageViewer.setVisibility(View.VISIBLE);
             setImage();
             Log.d("loadImage()","setImage() called");

@@ -16,7 +16,7 @@
         android:icon="@drawable/sw_background"
         android:logo="@drawable/logo"
         android:label="@string/app_name"
-        android:theme="@style/LightTheme">
+        android:theme="@style/SystemwareTheme">
         <activity
             android:name=".MainActivity"
             android:screenOrientation="nosensor">
