@@ -76,8 +76,8 @@ public class APIQueries {
     }
 
     //createtopic
-    public void createtopicQuery(ArrayList<Object> args) throws IOException, XmlPullParserException, InterruptedException, ExecutionException {
-
+    public Boolean createtopicQuery(ArrayList<Object> args) throws IOException, XmlPullParserException, InterruptedException, ExecutionException {
+        Boolean uploadSuccess;
         ArrayList<Object> actionargs = args;
         actionargs.add("act,createtopic");
         HttpEntity entity = mebBuilder(actionargs);
@@ -92,8 +92,10 @@ public class APIQueries {
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
         ToastMessageTask.fileUploadStatus(getContext(), getActionresult());
+        uploadSuccess = getActionresult();
         resetResult();//reset action result after checking it
         QueryArguments.clearList();//clear argslist after query
+        return uploadSuccess;
     }
 
     //listnode - add &sid to the string for it to work properly
