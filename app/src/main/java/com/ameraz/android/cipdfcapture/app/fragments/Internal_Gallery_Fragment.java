@@ -1,8 +1,11 @@
 package com.ameraz.android.cipdfcapture.app.fragments;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -38,7 +41,6 @@ public class Internal_Gallery_Fragment extends Fragment {
     static GalleryAdapter ga;
     private ImageButton createNewImage;
     private int width;
-    private int numColumns;
     private SharedPreferences pref;
     private Uri fileUri;
     private String fileName;
@@ -63,8 +65,38 @@ public class Internal_Gallery_Fragment extends Fragment {
         SetGridTask sobj = new SetGridTask(getContext(), ga, gridView);
         sobj.execute();
         gridViewListener();
+        gridLongClickListener();
         newImageListener();
         return rootView;
+    }
+
+    private void gridLongClickListener() {
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Delete Image?");
+                builder.setMessage("This image will completely remove the image from your device!")
+                        .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                File file = new File(FilePath.getImageFilePath() + ga.getItem(position));
+                                file.delete();
+                                ga.removeItem(position);
+                                ga.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return true;
+            }
+        });
     }
 
     private void newImageListener() {
@@ -95,6 +127,7 @@ public class Internal_Gallery_Fragment extends Fragment {
 
     public void setColumnWidth() {
 
+        int numColumns;
         if (isTablet(getContext())) {
             numColumns = pref.getInt("gallery_preference", 0);
             if (numColumns == 0) {
@@ -119,7 +152,7 @@ public class Internal_Gallery_Fragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Fragment fragment = new Image_Upload_Fragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("fileName", ga.getNames(position));
+                bundle.putString("fileName", ga.getItem(position));
                 fragment.setArguments(bundle);
                 FragmentManager fm = getFragmentManager();
                 fm.beginTransaction()
@@ -134,7 +167,7 @@ public class Internal_Gallery_Fragment extends Fragment {
         String storageState = Environment.getExternalStorageState();
         if (storageState.equals(Environment.MEDIA_MOUNTED)) {
             fileName = "sys_image" + System.currentTimeMillis() + ".jpg";
-            String incImage = fp.getImageFilePath() + fileName;
+            String incImage = FilePath.getImageFilePath() + fileName;
             newImage = new File(incImage);
             try {
                 if (!newImage.exists()) {
@@ -163,7 +196,7 @@ public class Internal_Gallery_Fragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == getActivity().RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             Log.d("onActivityResult ", fileUri.toString());
             Fragment fragment = new Image_Upload_Fragment();
             Bundle bundle = new Bundle();
@@ -174,7 +207,7 @@ public class Internal_Gallery_Fragment extends Fragment {
                     .replace(R.id.container, fragment)
                     .addToBackStack(null)
                     .commit();
-        } else if(resultCode == getActivity().RESULT_CANCELED){
+        } else if(resultCode == Activity.RESULT_CANCELED){
             newImage.delete();
         }
     }

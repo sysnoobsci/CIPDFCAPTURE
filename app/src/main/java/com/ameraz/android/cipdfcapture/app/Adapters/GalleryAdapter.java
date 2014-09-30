@@ -25,9 +25,7 @@ import java.util.List;
 public class GalleryAdapter extends BaseAdapter {
     private Context context;
     private File FILE_DIR;
-    //String[] names;
-    List<String> names = new ArrayList<String>();
-    FilePath fp;
+    private ArrayList<String> names = new ArrayList<String>();
     int width;
 
     public GalleryAdapter(Context context) {
@@ -35,38 +33,36 @@ public class GalleryAdapter extends BaseAdapter {
     }
 
     public void setUriArray() {
-        fp = new FilePath();
-        FILE_DIR = new File(fp.getImageFilePath());
+        FILE_DIR = new File(FilePath.getImageFilePath());
         Log.d("File name: ", FILE_DIR.toString());
         Log.d("setUriArray()","Does FILE_DIR exist: " + FILE_DIR.exists());
-        names = Arrays.asList(FILE_DIR.list());
         Log.d("setUriArray()","Value of names: " + names);
-        names = Arrays.asList(FILE_DIR.list(
+        FILE_DIR.list(
                 new FilenameFilter() {
                     public boolean accept(File FILE_DIR, String name) {
                         if (name.endsWith(".jpg")) {
-                            return name.endsWith(".jpg");
+                            names.add(name);
+                            //return name.endsWith(".jpg");
                         }
                         if (name.endsWith(".jpeg")) {
-                            return name.endsWith(".jpeg");
+                            names.add(name);
+                            //return name.endsWith(".jpeg");
                         }
                         if (name.endsWith(".png")) {
-                            return name.endsWith(".png");
+                            names.add(name);
+                            //return name.endsWith(".png");
                         }
                         if (name.endsWith(".gif")) {
-                            return name.endsWith(".gif");
+                            names.add(name);
+                            //return name.endsWith(".gif");
                         }
                         return false;
                     }
-                }));
+                });
     }
 
     public void setWidth(int maWidth) {
         this.width = maWidth;
-    }
-
-    public String getNames(Integer position) {
-        return names.get(position);
     }
 
     public Context getContext() {
@@ -76,6 +72,9 @@ public class GalleryAdapter extends BaseAdapter {
     public void setContext(Context context) {
         this.context = context;
     }
+    public void removeItem(int position){
+        names.remove(position);
+    }
 
     @Override
     public int getCount() {
@@ -83,8 +82,8 @@ public class GalleryAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public String getItem(int position) {
+        return names.get(position);
     }
 
     @Override
@@ -95,7 +94,7 @@ public class GalleryAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Log.d("position: ", Integer.toString(position));
-        Log.d("Loading images...", Uri.parse("file://" + fp.getImageFilePath() + names.get(position)).toString());
+        Log.d("Loading images...", Uri.parse("file://" + FilePath.getImageFilePath() + names.get(position)).toString());
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             LayoutInflater in = (LayoutInflater) getContext()
@@ -105,9 +104,9 @@ public class GalleryAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-        Log.d("Loading images...", Uri.parse("file://" + fp.getImageFilePath() + names.get(position)).toString());
+        Log.d("Loading images...", Uri.parse("file://" + FilePath.getImageFilePath() + names.get(position)).toString());
         Picasso.with(getContext())
-                .load(Uri.parse("file://" + fp.getImageFilePath() + names.get(position)))
+                .load(Uri.parse("file://" + FilePath.getImageFilePath() + names.get(position)))
                 .resize(width, width)
                 .centerCrop()
                 .into(imageView);
