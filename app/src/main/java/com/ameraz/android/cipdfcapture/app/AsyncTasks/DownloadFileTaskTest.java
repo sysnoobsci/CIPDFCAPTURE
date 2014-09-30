@@ -43,11 +43,6 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
         this.context = activity;
     }
 
-    void isFileTemporary(){
-        if(dirPath.equals(FilePath.getTempFilePath()))
-        TempFileTracker.addTempFileToList(fullFilePathName, VersionInfo.getVersion());//add temp file and version number to list
-    }
-
     Boolean checkIfFileCached(){
         if(dirPath.equals(FilePath.getTempFilePath())){//if the intended file path isn't Temp, don't even check
             String tempFilePath = TempFileTracker.getTempFilePath(versionNumber);
@@ -56,6 +51,7 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
                 return true;
             }
             else{
+                TempFileTracker.addTempFileToList(fullFilePathName, VersionInfo.getVersion());//add temp file and version number to temp file list
                 return false;
             }
         }
