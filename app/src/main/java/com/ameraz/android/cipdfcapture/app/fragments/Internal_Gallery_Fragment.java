@@ -31,7 +31,7 @@ import java.io.IOException;
 /**
  * Created by john.williams on 8/26/2014.
  */
-public class InternalGalleryFragment extends Fragment {
+public class Internal_Gallery_Fragment extends Fragment {
 
     private Context context;
     static GridView gridView;

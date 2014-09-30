@@ -18,26 +18,50 @@ public class SetGridTask extends AsyncTask {
     private GridView gridView;
 
     public SetGridTask(Context context, GalleryAdapter ga, GridView gv) {
-        this.context = context;
-        this.galleryAdapter = ga;
-        this.gridView = gv;
+        setContext(context);
+        setGalleryAdapter(ga);
+        setGridView(gv);
     }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public GalleryAdapter getGalleryAdapter() {
+        return galleryAdapter;
+    }
+
+    public void setGalleryAdapter(GalleryAdapter galleryAdapter) {
+        this.galleryAdapter = galleryAdapter;
+    }
+
+    public GridView getGridView() {
+        return gridView;
+    }
+
+    public void setGridView(GridView gridView) {
+        this.gridView = gridView;
+    }
+
     @Override
     protected void onPreExecute() {
-
     }
 
     @Override
     protected Object doInBackground(Object[] params) {
-        galleryAdapter.setContext(context);
-        galleryAdapter.setUriArray();
+        getGalleryAdapter().setContext(getContext());
+        getGalleryAdapter().setUriArray();
         return null;
     }
 
     @Override
     protected void onPostExecute(Object result) {
-        gridView.setAdapter(galleryAdapter);
-        galleryAdapter.notifyDataSetChanged();
+        getGridView().setAdapter(getGalleryAdapter());
+        getGalleryAdapter().notifyDataSetChanged();
         this.cancel(true);
     }
 

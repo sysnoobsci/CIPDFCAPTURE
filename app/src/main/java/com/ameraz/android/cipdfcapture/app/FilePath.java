@@ -1,6 +1,10 @@
 package com.ameraz.android.cipdfcapture.app;
 
 import android.os.Environment;
+import android.util.Log;
+
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by john.williams on 8/26/2014.
@@ -17,7 +21,7 @@ public class FilePath {
     public static final String PDF_DIR = "/Systemware/PDF/";
     public static final String TXT_DIR = "/Systemware/TXT/";
     public static final String TEMP_DIR = "/Systemware/Temp/";
-
+    static ArrayList<File> dirArray = new ArrayList<File>();
 
     public static String getRootPath() {
         return root;
@@ -41,6 +45,24 @@ public class FilePath {
 
     public static String getTempFilePath() {
         return TEMP_FILEPATH;
+    }
+
+    static void directoryCheck(){
+        dirArray.add(new File(getImageFilePath()));
+        dirArray.add(new File(getPDFFilePath()));
+        dirArray.add(new File(getTxtFilePath()));
+        dirArray.add(new File(getTempFilePath()));
+        for(File path : dirArray){
+            if(!path.exists()){//if dir doesn't exist, create it
+                path.mkdir();
+                Log.d("directoryCheck()","Directory: " + path.getPath() + " created.");
+            }
+        }
+        dirArray.clear();
+        /*File IMAGE_DIR = new File(FilePath.getImageFilePath());
+        File PDF_DIR = new File(FilePath.getPDFFilePath());
+        File TXT_DIR = new File(FilePath.getTxtFilePath());
+        File TEMP_DIR = new File(FilePath.getTempFilePath());*/
     }
 
     public static String chooseDownloadFilePath(String versionFormat) {

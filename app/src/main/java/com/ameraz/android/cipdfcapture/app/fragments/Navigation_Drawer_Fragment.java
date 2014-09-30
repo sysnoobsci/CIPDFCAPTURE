@@ -31,7 +31,7 @@ import java.util.List;
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
-public class NavigationDrawerFragment extends Fragment {
+public class Navigation_Drawer_Fragment extends Fragment {
 
     /**
      * Remember the position of the selected item.
@@ -66,7 +66,7 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mUserLearnedDrawer;
 
 
-    public NavigationDrawerFragment() {
+    public Navigation_Drawer_Fragment() {
     }
 
     @Override
@@ -119,7 +119,7 @@ public class NavigationDrawerFragment extends Fragment {
                     case 0:
                         switch (childPosition) {
                             case 0:
-                                fragment = new InternalGalleryFragment();
+                                fragment = new Internal_Gallery_Fragment();
                                 break;
                             case 1:
                                 fragment = new File_Explorer_Fragment();
@@ -129,7 +129,7 @@ public class NavigationDrawerFragment extends Fragment {
                     case 1://need to flesh out fragments that go under Content Server
                         switch (childPosition) {
                             case 0:
-                                fragment = new ViewVersions_Fragment();
+                                fragment = new View_Versions_Fragment();
                                 break;
                         }
                         break;

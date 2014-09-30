@@ -17,18 +17,18 @@ import android.view.MenuItem;
 
 import com.ameraz.android.cipdfcapture.app.fragments.Capture_Fragment;
 import com.ameraz.android.cipdfcapture.app.fragments.Home_Fragment;
-import com.ameraz.android.cipdfcapture.app.fragments.NavigationDrawerFragment;
+import com.ameraz.android.cipdfcapture.app.fragments.Navigation_Drawer_Fragment;
+import com.ameraz.android.cipdfcapture.app.fragments.View_Versions_Fragment;
 
-import java.text.SimpleDateFormat;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements Navigation_Drawer_Fragment.NavigationDrawerCallbacks {
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
-    private NavigationDrawerFragment mNavigationDrawerFragment;
+    private Navigation_Drawer_Fragment mNavigationDrawerFragment;
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -95,10 +95,11 @@ public class MainActivity extends Activity
         if(actionBar != null) {
             getActionBar().setDisplayShowTitleEnabled(false);
         }
+        FilePath.directoryCheck();//checks if application dirs exist
         TempFileTracker.clearTempFiles();//clears all temp files
         db = new DatabaseHandler(getApplicationContext());//create a db if one doesn't exist
         //navigation drawer stuff
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
+        mNavigationDrawerFragment = (Navigation_Drawer_Fragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
         // Set up the drawer.
@@ -107,6 +108,8 @@ public class MainActivity extends Activity
                 (DrawerLayout) findViewById(R.id.drawer_layout)
         );
     }//end of oncreate
+
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -143,6 +146,7 @@ public class MainActivity extends Activity
         assert actionBar != null;
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

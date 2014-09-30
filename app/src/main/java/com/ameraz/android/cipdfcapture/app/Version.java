@@ -1,9 +1,12 @@
 package com.ameraz.android.cipdfcapture.app;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by john.williams on 9/26/2014.
  */
-public class Version {
+public class Version{
     String date;
     String type;
     String versionNum;
@@ -25,4 +28,5 @@ public class Version {
     public String getVersionNum(){
         return versionNum;
     }
+
 }
