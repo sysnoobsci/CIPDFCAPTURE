@@ -1,6 +1,7 @@
 package com.ameraz.android.cipdfcapture.app.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
@@ -98,16 +99,23 @@ public class Image_Upload_Fragment extends Fragment {
 
     private void upload() {
         ringProgressDialog.show();
+        final UploadProcess upobj = new UploadProcess(getContext(), name, fileUri, ringProgressDialog);
         new Thread() {
             public void run() {
                 try {
-                    UploadProcess upobj = new UploadProcess(getContext(), name, fileUri, ringProgressDialog);
                     upobj.uploadProcess();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }.start();
+        if(upobj.getSuccess()){
+            Fragment fragment = new Internal_Gallery_Fragment();
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .commit();
+        }
     }
 
     private void uploadListener() {

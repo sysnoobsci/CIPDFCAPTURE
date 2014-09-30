@@ -21,6 +21,7 @@ public class UploadProcess {
     String topicTemplateName;
     SharedPreferences preferences;
     APIQueries apiobj;
+    private boolean success;
 
     public UploadProcess(Context context, EditText description, Object file2upload,
                          ProgressDialog ringProgressDialog) {
@@ -31,6 +32,9 @@ public class UploadProcess {
         apiobj = new APIQueries(getContext());
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         topicTemplateName = preferences.getString("camName_preference", null);
+    }
+    public boolean getSuccess(){
+        return success;
     }
 
     public Context getContext() {
@@ -92,7 +96,11 @@ public class UploadProcess {
             QueryArguments.addArg(file2upload);
             Log.d("Upload Process ImageUri= ", file2upload.toString());
             try {
-                apiobj.createtopicQuery(QueryArguments.getArgslist());
+                if(apiobj.createtopicQuery(QueryArguments.getArgslist())){
+                    success = true;
+                }else{
+                    success = false;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
