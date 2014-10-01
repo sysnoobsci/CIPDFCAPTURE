@@ -24,7 +24,7 @@ import android.widget.ImageButton;
 
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.SetGridTask;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
-import com.ameraz.android.cipdfcapture.app.FilePath;
+import com.ameraz.android.cipdfcapture.app.FileUtility;
 import com.ameraz.android.cipdfcapture.app.Adapters.GalleryAdapter;
 import com.ameraz.android.cipdfcapture.app.R;
 
@@ -44,7 +44,7 @@ public class Internal_Gallery_Fragment extends Fragment {
     private SharedPreferences pref;
     private Uri fileUri;
     private String fileName;
-    private FilePath fp;
+    private FileUtility fp;
     private File newImage;
 
     public Context getContext() {
@@ -79,7 +79,7 @@ public class Internal_Gallery_Fragment extends Fragment {
                 builder.setMessage("This image will completely remove the image from your device!")
                         .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                File file = new File(FilePath.getImageFilePath() + ga.getItem(position));
+                                File file = new File(FileUtility.getImageFilePath() + ga.getItem(position));
                                 file.delete();
                                 ga.removeItem(position);
                                 ga.notifyDataSetChanged();
@@ -116,7 +116,7 @@ public class Internal_Gallery_Fragment extends Fragment {
         createNewImage = (ImageButton)rootView.findViewById(R.id.open_camera_button);
         pref = PreferenceManager.getDefaultSharedPreferences(getContext());
         width = rootView.getWidth();
-        fp = new FilePath();
+        fp = new FileUtility();
     }
 
     public boolean isTablet(Context context) {
@@ -167,7 +167,7 @@ public class Internal_Gallery_Fragment extends Fragment {
         String storageState = Environment.getExternalStorageState();
         if (storageState.equals(Environment.MEDIA_MOUNTED)) {
             fileName = "sys_image" + System.currentTimeMillis() + ".jpg";
-            String incImage = FilePath.getImageFilePath() + fileName;
+            String incImage = FileUtility.getImageFilePath() + fileName;
             newImage = new File(incImage);
             try {
                 if (!newImage.exists()) {

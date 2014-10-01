@@ -1,15 +1,17 @@
 package com.ameraz.android.cipdfcapture.app.AsyncTasks;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.ameraz.android.cipdfcapture.app.FilePath;
+import com.ameraz.android.cipdfcapture.app.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.TempFileTracker;
 import com.ameraz.android.cipdfcapture.app.VersionInfo;
@@ -33,7 +35,8 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
     Activity activity;
     Context context;
     private ProgressDialog mProgressDialog;
-    int fragmentChooser = 0;
+    String fragmentChosen;
+
 
     public DownloadFileTaskTest(String dirPath, String fullFilePathName, int versionNumber, Activity activity) {
         this.dirPath = dirPath;
@@ -43,22 +46,7 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
         this.context = activity;
     }
 
-    Boolean checkIfFileCached(){
-        if(dirPath.equals(FilePath.getTempFilePath())){//if the intended file path isn't Temp, don't even check
-            String tempFilePath = TempFileTracker.getTempFilePath(versionNumber);
-            Log.d("checkIfFileCached()", "tempFilePath value: " + tempFilePath);
-            if(tempFilePath != null){//if a filepath is returned, file is already cached
-                return true;
-            }
-            else{
-                TempFileTracker.addTempFileToList(fullFilePathName, VersionInfo.getVersion());//add temp file and version number to temp file list
-                return false;
-            }
-        }
-        else{
-            return false;
-        }
-    }
+
 
     void setDialogParms() {
         mProgressDialog = new ProgressDialog(context);
@@ -66,6 +54,7 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(false);
     }
+
 
     @Override
     protected void onPreExecute() {
@@ -76,42 +65,45 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
 
     @Override
     protected String doInBackground(String... args) {//1st arg is a url, 2nd is a flag
-        if(checkIfFileCached()) {//if file is already cached, don't download it again
-            ToastMessageTask.fileIsCached(context);
-            return "cached";
-        }
-        else{
-            int count;
-            try {
-                URL url = new URL(args[0]);
-                URLConnection conexion = url.openConnection();
-                conexion.connect();
-                Log.d("DownloadFileTaskTest", "Number of args: " + args.length);
-                if (args.length > 1) {
-                    if (args[1] != null) {
-                        fragmentChooser = Integer.parseInt(args[1]);
-                    }
-                }
-                int lengthOfFile = conexion.getContentLength();
-                Log.d("ANDRO_ASYNC", "Length of file: " + lengthOfFile);
-                InputStream input = new BufferedInputStream(url.openStream());
-                OutputStream output = new FileOutputStream(fullFilePathName);
-
-                byte data[] = new byte[1024];
-                long total = 0;
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    publishProgress("" + (int) ((total * 100) / lengthOfFile));
-                    output.write(data, 0, count);
-                }
-                output.flush();
-                output.close();
-                input.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+        String arg0 = args[0];//grab the arguments passed in
+        if (args.length > 1) {//make sure not grabbing an arg that wasn't passed in
+            String arg1 = args[1];
+            if (arg1 != null) {
+                fragmentChosen = arg1;
             }
-            return null;
-        }//end of else
+        }
+        if(dirPath.equals(FileUtility.getTempFilePath())){//check if the file is to be written to the temp path
+            if(TempFileTracker.isTempFileCached(fullFilePathName, versionNumber)) {//if file is already cached, don't download it again
+                ToastMessageTask.fileIsCached(context);
+                return "cached";
+            }
+        }
+        int count;
+        try {
+            URL url = new URL(arg0);
+            URLConnection conexion = url.openConnection();
+            conexion.connect();
+            Log.d("DownloadFileTaskTest", "Number of args: " + args.length);
+
+            int lengthOfFile = conexion.getContentLength();
+            Log.d("DownloadFileTaskTest", "Length of file: " + lengthOfFile);
+            InputStream input = new BufferedInputStream(url.openStream());
+            OutputStream output = new FileOutputStream(fullFilePathName);
+
+            byte data[] = new byte[1024];
+            long total = 0;
+            while ((count = input.read(data)) != -1) {
+                total += count;
+                publishProgress("" + (int) ((total * 100) / lengthOfFile));
+                output.write(data, 0, count);
+            }
+            output.flush();
+            output.close();
+            input.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "downloaded";
     }
 
     protected void onProgressUpdate(String... progress) {
@@ -120,19 +112,20 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        if(String.valueOf(result).equals("cached")){
+        Log.d("DownloadFileTaskTest.onPostExecute()","Value of result: " + result);
+        if(result.equals("cached")){
             callIP_Fragment();
         }
         else{
-            if(fragmentChooser != 0){
-                if (fragmentChooser == 1){
+            if(fragmentChosen != null){
+                if (fragmentChosen.equals("IPFragment")){
                     callIP_Fragment();
                 }
                 else{
                     Log.d("DownloadFileTask.onPostExecute","Invalid fragment chosen");
                 }
             }
-            Log.d("DownloadFileTaskTest","File " + fullFilePathName + " written");
+            Log.d("DownloadFileTaskTest", "File " + fullFilePathName + " written");
         }
         mProgressDialog.dismiss();
     }
@@ -150,5 +143,4 @@ public class DownloadFileTaskTest extends AsyncTask<String, String, String> {
                 .addToBackStack(null)
                 .commit();
     }
-
 }

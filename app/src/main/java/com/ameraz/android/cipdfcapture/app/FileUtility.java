@@ -4,12 +4,16 @@ import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 /**
  * Created by john.williams on 8/26/2014.
  */
-public class FilePath {
+public class FileUtility {
     static String root = Environment.getExternalStorageDirectory().toString();
     public static final String SYSWARE_FILEPATH = root + "/Systemware/";
     public static final String IMAGE_FILEPATH = root + "/Systemware/Images/";
@@ -47,6 +51,28 @@ public class FilePath {
         return TEMP_FILEPATH;
     }
 
+    public static Boolean doesFileExist(String fullFilePath){
+        File file = new File(fullFilePath);
+        if(file.exists()){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public static Boolean isThisATempFile(String fullFilePath){
+        File file = new File(fullFilePath);
+        File tempFilePath = new File(getTempFilePath());
+        if(tempFilePath.equals(file.getParentFile())){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
     static void directoryCheck(){
         dirArray.add(new File(getImageFilePath()));
         dirArray.add(new File(getPDFFilePath()));
@@ -59,10 +85,6 @@ public class FilePath {
             }
         }
         dirArray.clear();
-        /*File IMAGE_DIR = new File(FilePath.getImageFilePath());
-        File PDF_DIR = new File(FilePath.getPDFFilePath());
-        File TXT_DIR = new File(FilePath.getTxtFilePath());
-        File TEMP_DIR = new File(FilePath.getTempFilePath());*/
     }
 
     public static String chooseDownloadFilePath(String versionFormat) {
@@ -75,5 +97,18 @@ public class FilePath {
             fp = getImageFilePath();
         }
         return fp;
+    }
+
+    public static void copyFile(File src, File dst) throws IOException {
+        FileChannel inChannel = new FileInputStream(src).getChannel();
+        FileChannel outChannel = new FileOutputStream(dst).getChannel();
+        try {
+            inChannel.transferTo(0, inChannel.size(), outChannel);
+        } finally {
+            if (inChannel != null)
+                inChannel.close();
+            if (outChannel != null)
+                outChannel.close();
+        }
     }
 }

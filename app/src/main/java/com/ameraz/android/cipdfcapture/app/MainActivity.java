@@ -18,9 +18,7 @@ import android.view.MenuItem;
 import com.ameraz.android.cipdfcapture.app.fragments.Capture_Fragment;
 import com.ameraz.android.cipdfcapture.app.fragments.Home_Fragment;
 import com.ameraz.android.cipdfcapture.app.fragments.Navigation_Drawer_Fragment;
-import com.ameraz.android.cipdfcapture.app.fragments.View_Versions_Fragment;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity
@@ -95,7 +93,7 @@ public class MainActivity extends Activity
         if(actionBar != null) {
             getActionBar().setDisplayShowTitleEnabled(false);
         }
-        FilePath.directoryCheck();//checks if application dirs exist
+        FileUtility.directoryCheck();//checks if application dirs exist
         TempFileTracker.clearTempFiles();//clears all temp files
         db = new DatabaseHandler(getApplicationContext());//create a db if one doesn't exist
         //navigation drawer stuff

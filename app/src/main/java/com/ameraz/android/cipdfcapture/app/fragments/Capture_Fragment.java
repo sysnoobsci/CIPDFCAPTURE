@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import com.ameraz.android.cipdfcapture.app.APIQueries;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
-import com.ameraz.android.cipdfcapture.app.FilePath;
+import com.ameraz.android.cipdfcapture.app.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.UploadProcess;
 import com.squareup.picasso.Picasso;
@@ -99,7 +99,7 @@ public class Capture_Fragment extends Fragment {
         takePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FilePath fp = new FilePath();
+                FileUtility fp = new FileUtility();
                 String storageState = Environment.getExternalStorageState();
                 if (storageState.equals(Environment.MEDIA_MOUNTED)) {
                     incImage = fp.getImageFilePath() + "Images/" + "sys_image" + System.currentTimeMillis() + ".jpg";

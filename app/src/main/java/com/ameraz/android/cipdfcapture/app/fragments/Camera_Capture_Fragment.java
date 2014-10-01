@@ -11,7 +11,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
-import com.ameraz.android.cipdfcapture.app.FilePath;
+import com.ameraz.android.cipdfcapture.app.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
 
 import java.io.File;
@@ -42,7 +42,7 @@ public class Camera_Capture_Fragment extends Fragment {
     }
 
     private boolean createFile() {
-        FilePath fp = new FilePath();
+        FileUtility fp = new FileUtility();
         String storageState = Environment.getExternalStorageState();
         if (storageState.equals(Environment.MEDIA_MOUNTED)) {
             fileName = "sys_image" + System.currentTimeMillis() + ".jpg";

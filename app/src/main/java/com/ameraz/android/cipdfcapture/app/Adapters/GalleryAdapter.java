@@ -9,15 +9,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.ameraz.android.cipdfcapture.app.FilePath;
+import com.ameraz.android.cipdfcapture.app.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by john.williams on 8/26/2014.
@@ -33,7 +31,7 @@ public class GalleryAdapter extends BaseAdapter {
     }
 
     public void setUriArray() {
-        FILE_DIR = new File(FilePath.getImageFilePath());
+        FILE_DIR = new File(FileUtility.getImageFilePath());
         Log.d("File name: ", FILE_DIR.toString());
         Log.d("setUriArray()","Does FILE_DIR exist: " + FILE_DIR.exists());
         Log.d("setUriArray()","Value of names: " + names);
@@ -94,7 +92,7 @@ public class GalleryAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Log.d("position: ", Integer.toString(position));
-        Log.d("Loading images...", Uri.parse("file://" + FilePath.getImageFilePath() + names.get(position)).toString());
+        Log.d("Loading images...", Uri.parse("file://" + FileUtility.getImageFilePath() + names.get(position)).toString());
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             LayoutInflater in = (LayoutInflater) getContext()
@@ -104,9 +102,9 @@ public class GalleryAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-        Log.d("Loading images...", Uri.parse("file://" + FilePath.getImageFilePath() + names.get(position)).toString());
+        Log.d("Loading images...", Uri.parse("file://" + FileUtility.getImageFilePath() + names.get(position)).toString());
         Picasso.with(getContext())
-                .load(Uri.parse("file://" + FilePath.getImageFilePath() + names.get(position)))
+                .load(Uri.parse("file://" + FileUtility.getImageFilePath() + names.get(position)))
                 .resize(width, width)
                 .centerCrop()
                 .into(imageView);

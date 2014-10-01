@@ -19,7 +19,7 @@ import android.widget.ListView;
 import com.ameraz.android.cipdfcapture.app.APIQueries;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.DownloadFileTaskTest;
-import com.ameraz.android.cipdfcapture.app.FilePath;
+import com.ameraz.android.cipdfcapture.app.FileUtility;
 import com.ameraz.android.cipdfcapture.app.LogonSession;
 import com.ameraz.android.cipdfcapture.app.QueryArguments;
 import com.ameraz.android.cipdfcapture.app.R;
@@ -134,12 +134,12 @@ public class View_Versions_Fragment extends Fragment {
         APIQueries apiobj = new APIQueries(getContext());
         topicIdUrl = apiobj.retrieveQuery(tidArrayList.get(pos));//get the right tid
         setVersionInfo(pos);
-        String fullFilePathName = FilePath.getTempFilePath() + VersionInfo.getDsid()
+        String fullFilePathName = FileUtility.getTempFilePath() + VersionInfo.getDsid()
                 + "." + VersionInfo.getFormat().toLowerCase();
-        Log.d("DownloadFileAndLoadView", "topicIdUrl value: " + topicIdUrl);
-        new DownloadFileTaskTest(FilePath.getTempFilePath(), fullFilePathName, VersionInfo.getVersion(), getActivity())
-                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, topicIdUrl, String.valueOf(1));
-        Log.d("DownloadFileAndLoadView", "DownloadFileTask finished executing");
+        Log.d("View_Versions_Fragment", "topicIdUrl value: " + topicIdUrl);
+        new DownloadFileTaskTest(FileUtility.getTempFilePath(), fullFilePathName, VersionInfo.getVersion(), getActivity())
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, topicIdUrl, "IPFragment");//will call IPFragment after completing execution
+        Log.d("View_Versions_Fragment", "DownloadFileTask finished executing");
     }
 
     public void searchButton() throws Exception {

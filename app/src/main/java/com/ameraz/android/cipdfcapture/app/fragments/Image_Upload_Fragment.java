@@ -15,7 +15,7 @@ import android.widget.ImageButton;
 
 import com.ameraz.android.cipdfcapture.app.APIQueries;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
-import com.ameraz.android.cipdfcapture.app.FilePath;
+import com.ameraz.android.cipdfcapture.app.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.UploadProcess;
 import com.squareup.picasso.Picasso;
@@ -36,7 +36,7 @@ public class Image_Upload_Fragment extends Fragment {
     private EditText name;
     private ProgressDialog ringProgressDialog;
     static Context context;
-    private FilePath fp;
+    private FileUtility fp;
 
     public static Context getContext() {
         return context;
@@ -81,7 +81,7 @@ public class Image_Upload_Fragment extends Fragment {
         imageView = (GestureImageView) rootView.findViewById(R.id.upload_image_view);
         name = (EditText) rootView.findViewById(R.id.upload_name_input);
         imageButton = (ImageButton) rootView.findViewById(R.id.image_upload_button);
-        fp = new FilePath();
+        fp = new FileUtility();
     }
 
     private void setUploadProgressDialog() {

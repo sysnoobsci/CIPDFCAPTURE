@@ -3,7 +3,6 @@ package com.ameraz.android.cipdfcapture.app;
 import android.util.Log;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,13 +28,27 @@ public class TempFileTracker {
     }
 
     public static void clearTempFiles(){
-        File dir = new File(FilePath.getTempFilePath());
+        File dir = new File(FileUtility.getTempFilePath());
         if (dir.isDirectory()) {
             String[] children = dir.list();
             for (int i = 0; i < children.length; i++) {
                 new File(dir, children[i]).delete();
                 Log.d("clearTempFiles()","Temp file " + children[i] + " has been deleted.");
             }
+        }
+    }
+
+
+    public static Boolean isTempFileCached(String fullFilePathName, int versionNumber){
+        //check if file is even a temp file first
+        String tempFilePath = TempFileTracker.getTempFilePath(versionNumber);
+        Log.d("isTempFileCached()", "tempFilePath value: " + tempFilePath);
+        if(tempFilePath != null){//if a filepath is returned, file is already cached
+            return true;
+        }
+        else{
+            TempFileTracker.addTempFileToList(fullFilePathName, VersionInfo.getVersion());//add temp file and version number to temp file list
+            return false;
         }
     }
 }

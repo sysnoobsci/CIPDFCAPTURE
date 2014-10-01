@@ -136,5 +136,15 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
         tmtask.execute();
     }
 
-
+    public static void isFileOverWritten(Context context, Boolean isOverwrite) {
+        setmContext(context);
+        if(isOverwrite) {
+            ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "File was overwritten");
+            tmtask.execute();
+        }
+        else{
+            ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "File was not overwritten");
+            tmtask.execute();
+        }
+    }
 }

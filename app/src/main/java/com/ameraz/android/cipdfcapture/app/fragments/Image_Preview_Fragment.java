@@ -1,9 +1,10 @@
 package com.ameraz.android.cipdfcapture.app.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,19 +15,18 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.ameraz.android.cipdfcapture.app.AsyncTasks.DownloadFileTaskTest;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
-import com.ameraz.android.cipdfcapture.app.FilePath;
+import com.ameraz.android.cipdfcapture.app.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
+import com.ameraz.android.cipdfcapture.app.TempFileTracker;
 import com.joanzapata.pdfview.PDFView;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by adrian.meraz on 9/18/2014.
@@ -44,6 +44,10 @@ public class Image_Preview_Fragment extends Fragment {
     String fullFilePath;
     String format;
     int versionNumber;
+    AlertDialog dialog;
+    String oldPath;
+    String newPath;
+
     ArrayList<String> textFormats = new ArrayList<String>() {{
         add("ASC");
         add("TXT");
@@ -64,6 +68,7 @@ public class Image_Preview_Fragment extends Fragment {
         instantiateViews();
         loadImage();
         saveButtonListener();
+        setAlertDialog();
         return rootView;
     }
 
@@ -140,12 +145,55 @@ public class Image_Preview_Fragment extends Fragment {
                 .into(imageViewer);
     }
 
+    void setAlertDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Duplicate File Found")
+                .setMessage("Do you want to overwrite the file?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ToastMessageTask.isFileOverWritten(context,true);
+                        try {
+                            FileUtility.copyFile(new File(oldPath),new File(newPath));//copy file from temp directory to other directory
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ToastMessageTask.isFileOverWritten(context,false);
+                    }
+                });
+        dialog = builder.create();
+    }
+
+    void saveNewFile(String oldPath, String newPath){
+        this.oldPath = oldPath;
+        this.newPath = newPath;
+        if(FileUtility.doesFileExist(newPath)){//checks if file already exists
+            dialog.show();
+        }
+        else{
+            try {
+                FileUtility.copyFile(new File(oldPath),new File(newPath));//copy file from temp directory to other directory
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ToastMessageTask.downloadFileSuccessful(context);
+        }
+    }
+
+
     private void saveButtonListener() {//searches for the report and displays the versions
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            new DownloadFileTaskTest(FilePath.chooseDownloadFilePath(format),fullFilePath, versionNumber, getActivity())
-                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fileUri.toString());//download response and create a new file
+                String oldPath = TempFileTracker.getTempFilePath(versionNumber);
+                String newPath = FileUtility.chooseDownloadFilePath(format) + new File(TempFileTracker.getTempFilePath(versionNumber)).getName();
+                Log.d("saveButtonListener()", "newPath value: " + newPath);
+                saveNewFile(oldPath, newPath);//checks if any dup files and display alertDialog if dups are found
             }
         });
     }
