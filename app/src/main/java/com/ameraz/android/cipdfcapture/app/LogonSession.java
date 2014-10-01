@@ -159,10 +159,6 @@ public class LogonSession {
     }
 
     protected static Boolean doesSidExist() {//checks if there is a valid sid
-        if ((getSid() != null) && !getSid().isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+        return (getSid() != null) && !getSid().isEmpty();
     }
 }

@@ -17,8 +17,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.ameraz.android.cipdfcapture.app.APIQueries;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.DownloadFileTask;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
-import com.ameraz.android.cipdfcapture.app.AsyncTasks.DownloadFileTaskTest;
 import com.ameraz.android.cipdfcapture.app.FileUtility;
 import com.ameraz.android.cipdfcapture.app.LogonSession;
 import com.ameraz.android.cipdfcapture.app.QueryArguments;
@@ -137,7 +137,7 @@ public class View_Versions_Fragment extends Fragment {
         String fullFilePathName = FileUtility.getTempFilePath() + VersionInfo.getDsid()
                 + "." + VersionInfo.getFormat().toLowerCase();
         Log.d("View_Versions_Fragment", "topicIdUrl value: " + topicIdUrl);
-        new DownloadFileTaskTest(FileUtility.getTempFilePath(), fullFilePathName, VersionInfo.getVersion(), getActivity())
+        new DownloadFileTask(FileUtility.getTempFilePath(), fullFilePathName, VersionInfo.getVersion(), getActivity())
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, topicIdUrl, "IPFragment");//will call IPFragment after completing execution
         Log.d("View_Versions_Fragment", "DownloadFileTask finished executing");
     }
@@ -181,10 +181,8 @@ public class View_Versions_Fragment extends Fragment {
             try {
                 QueryArguments.addArg("res," + reportName.getText().toString().toUpperCase());
                 QueryArguments.addArg("sid," + LogonSession.getSid());
-                StringBuffer sbuffer = new StringBuffer();
-                sbuffer.append(apiobj.listversionQuery(QueryArguments.getArgslist()));
                 Log.d("FillListViewTask.doInBackground()","getting version info for the list");
-                listOfReportVersions = apiobj.getVersionInfo(sbuffer.toString());//pass in xml response from earlier API call
+                listOfReportVersions = apiobj.getVersionInfo(apiobj.listversionQuery(QueryArguments.getArgslist()));//pass in xml response from earlier API call
             } catch (Exception e) {
                 e.printStackTrace();
             }

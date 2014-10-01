@@ -44,7 +44,6 @@ public class Internal_Gallery_Fragment extends Fragment {
     private SharedPreferences pref;
     private Uri fileUri;
     private String fileName;
-    private FileUtility fp;
     private File newImage;
 
     public Context getContext() {
@@ -116,7 +115,7 @@ public class Internal_Gallery_Fragment extends Fragment {
         createNewImage = (ImageButton)rootView.findViewById(R.id.open_camera_button);
         pref = PreferenceManager.getDefaultSharedPreferences(getContext());
         width = rootView.getWidth();
-        fp = new FileUtility();
+        FileUtility fp = new FileUtility();
     }
 
     public boolean isTablet(Context context) {

@@ -28,29 +28,29 @@ import java.util.concurrent.TimeoutException;
  */
 public class APIQueries {
     private static Context context;
-    static Boolean actionresult = false;
-    static int action_timeout = 5000;//default values in milliseconds of timeouts
-    static int lilo_timeout = 5000;
-    static int upload_timeout = 30000;
+    private static Boolean actionresult = false;
+    private static int action_timeout = 5000;//default values in milliseconds of timeouts
+    private static int lilo_timeout = 5000;
+    private static int upload_timeout = 30000;
 
     public APIQueries(Context context) {
         setContext(context);
         setTimeouts();//set timeouts whenever APIQueries object is instantiated
     }
 
-    public static Boolean getActionresult() {
+    private static Boolean getActionresult() {
         return actionresult;
     }
 
-    public static void setActionresult(Boolean result) {
+    private static void setActionresult(Boolean result) {
         actionresult = result;
     }
 
-    public Context getContext() {
+    Context getContext() {
         return context;
     }
 
-    public void setContext(Context context) {
+    void setContext(Context context) {
         this.context = context;
     }
 
@@ -64,7 +64,7 @@ public class APIQueries {
         Log.d("setTimeouts()", "upload_timeout in seconds: " + (double) upload_timeout / 1000);
     }
 
-    public void resetResult() {
+    void resetResult() {
         setActionresult(false);
     }
 
@@ -81,7 +81,7 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,createtopic");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(entity, getContext());
+        APITask apitaskobj = new APITask(entity);
         try {
             apitaskobj.execute(targetCIQuery())
                       .get(action_timeout, TimeUnit.MILLISECONDS);
@@ -98,35 +98,6 @@ public class APIQueries {
         return uploadSuccess;
     }
 
-    //listnode - add &sid to the string for it to work properly
-    public String[] listnodeQuery(ArrayList<Object> args) throws ExecutionException,
-            InterruptedException, IOException, XmlPullParserException {
-        ArrayList<Object> actionargs = args;
-        actionargs.add("act,listnode");
-        HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(entity, getContext());
-        try {
-            apitaskobj.execute(targetCIQuery())
-                      .get(action_timeout, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException te) {
-            ToastMessageTask.noConnectionMessage(getContext());
-        }
-        Log.d("Variable", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
-        XmlParser xobj = new XmlParser(apitaskobj.getResponse());
-        isActionSuccessful(xobj.getTextTag());
-        if (getActionresult()) {
-            Log.d("Message", "CI Server listnode successful.");
-        } else {
-            Log.d("Message", "CI Server listnode failed.");
-        }
-        String[] listnodeArray = new String[2];
-        listnodeArray[0] = xobj.findTagText("xid");
-        listnodeArray[1] = xobj.findTagText("name");
-        resetResult();//reset action result after checking it
-        QueryArguments.clearList();//clear argslist after query
-        return listnodeArray;
-    }
-
     //listversion
     public String listversionQuery(ArrayList<Object> args) throws ExecutionException,
             InterruptedException, IOException, XmlPullParserException {
@@ -134,7 +105,7 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,listversion");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(entity, getContext());
+        APITask apitaskobj = new APITask(entity);
         try {
             apitaskobj.execute(targetCIQuery())
                       .get(action_timeout, TimeUnit.MILLISECONDS);
@@ -163,7 +134,7 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,logon");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(entity, getContext());
+        APITask apitaskobj = new APITask(entity);
         try {
             apitaskobj.execute(targetCIQuery())
                       .get(lilo_timeout, TimeUnit.MILLISECONDS);
@@ -192,7 +163,7 @@ public class APIQueries {
         ArrayList<Object> actionargs = args;
         actionargs.add("act,logoff");
         HttpEntity entity = mebBuilder(actionargs);
-        APITask apitaskobj = new APITask(entity, getContext());
+        APITask apitaskobj = new APITask(entity);
         try {
             apitaskobj.execute(targetCIQuery())
                       .get(lilo_timeout, TimeUnit.MILLISECONDS);
@@ -223,7 +194,7 @@ public class APIQueries {
         QueryArguments.addArg("act,ping");
         QueryArguments.addArg("sid," + LogonSession.getSid());
         HttpEntity entity = mebBuilder(QueryArguments.getArgslist());
-        APITask apitaskobj = new APITask(entity, getContext());
+        APITask apitaskobj = new APITask(entity);
         try {
             apitaskobj.execute(targetCIQuery())
                       .get(action_timeout, TimeUnit.MILLISECONDS);
@@ -303,29 +274,27 @@ public class APIQueries {
         String[] verarr = ver.split(",");
 
         for (int i = 0; i < dsidsarr.length; i++) {
-            StringBuilder sbuild = new StringBuilder();
-            sbuild.append(dsidsarr[i] + ",").append(ctsarr[i] + ",").append(bytesarr[i] + ",").append(fmtarr[i] + ",")
-                    .append(verarr[i] + ",").append("V~" + xidarr[i] + "~" + dsidsarr[i] + "~" + pathsarr[i] +
-                    "~" + verarr[i]);
             //Log.d("getVersionInfo()", "version " + verarr[i] + " attributes: " + sbuild.toString()); //just for debug purposes
-            versionInfo.add(sbuild.toString());
+            versionInfo.add(dsidsarr[i] + "," + ctsarr[i] + "," + bytesarr[i] + "," + fmtarr[i] + ","
+                    + verarr[i] + "," + "V~" + xidarr[i] + "~" + dsidsarr[i] + "~" + pathsarr[i] + "~"
+                    + verarr[i]);
         }
         return versionInfo;
     }
 
     public static ArrayList<String> getMetadata(ArrayList<String> lvers, String selection) {
         int choose = -1;//selects the version info to grab
-        if (selection == "DSID") {//dsid of report version
+        if (selection.equals("DSID")) {//dsid of report version
             choose = 0;
-        } else if (selection == "CTS") {//timestamp when report version was created
+        } else if (selection.equals("CTS")) {//timestamp when report version was created
             choose = 1;
-        } else if (selection == "BYTES") {//size in bytes of report version
+        } else if (selection.equals("BYTES")) {//size in bytes of report version
             choose = 2;
-        } else if (selection == "FMT") {//format of report version
+        } else if (selection.equals("FMT")) {//format of report version
             choose = 3;
-        } else if (selection == "VER") {//version number of report version
+        } else if (selection.equals("VER")) {//version number of report version
             choose = 4;
-        } else if (selection == "TID") {//topic instance id of report version
+        } else if (selection.equals("TID")) {//topic instance id of report version
             choose = 5;
         }
         if (choose == -1) {
@@ -341,7 +310,7 @@ public class APIQueries {
 
 
     //action return code check
-    protected void isActionSuccessful(ArrayList<String> larray) {
+    void isActionSuccessful(ArrayList<String> larray) {
         if (larray.size() == 0) {//if the array is of size 0, nothing was returned from the ciserver
             Log.d("isActionSuccessful()", "Nothing returned from CI server.");
             setActionresult(false);

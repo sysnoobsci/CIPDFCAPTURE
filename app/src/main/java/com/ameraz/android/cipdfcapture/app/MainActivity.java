@@ -31,7 +31,6 @@ public class MainActivity extends Activity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     static Preference button;
-    private CharSequence mTitle;
     Context context = MainActivity.this;
     DatabaseHandler db;
 
@@ -43,7 +42,7 @@ public class MainActivity extends Activity
     }
 
     public void setFirst_open(Boolean first_open) {
-        this.first_open = first_open;
+        this.first_open = false;
     }
 
     public static void buttonClickListener(final Context context) {
@@ -99,7 +98,7 @@ public class MainActivity extends Activity
         //navigation drawer stuff
         mNavigationDrawerFragment = (Navigation_Drawer_Fragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
+        CharSequence mTitle = getTitle();
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,

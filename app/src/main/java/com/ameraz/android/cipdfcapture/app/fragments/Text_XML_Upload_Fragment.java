@@ -86,8 +86,7 @@ public class Text_XML_Upload_Fragment extends Fragment {
     public void readFile(String stringUri) {
         StringBuilder stringBuilder = new StringBuilder();
         String line;
-        BufferedReader in = null;
-
+        BufferedReader in;
         try {
             in = new BufferedReader(new FileReader(new File(stringUri)));
             while ((line = in.readLine()) != null) {

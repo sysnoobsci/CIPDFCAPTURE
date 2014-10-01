@@ -1,6 +1,5 @@
 package com.ameraz.android.cipdfcapture.app.AsyncTasks;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -16,7 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Created by The Bat Cave on 8/19/2014.
+ * Created by Adrian Meraz on 8/19/2014.
  */
 public class APITask extends AsyncTask<String, Void, String> {
 
@@ -24,7 +23,6 @@ public class APITask extends AsyncTask<String, Void, String> {
     HttpPost httppost;
 
     private static String response;
-    private static Context mContext;
     private static HttpEntity entity;
     private static int ID = 0;
     private static int taskID = 0;
@@ -35,16 +33,6 @@ public class APITask extends AsyncTask<String, Void, String> {
 
     public void setResponse(String result) {
         this.response = result;
-    }
-
-
-
-    public static Context getmContext() {
-        return mContext;
-    }
-
-    public static void setmContext(Context mContext) {
-        APITask.mContext = mContext;
     }
 
     public HttpEntity getEntity() {
@@ -63,9 +51,8 @@ public class APITask extends AsyncTask<String, Void, String> {
         this.taskID = taskID;
     }
 
-    public APITask(HttpEntity entity, Context context) {
+    public APITask(HttpEntity entity) {
         setEntity(entity);
-        setmContext(context);
         setTaskID(this.ID);//set unique ID for task
         ID++;
     }

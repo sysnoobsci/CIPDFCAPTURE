@@ -22,7 +22,6 @@ import java.util.ArrayList;
  */
 public class GalleryAdapter extends BaseAdapter {
     private Context context;
-    private File FILE_DIR;
     private ArrayList<String> names = new ArrayList<String>();
     int width;
 
@@ -31,7 +30,7 @@ public class GalleryAdapter extends BaseAdapter {
     }
 
     public void setUriArray() {
-        FILE_DIR = new File(FileUtility.getImageFilePath());
+        File FILE_DIR = new File(FileUtility.getImageFilePath());
         Log.d("File name: ", FILE_DIR.toString());
         Log.d("setUriArray()","Does FILE_DIR exist: " + FILE_DIR.exists());
         Log.d("setUriArray()","Value of names: " + names);

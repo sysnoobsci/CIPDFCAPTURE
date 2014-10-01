@@ -100,27 +100,9 @@ public class ToastMessageTask extends AsyncTask<String, String, String> {
         tmtask.execute();
     }
 
-    public static void pdfConversionFailed(Context context) {
-        setmContext(context);
-        ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Error. PDF conversion failed.");
-        tmtask.execute();
-    }
-
     public static void downloadFileSuccessful(Context context) {
         setmContext(context);
         ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "File has been downloaded successfully.");
-        tmtask.execute();
-    }
-
-    public static void downloadFileStarted(Context context) {
-        setmContext(context);
-        ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Beginning download of file.");
-        tmtask.execute();
-    }
-
-    public static void downloadTempFileStarted(Context context) {
-        setmContext(context);
-        ToastMessageTask tmtask = new ToastMessageTask(getmContext(), "Beginning download of temp file.");
         tmtask.execute();
     }
 

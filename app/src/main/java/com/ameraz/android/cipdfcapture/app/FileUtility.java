@@ -20,11 +20,6 @@ public class FileUtility {
     public static final String PDF_FILEPATH = root + "/Systemware/PDF/";
     public static final String TXT_FILEPATH = root + "/Systemware/TXT/";
     public static final String TEMP_FILEPATH = root + "/Systemware/Temp/";
-    public static final String SYSWARE_DIR = "/Systemware/";
-    public static final String IMAGE_DIR = "/Systemware/Images/";
-    public static final String PDF_DIR = "/Systemware/PDF/";
-    public static final String TXT_DIR = "/Systemware/TXT/";
-    public static final String TEMP_DIR = "/Systemware/Temp/";
     static ArrayList<File> dirArray = new ArrayList<File>();
 
     public static String getRootPath() {
@@ -53,25 +48,8 @@ public class FileUtility {
 
     public static Boolean doesFileExist(String fullFilePath){
         File file = new File(fullFilePath);
-        if(file.exists()){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return file.exists();
     }
-
-    public static Boolean isThisATempFile(String fullFilePath){
-        File file = new File(fullFilePath);
-        File tempFilePath = new File(getTempFilePath());
-        if(tempFilePath.equals(file.getParentFile())){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
 
     static void directoryCheck(){
         dirArray.add(new File(getImageFilePath()));

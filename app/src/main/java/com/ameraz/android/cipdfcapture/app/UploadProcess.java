@@ -86,7 +86,7 @@ public class UploadProcess {
         ringProgressDialog.dismiss();
     }
 
-    void createTopic() throws Exception {
+    void createTopic(){
         if (topicTemplateName != null) {
 
             QueryArguments.addArg("tplid," + topicTemplateName);
@@ -96,11 +96,7 @@ public class UploadProcess {
             QueryArguments.addArg(file2upload);
             Log.d("Upload Process ImageUri= ", file2upload.toString());
             try {
-                if(apiobj.createtopicQuery(QueryArguments.getArgslist())){
-                    success = true;
-                }else{
-                    success = false;
-                }
+                success = apiobj.createtopicQuery(QueryArguments.getArgslist());
             } catch (Exception e) {
                 e.printStackTrace();
             }

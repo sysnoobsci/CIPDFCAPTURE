@@ -49,11 +49,6 @@ public class Navigation_Drawer_Fragment extends Fragment {
      */
     private NavigationDrawerCallbacks mCallbacks;
 
-    /**
-     * Helper component that ties the action bar to the navigation drawer.
-     */
-
-    private ExpandableListAdapter listAdapter;
     private ExpandableListView mDrawerListView;
     private List<String> listDataHeader;
     private HashMap<String, List<String>> listDataChild;
@@ -103,7 +98,10 @@ public class Navigation_Drawer_Fragment extends Fragment {
         // preparing list data
         prepareListData();
 
-        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
+        /*
+      Helper component that ties the action bar to the navigation drawer.
+     */
+        ExpandableListAdapter listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
 
         // setting list adapter
         mDrawerListView.setAdapter(listAdapter);

@@ -18,7 +18,6 @@ import java.util.ArrayList;
  * Created by adrian.meraz on 5/16/2014.
  */
 public class XmlParser {
-    private Boolean is_xml = false;
     private static String xmlVals;
     private static String xmlResponse;
     StringBuilder total = new StringBuilder();
@@ -41,14 +40,6 @@ public class XmlParser {
 
     public static void setXmlResponse(String xmlResponse) {
         XmlParser.xmlResponse = xmlResponse;
-    }
-
-    public Boolean getIs_xml() {
-        return is_xml;
-    }
-
-    public void setIs_xml(Boolean is_xml) {
-        this.is_xml = is_xml;
     }
 
     public ArrayList<String> getTextTag() {
@@ -77,7 +68,7 @@ public class XmlParser {
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if(eventType == XmlPullParser.TEXT) {
                 listOfTextTags.add(xpp.getText());
-                total.append(xpp.getText() + ",");
+                total.append(xpp.getText()).append(",");
             }
             eventType = xpp.next();
         }
