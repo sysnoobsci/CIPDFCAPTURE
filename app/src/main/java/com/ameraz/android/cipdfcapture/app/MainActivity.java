@@ -15,6 +15,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.APIQueries;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.DatabaseHandler;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.LogonSession;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.QueryArguments;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.TempFileTracker;
 import com.ameraz.android.cipdfcapture.app.fragments.Capture_Fragment;
 import com.ameraz.android.cipdfcapture.app.fragments.Home_Fragment;
 import com.ameraz.android.cipdfcapture.app.fragments.Navigation_Drawer_Fragment;
@@ -130,6 +136,12 @@ public class MainActivity extends Activity
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {//save fragment state
+        super.onSaveInstanceState(outState);
+        Log.d("MainActivity","onSaveInstanceState called.");
     }
 
     @Override

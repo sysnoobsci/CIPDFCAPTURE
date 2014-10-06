@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.SupportingClasses;
 
 /**
  * Created by adrian.meraz on 6/24/2014.

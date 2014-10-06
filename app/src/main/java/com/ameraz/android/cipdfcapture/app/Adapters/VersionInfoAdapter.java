@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.Version;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.Version;
 
 import java.util.ArrayList;
 

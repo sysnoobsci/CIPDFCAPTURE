@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.SupportingClasses;
 
 import android.content.Context;
 import android.content.SharedPreferences;

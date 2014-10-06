@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.SupportingClasses;
 
 import android.os.Environment;
 import android.util.Log;
@@ -51,7 +51,7 @@ public class FileUtility {
         return file.exists();
     }
 
-    static void directoryCheck(){
+    public static void directoryCheck(){
         dirArray.add(new File(getImageFilePath()));
         dirArray.add(new File(getPDFFilePath()));
         dirArray.add(new File(getTxtFilePath()));

@@ -1,7 +1,6 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.SupportingClasses;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.preference.ListPreference;
 import android.util.AttributeSet;
 

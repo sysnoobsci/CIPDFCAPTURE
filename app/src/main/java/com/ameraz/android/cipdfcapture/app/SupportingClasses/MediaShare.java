@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.SupportingClasses;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
+import com.ameraz.android.cipdfcapture.app.R;
 import com.squareup.picasso.Picasso;
 
 /**

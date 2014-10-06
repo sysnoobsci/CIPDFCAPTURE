@@ -1,6 +1,7 @@
 package com.ameraz.android.cipdfcapture.app.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,16 +17,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
-import com.ameraz.android.cipdfcapture.app.APIQueries;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.APIQueries;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.DownloadFileTask;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
-import com.ameraz.android.cipdfcapture.app.FileUtility;
-import com.ameraz.android.cipdfcapture.app.LogonSession;
-import com.ameraz.android.cipdfcapture.app.QueryArguments;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.LogonSession;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.QueryArguments;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.Adapters.VersionInfoAdapter;
-import com.ameraz.android.cipdfcapture.app.Version;
-import com.ameraz.android.cipdfcapture.app.VersionInfo;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.Version;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.VersionInfo;
 
 import java.util.ArrayList;
 
@@ -64,6 +65,7 @@ public class View_Versions_Fragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
             //Restore the fragment's state here
+            Log.d("View_Versions_Fragment","Restoring fragment state.");
             ctsArrayList = savedInstanceState.getStringArrayList("ctsArrayList");
             fmtArrayList = savedInstanceState.getStringArrayList("fmtArrayList");
             verArrayList = savedInstanceState.getStringArrayList("verArrayList");
@@ -80,15 +82,15 @@ public class View_Versions_Fragment extends Fragment {
         setContext(getActivity());
         instantiateViews();
         ringProgressDialog = new ProgressDialog(getContext());
-        ListViewListener();
+        listViewListener();
         searchButtonListener();
         return rootView;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {//save fragment state
-        Log.d("View_Versions_Fragment","onSaveInstanceState called.");
         super.onSaveInstanceState(outState);
+        Log.d("View_Versions_Fragment","onSaveInstanceState called.");
         outState.putStringArrayList("ctsArrayList", ctsArrayList);
         outState.putStringArrayList("fmtArrayList", fmtArrayList);
         outState.putStringArrayList("verArrayList", verArrayList);
@@ -112,7 +114,7 @@ public class View_Versions_Fragment extends Fragment {
         ringProgressDialog.setMessage("Listing all versions of report " + reportName.getText());
     }
 
-    private void ListViewListener(){
+    private void listViewListener(){
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
                 downloadTempFile(pos);
@@ -137,9 +139,11 @@ public class View_Versions_Fragment extends Fragment {
         String fullFilePathName = FileUtility.getTempFilePath() + VersionInfo.getDsid()
                 + "." + VersionInfo.getFormat().toLowerCase();
         Log.d("View_Versions_Fragment", "topicIdUrl value: " + topicIdUrl);
+        FragmentManager fragmentManager = getActivity().getFragmentManager();//TEST THIS
+        fragmentManager.beginTransaction()
+                .addToBackStack(null);//add the fragment to the backstack
         new DownloadFileTask(FileUtility.getTempFilePath(), fullFilePathName, VersionInfo.getVersion(), getActivity())
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, topicIdUrl, "IPFragment");//will call IPFragment after completing execution
-        Log.d("View_Versions_Fragment", "DownloadFileTask finished executing");
     }
 
     public void searchButton() throws Exception {

@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.SupportingClasses;
 
 /**
  * Created by The Bat Cave on 9/25/2014.

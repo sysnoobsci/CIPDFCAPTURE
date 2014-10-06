@@ -11,7 +11,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
-import com.ameraz.android.cipdfcapture.app.FileUtility;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
 
 import java.io.File;

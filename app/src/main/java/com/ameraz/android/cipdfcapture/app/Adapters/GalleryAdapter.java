@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.ameraz.android.cipdfcapture.app.FileUtility;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.squareup.picasso.Picasso;
 

@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name="MediaShare"
+            android:name=".SupportingClasses.MediaShare"
             android:screenOrientation="nosensor">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

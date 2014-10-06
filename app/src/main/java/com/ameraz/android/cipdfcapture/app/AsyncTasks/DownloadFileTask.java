@@ -9,10 +9,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.ameraz.android.cipdfcapture.app.FileUtility;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.TempFileTracker;
-import com.ameraz.android.cipdfcapture.app.VersionInfo;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.TempFileTracker;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.VersionInfo;
 import com.ameraz.android.cipdfcapture.app.fragments.Image_Preview_Fragment;
 
 import java.io.BufferedInputStream;

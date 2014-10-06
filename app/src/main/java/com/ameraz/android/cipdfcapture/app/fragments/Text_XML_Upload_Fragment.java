@@ -15,7 +15,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.UploadProcess;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.UploadProcess;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -93,7 +93,6 @@ public class Text_XML_Upload_Fragment extends Fragment {
                 stringBuilder.append(line);
                 stringBuilder.append("\n");
             }
-
         } catch (FileNotFoundException e) {
             Log.d("Error= ", e.toString());
         } catch (IOException e) {

@@ -3,7 +3,7 @@
 
     <PreferenceCategory android:title="@string/CI_config_preferences">
 
-        <com.ameraz.android.cipdfcapture.app.CiServerPref
+        <com.ameraz.android.cipdfcapture.app.SupportingClasses.CiServerPref
             android:title="@string/title_list_cprofiles"
             android:key="list_preference_ci_servers" />
 

@@ -16,9 +16,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
-import com.ameraz.android.cipdfcapture.app.FileUtility;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.TempFileTracker;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.TempFileTracker;
 import com.joanzapata.pdfview.PDFView;
 import com.squareup.picasso.Picasso;
 

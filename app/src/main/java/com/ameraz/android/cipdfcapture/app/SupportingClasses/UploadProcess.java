@@ -1,4 +1,4 @@
-package com.ameraz.android.cipdfcapture.app;
+package com.ameraz.android.cipdfcapture.app.SupportingClasses;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -33,7 +33,12 @@ public class UploadProcess {
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         topicTemplateName = preferences.getString("camName_preference", null);
     }
-    public boolean getSuccess(){
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public boolean isSuccess() {
         return success;
     }
 
@@ -88,7 +93,6 @@ public class UploadProcess {
 
     void createTopic(){
         if (topicTemplateName != null) {
-
             QueryArguments.addArg("tplid," + topicTemplateName);
             QueryArguments.addArg("name," + description.getText().toString());
             QueryArguments.addArg("detail,y");
@@ -96,7 +100,7 @@ public class UploadProcess {
             QueryArguments.addArg(file2upload);
             Log.d("Upload Process ImageUri= ", file2upload.toString());
             try {
-                success = apiobj.createtopicQuery(QueryArguments.getArgslist());
+                setSuccess(apiobj.createtopicQuery(QueryArguments.getArgslist()));//get result from createTopocQuery
             } catch (Exception e) {
                 e.printStackTrace();
             }

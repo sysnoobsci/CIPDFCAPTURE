@@ -16,12 +16,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.ameraz.android.cipdfcapture.app.APIQueries;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.APIQueries;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
-import com.ameraz.android.cipdfcapture.app.FileUtility;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.UploadProcess;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.UploadProcess;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
