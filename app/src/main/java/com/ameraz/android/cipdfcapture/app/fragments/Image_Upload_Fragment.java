@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -98,24 +99,7 @@ public class Image_Upload_Fragment extends Fragment {
     }
 
     private void upload() {
-        ringProgressDialog.show();
-        final UploadProcess upobj = new UploadProcess(getContext(), name, fileUri, ringProgressDialog);
-        new Thread() {
-            public void run() {
-                try {
-                    upobj.uploadProcess();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-        if(upobj.isSuccess()){
-            Fragment fragment = new Internal_Gallery_Fragment();
-            FragmentManager fm = getFragmentManager();
-            fm.beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .commit();
-        }
+        new UploadTask().execute();
     }
 
     private void uploadListener() {
@@ -126,4 +110,29 @@ public class Image_Upload_Fragment extends Fragment {
             }
         });
     }
+
+    private class UploadTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            ringProgressDialog.show();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            UploadProcess upobj = new UploadProcess(getContext(), name, fileUri, ringProgressDialog);
+            try {
+                upobj.uploadProcess();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "success";
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            if(result.equals("success")){
+                getFragmentManager().popBackStackImmediate();//return to previous fragment in back stack
+            }
+            ringProgressDialog.dismiss();
+        }
+    }
+
 }

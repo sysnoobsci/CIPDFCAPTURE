@@ -21,6 +21,7 @@ import com.ameraz.android.cipdfcapture.app.SupportingClasses.APIQueries;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.DownloadFileTask;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
+import com.ameraz.android.cipdfcapture.app.SupportingClasses.ListViewContent;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.LogonSession;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.QueryArguments;
 import com.ameraz.android.cipdfcapture.app.R;
@@ -60,7 +61,7 @@ public class View_Versions_Fragment extends Fragment {
         View_Versions_Fragment.context = context;
     }
 
-    public void onActivityCreated(Bundle savedInstanceState) {
+    /*public void onActivityCreated(Bundle savedInstanceState) {
         Log.d("View_Versions_Fragment","onActivityCreated called.");
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
@@ -74,26 +75,41 @@ public class View_Versions_Fragment extends Fragment {
             }
             createListAdapter(content);
         }
-    }
+    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_downloadview, container, false);
         setContext(getActivity());
         instantiateViews();
+        getViewState();//checks if there are saved instances of the views that reside in this fragment
         ringProgressDialog = new ProgressDialog(getContext());
         listViewListener();
         searchButtonListener();
         return rootView;
     }
 
-    @Override
+    /*@Override
     public void onSaveInstanceState(Bundle outState) {//save fragment state
         super.onSaveInstanceState(outState);
         Log.d("View_Versions_Fragment","onSaveInstanceState called.");
         outState.putStringArrayList("ctsArrayList", ctsArrayList);
         outState.putStringArrayList("fmtArrayList", fmtArrayList);
         outState.putStringArrayList("verArrayList", verArrayList);
+    }*/
+
+    private void getViewState(){
+        if (ListViewContent.getvVFcontent() != null){
+            content = ListViewContent.getvVFcontent();
+            createListAdapter(content);//listView is recreated with version info if existing state information exists
+        }
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        Log.d("View_Versions_Fragment","onPause called.");
+        ListViewContent.setvVFcontent(content);
     }
 
     public void instantiateViews() {

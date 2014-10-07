@@ -196,6 +196,7 @@ public class Internal_Gallery_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
+            Log.d("onActivityResult ", "checkmark pressed");
             Log.d("onActivityResult ", fileUri.toString());
             Fragment fragment = new Image_Upload_Fragment();
             Bundle bundle = new Bundle();
@@ -207,6 +208,7 @@ public class Internal_Gallery_Fragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         } else if(resultCode == Activity.RESULT_CANCELED){
+            Log.d("onActivityResult ", "cancel 'X' pressed");
             newImage.delete();
         }
     }
