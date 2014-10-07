@@ -3,6 +3,7 @@ package com.ameraz.android.cipdfcapture.app.SupportingClasses;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -83,7 +84,7 @@ public class APIQueries {
         HttpEntity entity = mebBuilder(actionargs);
         APITask apitaskobj = new APITask(entity);
         try {
-            apitaskobj.execute(targetCIQuery())
+            apitaskobj.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,targetCIQuery())
                       .get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMsgTask.noConnectionMessage(getContext());
@@ -136,7 +137,7 @@ public class APIQueries {
         HttpEntity entity = mebBuilder(actionargs);
         APITask apitaskobj = new APITask(entity);
         try {
-            apitaskobj.execute(targetCIQuery())
+            apitaskobj.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, targetCIQuery())
                       .get(lilo_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMsgTask.noConnectionMessage(getContext());
