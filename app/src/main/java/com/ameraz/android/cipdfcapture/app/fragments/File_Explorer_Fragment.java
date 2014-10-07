@@ -35,6 +35,7 @@ public class File_Explorer_Fragment extends Fragment {
     private Context context;
     private ListView browser;
     private ArrayList<Item> content;
+    private String[] supportedFileTypes;
 
     public Context getContext() {
         return context;
@@ -59,6 +60,7 @@ public class File_Explorer_Fragment extends Fragment {
         adapter = null;
         setArrayList(currentDir);
         setListListener();
+        supportedFileTypes = new String[]{".jpg", ".jpeg", ".png", ".gif", ".txt", ".xml", ".doc", ".docx", ".xls", ".xlsx", ".pdf"};
     }
 
     private void setArrayList(File f) {
@@ -81,11 +83,10 @@ public class File_Explorer_Fragment extends Fragment {
                     if (fbuf != null) {
                         buf = fbuf.length;
                     } else buf = 0;
-                    String num_item = String.valueOf(buf);
-                    if (buf == 0) num_item = num_item + " item";
-                    else num_item = num_item + " items";
-                    Item item = new Item(ff.getName(), num_item, date_modify, ff.getAbsolutePath(), R.drawable.cloud_directory_icon, true);
-                    content.add(item);
+                    if(buf > 0) {
+                        Item item = new Item(ff.getName(), date_modify, ff.getAbsolutePath(), R.drawable.cloud_directory_icon, true);
+                        content.add(item);
+                    }
                 }
             }
             for (File ff : dirs) {
@@ -93,17 +94,12 @@ public class File_Explorer_Fragment extends Fragment {
                 DateFormat formater = DateFormat.getDateTimeInstance();
                 String date_modify = formater.format(lastModDate);
                 if (!ff.isDirectory()) {
-
-                    File[] fbuf = ff.listFiles();
-                    int buf;
-                    if (fbuf != null) {
-                        buf = fbuf.length;
-                    } else buf = 0;
-                    String num_item = String.valueOf(buf);
-                    if (buf == 0) num_item = num_item + " item";
-                    else num_item = num_item + " items";
-                    Item item = new Item(ff.getName(), num_item, date_modify, ff.getAbsolutePath(), R.drawable.file_icon, false);
-                    content.add(item);
+                    for(int x = 0; x<supportedFileTypes.length; x++) {
+                        if (ff.getName().toLowerCase().endsWith(supportedFileTypes[x])) {
+                            Item item = new Item(ff.getName(), date_modify, ff.getAbsolutePath(), R.drawable.file_icon, false);
+                            content.add(item);
+                        }
+                    }
                 }
             }
 
@@ -112,7 +108,7 @@ public class File_Explorer_Fragment extends Fragment {
         }
 
         if (!f.getName().equalsIgnoreCase("sdcard")) {
-            Item item = new Item("..", "Parent Directory", "", f.getParent(), R.drawable.directory_up, true);
+            Item item = new Item("..",  "", f.getParent(), R.drawable.directory_up, true);
             content.add(item);
         }
         setListAdapter();
@@ -156,7 +152,7 @@ public class File_Explorer_Fragment extends Fragment {
         else if (o.getName().endsWith(".pdf")) {
             setPDFFragment(o);
         }
-        else if(o.getName().endsWith(".txt") || o.getName().endsWith(".xml")){
+        else if(o.getName().endsWith(".txt") || o.getName().endsWith(".xml") || o.getName().endsWith(".doc") || o.getName().endsWith(".docx")){
             setTXTXMLFragment(o);
         }
     }
