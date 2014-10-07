@@ -4,16 +4,14 @@ import android.util.Log;
 
 public class Item{
 	private String name;
-	private String data;
 	private String date;
 	private String path;
 	private int image;
     private boolean newPathNeeded;
 	
-	public Item(String name,String data, String date, String path, int image, boolean newPathNeeded)
+	public Item(String name, String date, String path, int image, boolean newPathNeeded)
 	{
 		this.name = name;
-		this.data = data;
 		this.date = date;
 		this.path = path;
 		this.image = image;
@@ -23,9 +21,6 @@ public class Item{
 	}
 	public String getName(){
 		return name;
-	}
-	public String getData(){
-		return data;
 	}
 	public String getDate(){
 		return date;

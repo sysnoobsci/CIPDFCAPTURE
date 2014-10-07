@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -53,7 +54,6 @@ public class CustomArrayAdapter extends BaseAdapter {
                }
 
                TextView t1 = (TextView) v.findViewById(R.id.TextView01);
-               //TextView t2 = (TextView) v.findViewById(R.id.TextView02);
                TextView t3 = (TextView) v.findViewById(R.id.TextViewDate);
 	           ImageView fileTypeImage = (ImageView) v.findViewById(R.id.fd_Icon1);
 
@@ -65,7 +65,6 @@ public class CustomArrayAdapter extends BaseAdapter {
                 .load(items.getImage())
                 .fit()
                 .into(fileTypeImage);
-               //fileTypeImage.setImageDrawable(c.getResources().getDrawable(items.getImage()));
         Log.d("Array adapter getName()=", items.getName());
                return v;
        }

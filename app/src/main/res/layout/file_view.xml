@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
+    android:layout_height="?android:attr/actionBarSize"
     android:orientation="horizontal"
-    android:background="@drawable/actionbar_background"
+    android:background="@color/WhiteSmoke"
     android:layout_width="match_parent">
 <ImageView
     android:id="@+id/fd_Icon1"
@@ -20,16 +20,8 @@
     android:textAppearance="?android:attr/textAppearanceSmall"
     android:layout_margin="4dp"
     android:gravity="center_vertical"
-    android:textColor="#ffffff"/>
-    
-    
+    android:textColor="#111111"/>
 
-<!--<TextView android:text="TextView02"
-    android:id="@+id/TextView02" 
-    android:layout_width="0dp"
-    android:layout_height="0dp">
-    
-</TextView>-->
 <TextView android:text="TextViewDate"
     android:id="@+id/TextViewDate" 
     android:layout_width="wrap_content" 
@@ -37,6 +29,6 @@
     android:gravity="center_vertical|end"
     android:textAppearance="?android:attr/textAppearanceSmall"
     android:layout_margin="4dp"
-    android:textColor="#ffffff"/>
+    android:textColor="#111111"/>
 
 </LinearLayout>
