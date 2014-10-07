@@ -23,7 +23,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.SetGridTask;
-import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMsgTask;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
 import com.ameraz.android.cipdfcapture.app.Adapters.GalleryAdapter;
 import com.ameraz.android.cipdfcapture.app.R;
@@ -175,12 +175,12 @@ public class Internal_Gallery_Fragment extends Fragment {
                     fileUri = Uri.fromFile(newImage);
                 }
             } catch (IOException e) {
-                ToastMessageTask.fileNotWritten(getContext());
+                ToastMsgTask.fileNotWritten(getContext());
                 Log.e("File: ", "Could not create file.", e);
                 return false;
             }
         } else {
-            ToastMessageTask.fileNotWritten(getContext());
+            ToastMsgTask.fileNotWritten(getContext());
             Log.e("File: ", "Storage not mounted.");
             return false;
         }

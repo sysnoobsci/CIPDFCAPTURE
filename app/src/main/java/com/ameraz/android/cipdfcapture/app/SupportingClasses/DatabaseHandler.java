@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMsgTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -150,13 +150,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         try {
             db.insertOrThrow(TABLE_NAME, null, values);
             db.close();
-            ToastMessageTask tmtask = new ToastMessageTask(context, "CI Connection " +
-                    "Profile Saved.");
-            tmtask.execute();
+            ToastMsgTask.CIConnProfileSavedMessage(context);
         } catch (SQLiteException e) {
-
-            ToastMessageTask tmtask = new ToastMessageTask(context, e.toString());
-            tmtask.execute();
+            ToastMsgTask.DupCIConnProfileSavedMessage(context);
+            e.printStackTrace();
         }
     }
 }

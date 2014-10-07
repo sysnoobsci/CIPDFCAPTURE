@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.APITask;
-import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMsgTask;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -86,12 +86,12 @@ public class APIQueries {
             apitaskobj.execute(targetCIQuery())
                       .get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask.noConnectionMessage(getContext());
+            ToastMsgTask.noConnectionMessage(getContext());
         }
         Log.d("Variable", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
-        ToastMessageTask.fileUploadStatus(getContext(), getActionresult());
+        ToastMsgTask.isFileUploadStatus(getContext(), getActionresult());
         uploadSuccess = getActionresult();
         resetResult();//reset action result after checking it
         QueryArguments.clearList();//clear argslist after query
@@ -110,7 +110,7 @@ public class APIQueries {
             apitaskobj.execute(targetCIQuery())
                       .get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask.noConnectionMessage(getContext());
+            ToastMsgTask.noConnectionMessage(getContext());
         }
         Log.d("listversionQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
@@ -121,7 +121,7 @@ public class APIQueries {
             QueryArguments.clearList();//clear argslist after query
             return apitaskobj.getResponse();//return the good results
         } else {
-            ToastMessageTask.reportNotValidMessage(getContext());
+            ToastMsgTask.reportNotValidMessage(getContext());
             Log.d("listversionQuery()", "CI Server listversion failed.");
             resetResult();//reset action result after checking it
             QueryArguments.clearList();//clear argslist after query
@@ -139,7 +139,7 @@ public class APIQueries {
             apitaskobj.execute(targetCIQuery())
                       .get(lilo_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask.noConnectionMessage(getContext());
+            ToastMsgTask.noConnectionMessage(getContext());
         }
         Log.d("logonQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
@@ -168,18 +168,13 @@ public class APIQueries {
             apitaskobj.execute(targetCIQuery())
                       .get(lilo_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask.noConnectionMessage(getContext());
+            ToastMsgTask.noConnectionMessage(getContext());
         }
         Log.d("logoffQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
         isActionSuccessful(xobj.getTextTag());
         Boolean logoffStatus = getActionresult();
-        LogonSession.logoffMessage(getActionresult(), getContext());//show status of logon action
-        if (logoffStatus) {//if the ping is successful(i.e. user logged in)
-            Log.d("logoffQuery()", "CI Server logoff successful.");
-        } else {
-            Log.d("logoffQuery()", "CI Server logoff failed.");
-        }
+        ToastMsgTask.isLogoffSuccessMessage(context, logoffStatus);
         resetResult();//reset action result after checking it
         QueryArguments.clearList();//clear argslist after query
         return logoffStatus;
@@ -199,7 +194,7 @@ public class APIQueries {
             apitaskobj.execute(targetCIQuery())
                       .get(action_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
-            ToastMessageTask.noConnectionMessage(getContext());
+            ToastMsgTask.noConnectionMessage(getContext());
         }
         Log.d("pingQuery()", "apitaskobj.getResponse() value: " + apitaskobj.getResponse());
         XmlParser xobj = new XmlParser(apitaskobj.getResponse());
@@ -307,7 +302,6 @@ public class APIQueries {
         }
         return vers;
     }
-
 
     //action return code check
     void isActionSuccessful(ArrayList<String> larray) {

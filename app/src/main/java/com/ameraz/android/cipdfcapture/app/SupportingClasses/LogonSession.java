@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMsgTask;
 
 /**
  * Created by adrian.meraz on 5/16/2014.
@@ -106,16 +106,6 @@ public class LogonSession {
         Log.d("JSid", jsid);
     }
 
-    static void logoffMessage(Boolean success, Context context) {
-        if (success) {
-            ToastMessageTask tmtask = new ToastMessageTask(context, "Successfully logged off.");
-            tmtask.execute();
-        } else {
-            ToastMessageTask tmtask = new ToastMessageTask(context, "Problem logging off.");
-            tmtask.execute();
-        }
-    }
-
     public static void setCiLoginInfo() {//takes the info from the fields and sends it in the loginQuery
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getmContext());
         DatabaseHandler dbh = new DatabaseHandler(getmContext());
@@ -153,7 +143,7 @@ public class LogonSession {
             Log.d("tryLogin()", "loginResult value: " + loginResult);
             return loginResult;
         } else {
-            ToastMessageTask.noProfileSelected(context);
+            ToastMsgTask.noProfileSelectedMessage(context);
             return false;
         }
     }

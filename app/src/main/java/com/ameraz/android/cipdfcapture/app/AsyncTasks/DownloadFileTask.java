@@ -72,7 +72,7 @@ public class DownloadFileTask extends AsyncTask<String, String, String> {
         }
         if(dirPath.equals(FileUtility.getTempFilePath())){//check if the file is to be written to the temp path
             if(TempFileTracker.isTempFileCached(fullFilePathName, versionNumber)) {//if file is already cached, don't download it again
-                ToastMessageTask.fileIsCached(context);
+                ToastMsgTask.fileIsCachedMessage(context);
                 return "cached";
             }
         }

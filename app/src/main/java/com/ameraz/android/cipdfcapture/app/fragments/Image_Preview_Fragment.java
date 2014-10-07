@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMsgTask;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.TempFileTracker;
@@ -108,7 +108,7 @@ public class Image_Preview_Fragment extends Fragment {
             setImage();
             Log.d("loadImage()","setImage() called");
         }else{
-            ToastMessageTask.invalidFileFormat(context);
+            ToastMsgTask.invalidFileFormatMessage(context);
         }
     }
 
@@ -152,7 +152,7 @@ public class Image_Preview_Fragment extends Fragment {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ToastMessageTask.isFileOverWritten(context,true);
+                        ToastMsgTask.isFileOverWritten(context, true);
                         try {
                             FileUtility.copyFile(new File(oldPath),new File(newPath));//copy file from temp directory to other directory
                         } catch (IOException e) {
@@ -163,7 +163,7 @@ public class Image_Preview_Fragment extends Fragment {
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ToastMessageTask.isFileOverWritten(context,false);
+                        ToastMsgTask.isFileOverWritten(context, false);
                     }
                 });
         dialog = builder.create();
@@ -181,7 +181,7 @@ public class Image_Preview_Fragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            ToastMessageTask.downloadFileSuccessful(context);
+            ToastMsgTask.downloadFileSuccessfulMessage(context);
         }
     }
 

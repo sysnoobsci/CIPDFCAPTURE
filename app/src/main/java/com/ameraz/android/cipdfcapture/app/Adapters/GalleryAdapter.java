@@ -101,7 +101,6 @@ public class GalleryAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-        Log.d("Loading images...", Uri.parse("file://" + FileUtility.getImageFilePath() + names.get(position)).toString());
         Picasso.with(getContext())
                 .load(Uri.parse("file://" + FileUtility.getImageFilePath() + names.get(position)))
                 .resize(width, width)

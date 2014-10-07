@@ -10,7 +10,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMsgTask;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
 
@@ -55,12 +55,12 @@ public class Camera_Capture_Fragment extends Fragment {
                     imageUri = Uri.fromFile(newImage);
                 }
             } catch (IOException e) {
-                ToastMessageTask.fileNotWritten(getContext());
+                ToastMsgTask.fileNotWritten(getContext());
                 Log.e("File: ", "Could not create file.", e);
                 return false;
             }
         } else {
-            ToastMessageTask.fileNotWritten(getContext());
+            ToastMsgTask.fileNotWritten(getContext());
             Log.e("File: ", "Storage not mounted.");
             return false;
         }

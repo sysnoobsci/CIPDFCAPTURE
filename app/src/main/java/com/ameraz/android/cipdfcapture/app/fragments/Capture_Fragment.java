@@ -16,8 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMsgTask;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.APIQueries;
-import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
@@ -115,7 +115,7 @@ public class Capture_Fragment extends Fragment {
                             startActivityForResult(intent, 0);
                         }
                     } catch (IOException e) {
-                        ToastMessageTask.fileNotWritten(getContext());
+                        ToastMsgTask.fileNotWritten(getContext());
                         Log.e("File: ", "Could not create file.", e);
                     }
                     Log.i("File: ", incImage);

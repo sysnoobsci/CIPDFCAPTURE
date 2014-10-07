@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMsgTask;
 
 /**
  * Created by adrian.meraz on 9/11/2014.
@@ -105,18 +105,18 @@ public class UploadProcess {
                 e.printStackTrace();
             }
         } else {
-            ToastMessageTask.noValidTopicTemplateSpecified(getContext());
+            ToastMsgTask.notValidTopicTemplateMessage(getContext());
         }
         ringProgressDialog.dismiss();
     }
 
     Boolean uploadCheck(EditText description, Object file2upload) {
         if (file2upload == null) {//checks if image taken yet - or if object is valid if not an image
-            ToastMessageTask.picNotTaken(getContext());
+            ToastMsgTask.picNotTakenMessage(getContext());
             return false;
         }
         if (String.valueOf(description.getText()).isEmpty()) {
-            ToastMessageTask.fillFieldMessage(getContext());
+            ToastMsgTask.fillFieldMessage(getContext());
             return false;
         }
         Log.d("uploadCheck()", "upload check passed.");

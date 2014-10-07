@@ -17,9 +17,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMsgTask;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.APIQueries;
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.DownloadFileTask;
-import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMessageTask;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.ListViewContent;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.LogonSession;
@@ -108,7 +108,7 @@ public class View_Versions_Fragment extends Fragment {
     @Override
     public void onPause(){
         super.onPause();
-        Log.d("View_Versions_Fragment","onPause called.");
+        Log.d("View_Versions_Fragment", "onPause called.");
         ListViewContent.setvVFcontent(content);
     }
 
@@ -168,7 +168,7 @@ public class View_Versions_Fragment extends Fragment {
             Log.d("Message", "CI Login successful and ready to search for reports.");
             new FillListViewTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);//don't serialize asynctask
         } else {//if login attempt fails from trying the CI server profile, prompt user to check profile
-            ToastMessageTask.noConnectionMessage(getContext());
+            new ToastMsgTask(context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,getResources().getString(R.string.noConnectionMessage));
         }
     }
 
