@@ -49,6 +49,9 @@
     <string name="CI_CAM_config_screen_preference">CI CAM Settings</string>
     <string name="CI_CAM_config_summary_screen_preference">Edit CAM Settings</string>
 
+    <string name="CI_PDF_config_screen_preference">PDF Retrieval</string>
+    <string name="CI_PDF_config_summary_screen_preference">Always download files as PDFs</string>
+
     <string name="CI_topictemplate_screen_preference">Edit Topic Template Name </string>
     <string name="CI_topictemplate_summary_screen_preference">Modify Topic Template Name </string>
 

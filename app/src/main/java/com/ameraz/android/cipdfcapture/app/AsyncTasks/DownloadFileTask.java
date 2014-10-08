@@ -5,8 +5,10 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
@@ -34,7 +36,8 @@ public class DownloadFileTask extends AsyncTask<String, String, String> {
     Context context;
     private ProgressDialog mProgressDialog;
     String fragmentChosen;
-
+    SharedPreferences preferences;
+    String pdfPref;
 
     public DownloadFileTask(String dirPath, String fullFilePathName, int versionNumber, Activity activity) {
         this.dirPath = dirPath;
@@ -42,6 +45,8 @@ public class DownloadFileTask extends AsyncTask<String, String, String> {
         this.versionNumber = versionNumber;
         this.activity = activity;
         this.context = activity;
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        pdfPref = preferences.getString("camName_preference", null);
     }
 
 
@@ -78,7 +83,13 @@ public class DownloadFileTask extends AsyncTask<String, String, String> {
         }
         int count;
         try {
-            URL url = new URL(arg0);
+            URL url;
+            if(Boolean.valueOf(pdfPref)){
+                url = new URL(arg0 + "&fmt=pdf");
+            }
+            else{
+                url = new URL(arg0);
+            }
             URLConnection conexion = url.openConnection();
             conexion.connect();
             Log.d("DownloadFileTaskTest", "Number of args: " + args.length);

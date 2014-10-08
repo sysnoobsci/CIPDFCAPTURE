@@ -74,6 +74,12 @@
 
         </PreferenceScreen>
 
+        <CheckBoxPreference
+            android:key="ci_pdf_preference"
+            android:title="@string/CI_PDF_config_screen_preference"
+            android:summary="@string/CI_PDF_config_summary_screen_preference">
+        </CheckBoxPreference>
+
     </PreferenceCategory>
 
     <!-- You can place more preferences here that will be shown on the next screen. -->
