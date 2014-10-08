@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,8 +15,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.UploadFileTask;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.SupportingClasses.UploadProcess;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,7 +33,6 @@ public class Text_XML_Upload_Fragment extends Fragment {
     private TextView editText;
     private EditText name;
     private ImageButton uploadButton;
-    private ProgressDialog ringProgressDialog;
     private Uri fileUri;
 
     public void setContext(Activity activity){
@@ -66,13 +66,6 @@ public class Text_XML_Upload_Fragment extends Fragment {
         editText = (TextView)rootView.findViewById(R.id.reportName);
         name = (EditText)rootView.findViewById(R.id.txt_xml_name);
         uploadButton = (ImageButton)rootView.findViewById(R.id.txt_xml_upload_button);
-        ringProgressDialog = new ProgressDialog(getContext());
-        setUploadProgressDialog();
-    }
-
-    private void setUploadProgressDialog() {
-        ringProgressDialog.setTitle("Performing Action ...");
-        ringProgressDialog.setMessage("Uploading file ...");
     }
 
     private void getFileUri() {
@@ -102,17 +95,8 @@ public class Text_XML_Upload_Fragment extends Fragment {
     }
 
     private void upload() {
-        ringProgressDialog.show();
-        new Thread() {
-            public void run() {
-                try {
-                    UploadProcess upobj = new UploadProcess(getContext(), name, fileUri, ringProgressDialog);
-                    upobj.uploadProcess();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+        new UploadFileTask(getContext(), name, fileUri)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
 }

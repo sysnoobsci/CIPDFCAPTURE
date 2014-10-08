@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,9 +14,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.UploadFileTask;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.APIQueries;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.SupportingClasses.UploadProcess;
 import com.joanzapata.pdfview.PDFView;
 import com.joanzapata.pdfview.listener.OnPageChangeListener;
 
@@ -31,7 +32,6 @@ import static java.lang.String.format;
 public class PDF_Upload_Fragment extends Fragment implements OnPageChangeListener {
 
     private static Context context;
-    private ProgressDialog ringProgressDialog;
     private PDFView pdfView;
     private ImageButton editButton;
     private EditText nameView;
@@ -65,8 +65,6 @@ public class PDF_Upload_Fragment extends Fragment implements OnPageChangeListene
         initializeViews(rootView);
         setContext(getActivity());
         new APIQueries(getContext());
-        ringProgressDialog = new ProgressDialog(getContext());
-        setUploadProgressDialog();
         uploadListener();
         editListener();
         setUriAndPreview();
@@ -135,23 +133,9 @@ public class PDF_Upload_Fragment extends Fragment implements OnPageChangeListene
         pageCountView.setText(Integer.toString(pageNumber));
     }
 
-    private void setUploadProgressDialog() {
-        ringProgressDialog.setTitle("Performing Action ...");
-        ringProgressDialog.setMessage("Uploading file ...");
-    }
-
     private void upload() {
-        ringProgressDialog.show();
-        new Thread() {
-            public void run() {
-                try {
-                    UploadProcess upobj = new UploadProcess(getContext(), nameView, fileUri, ringProgressDialog);
-                    upobj.uploadProcess();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+        new UploadFileTask(getContext(), nameView, fileUri)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override

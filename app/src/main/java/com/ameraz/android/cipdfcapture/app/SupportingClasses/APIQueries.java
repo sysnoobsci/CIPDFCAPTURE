@@ -102,7 +102,6 @@ public class APIQueries {
     //listversion
     public String listversionQuery(ArrayList<Object> args) throws ExecutionException,
             InterruptedException, IOException, XmlPullParserException {
-
         ArrayList<Object> actionargs = args;
         actionargs.add("act,listversion");
         HttpEntity entity = mebBuilder(actionargs);
@@ -137,8 +136,10 @@ public class APIQueries {
         HttpEntity entity = mebBuilder(actionargs);
         APITask apitaskobj = new APITask(entity);
         try {
-            apitaskobj.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, targetCIQuery())
-                      .get(lilo_timeout, TimeUnit.MILLISECONDS);
+            //apitaskobj.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, targetCIQuery())
+            //          .get(lilo_timeout, TimeUnit.MILLISECONDS);
+            apitaskobj.execute(targetCIQuery())
+                    .get(lilo_timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException te) {
             ToastMsgTask.noConnectionMessage(getContext());
         }
@@ -238,7 +239,6 @@ public class APIQueries {
                 if (larg.getClass().equals(File.class)) {//if type of arg is File, do this
                     builder.addPart("file", new FileBody((File) larg));
                 }
-                //if (larg.getClass().getName().startsWith("android.net.Uri$HierarchicalUri") || larg.getClass().getName().equals("android.net.Uri$StringUri")) {//if type of arg is Uri, do this
                 if (larg.getClass().getName().startsWith("android.net.Uri$")) {//if type of arg is Uri, do this
                     Uri imageUri = (Uri) larg;
                     File newImage = new File(imageUri.getPath());

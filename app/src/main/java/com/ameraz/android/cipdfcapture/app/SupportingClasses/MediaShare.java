@@ -6,12 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.UploadFileTask;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.ameraz.android.cipdfcapture.app.R;
 import com.squareup.picasso.Picasso;
@@ -25,7 +28,6 @@ public class MediaShare extends Activity {
     private GestureImageView imageView;
     private EditText uploadName;
     private Uri imageUri;
-    private ProgressDialog ringProgressDialog;
     Context context;
 
     public Context getContext() {
@@ -53,7 +55,6 @@ public class MediaShare extends Activity {
         setContentView(R.layout.image_upload_layout);
         Intent receivedIntent = getIntent();
         initializeViews();
-        setUploadProgressDialog();
         setUploadButtonListener();
         setContext(getApplicationContext());
         imageUri = receivedIntent.getParcelableExtra(Intent.EXTRA_STREAM);
@@ -75,29 +76,14 @@ public class MediaShare extends Activity {
     }
 
     private void upload() {
-        ringProgressDialog.show();
-        new Thread() {
-            public void run() {
-                try {
-                    UploadProcess upobj = new UploadProcess(getContext(), uploadName, imageUri, ringProgressDialog);
-                    upobj.uploadProcess();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
-
-    private void setUploadProgressDialog() {
-        ringProgressDialog.setTitle("Performing Action ...");
-        ringProgressDialog.setMessage("Uploading file ...");
+        new UploadFileTask(getContext(), uploadName, imageUri)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void initializeViews() {
         uploadButton = (ImageButton)findViewById(R.id.image_upload_button);
         imageView = (GestureImageView)findViewById(R.id.upload_image_view);
         uploadName = (EditText)findViewById(R.id.upload_name_input);
-        ringProgressDialog = new ProgressDialog(this);
     }
 
     private void setImage() {

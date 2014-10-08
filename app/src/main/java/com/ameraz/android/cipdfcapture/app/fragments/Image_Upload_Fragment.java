@@ -1,8 +1,6 @@
 package com.ameraz.android.cipdfcapture.app.fragments;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -14,11 +12,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.UploadFileTask;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.APIQueries;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.SupportingClasses.UploadProcess;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -35,7 +33,6 @@ public class Image_Upload_Fragment extends Fragment {
     private GestureImageView imageView;
     private ImageButton imageButton;
     private EditText name;
-    private ProgressDialog ringProgressDialog;
     static Context context;
     private FileUtility fp;
 
@@ -53,8 +50,6 @@ public class Image_Upload_Fragment extends Fragment {
         initializeViews(rootView);
         setContext(getActivity());
         new APIQueries(getContext());
-        ringProgressDialog = new ProgressDialog(getContext());
-        setUploadProgressDialog();
         uploadListener();
         //gets the data passed to it from InternalGalleryFragment and creates the uri.
         setUriAndImage();
@@ -85,11 +80,6 @@ public class Image_Upload_Fragment extends Fragment {
         fp = new FileUtility();
     }
 
-    private void setUploadProgressDialog() {
-        ringProgressDialog.setTitle("Performing Action ...");
-        ringProgressDialog.setMessage("Uploading file ...");
-    }
-
     private void setImage() {
         Picasso.with(getContext())
                 .load(fileUri)
@@ -98,41 +88,14 @@ public class Image_Upload_Fragment extends Fragment {
                 .into(imageView);
     }
 
-    private void upload() {
-        new UploadTask().execute();
-    }
-
     private void uploadListener() {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                upload();
+                new UploadFileTask(getContext(), name, fileUri)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
-    }
-
-    private class UploadTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            ringProgressDialog.show();
-        }
-        @Override
-        protected String doInBackground(String... params) {
-            UploadProcess upobj = new UploadProcess(getContext(), name, fileUri, ringProgressDialog);
-            try {
-                upobj.uploadProcess();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return "success";
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            if(result.equals("success")){
-                getFragmentManager().popBackStackImmediate();//return to previous fragment in back stack
-            }
-            ringProgressDialog.dismiss();
-        }
     }
 
 }

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -17,11 +18,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.ameraz.android.cipdfcapture.app.AsyncTasks.ToastMsgTask;
+import com.ameraz.android.cipdfcapture.app.AsyncTasks.UploadFileTask;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.APIQueries;
 import com.ameraz.android.cipdfcapture.app.ExtendedClasses.GestureImageView;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.FileUtility;
 import com.ameraz.android.cipdfcapture.app.R;
-import com.ameraz.android.cipdfcapture.app.SupportingClasses.UploadProcess;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -42,7 +43,6 @@ public class Capture_Fragment extends Fragment {
     private String outImage;
     private File newImage;
     APIQueries apiobj;
-    ProgressDialog ringProgressDialog;
     static Context context;
 
 
@@ -60,8 +60,6 @@ public class Capture_Fragment extends Fragment {
         initializeViews(rootView);
         setContext(getActivity());
         apiobj = new APIQueries(getContext());
-        ringProgressDialog = new ProgressDialog(getContext());
-        setUploadProgressDialog();
         setCaptureBackground();
         takePicButtonListener();
         uploadButtonListener();
@@ -80,17 +78,8 @@ public class Capture_Fragment extends Fragment {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ringProgressDialog.show();
-                new Thread() {
-                    public void run() {
-                        try {
-                            UploadProcess upobj = new UploadProcess(getContext(), description, imageUri, ringProgressDialog);
-                            upobj.uploadProcess();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }.start();
+                new UploadFileTask(getContext(), description, imageUri)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
     }
@@ -131,11 +120,6 @@ public class Capture_Fragment extends Fragment {
             Log.d("onActivityResult ", imageUri.toString());
             setCapturedImage();
         }
-    }
-
-    private void setUploadProgressDialog() {
-        ringProgressDialog.setTitle("Performing Action ...");
-        ringProgressDialog.setMessage("Uploading file ...");
     }
 
     private void setCapturedImage() {
