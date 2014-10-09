@@ -29,6 +29,7 @@ import com.ameraz.android.cipdfcapture.app.Adapters.VersionInfoAdapter;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.Version;
 import com.ameraz.android.cipdfcapture.app.SupportingClasses.VersionInfo;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -50,6 +51,7 @@ public class View_Versions_Fragment extends Fragment {
     ArrayList<String> listOfReportVersions = new ArrayList<String>();
     ProgressDialog ringProgressDialog;
     SharedPreferences preferences;
+    Boolean pdfPref;
 
     private ArrayList<Version> content;
 
@@ -61,26 +63,12 @@ public class View_Versions_Fragment extends Fragment {
         View_Versions_Fragment.context = context;
     }
 
-    /*public void onActivityCreated(Bundle savedInstanceState) {
-        Log.d("View_Versions_Fragment","onActivityCreated called.");
-        super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            //Restore the fragment's state here
-            Log.d("View_Versions_Fragment","Restoring fragment state.");
-            ctsArrayList = savedInstanceState.getStringArrayList("ctsArrayList");
-            fmtArrayList = savedInstanceState.getStringArrayList("fmtArrayList");
-            verArrayList = savedInstanceState.getStringArrayList("verArrayList");
-            for(int i=0;i<ctsArrayList.size();i++){
-                content.add(new Version(ctsArrayList.get(i), fmtArrayList.get(i), verArrayList.get(i)));
-            }
-            createListAdapter(content);
-        }
-    }*/
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_downloadview, container, false);
         setContext(getActivity());
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        pdfPref = preferences.getBoolean("ci_pdf_preference", false);
         instantiateViews();
         getViewState();//checks if there are saved instances of the views that reside in this fragment
         ringProgressDialog = new ProgressDialog(getContext());
@@ -88,15 +76,6 @@ public class View_Versions_Fragment extends Fragment {
         searchButtonListener();
         return rootView;
     }
-
-    /*@Override
-    public void onSaveInstanceState(Bundle outState) {//save fragment state
-        super.onSaveInstanceState(outState);
-        Log.d("View_Versions_Fragment","onSaveInstanceState called.");
-        outState.putStringArrayList("ctsArrayList", ctsArrayList);
-        outState.putStringArrayList("fmtArrayList", fmtArrayList);
-        outState.putStringArrayList("verArrayList", verArrayList);
-    }*/
 
     private void getViewState(){
         if (ListViewContent.getvVFcontent() != null){
@@ -113,7 +92,7 @@ public class View_Versions_Fragment extends Fragment {
     }
 
     public void instantiateViews() {
-        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
         reportName = (EditText) rootView.findViewById(R.id.report_search_input);
         reportName.setText(preferences.getString("report_preference", null));//set the filed to default report name if there is one
         searchButton = (ImageButton) rootView.findViewById(R.id.searchButton);
@@ -154,6 +133,13 @@ public class View_Versions_Fragment extends Fragment {
         setVersionInfo(pos);
         String fullFilePathName = FileUtility.getTempFilePath() + VersionInfo.getDsid()
                 + "." + VersionInfo.getFormat().toLowerCase();
+        if(pdfPref){//if user chose pref to download as pdf, must add argument to url and change file name to have .pdf extension
+            int length = fullFilePathName.length()-3;
+            fullFilePathName = fullFilePathName.substring(0, length-1) + ".pdf";//change file extension to .pdf
+            topicIdUrl = topicIdUrl + "&fmt=pdf";//add retrieve as pdf call to url
+            VersionInfo.setFormat("pdf");//change version format to pdf
+            Log.d("downloadTempFile()","Value of fullFilePathName: " + fullFilePathName);
+        }
         Log.d("View_Versions_Fragment", "topicIdUrl value: " + topicIdUrl);
         FragmentManager fragmentManager = getActivity().getFragmentManager();//TEST THIS
         fragmentManager.beginTransaction()
