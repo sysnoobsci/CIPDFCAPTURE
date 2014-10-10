@@ -37,7 +37,7 @@ public class DownloadFileTask extends AsyncTask<String, String, String> {
     private ProgressDialog mProgressDialog;
     String fragmentChosen;
     SharedPreferences preferences;
-    String pdfPref;
+    Boolean pdfPref;
 
     public DownloadFileTask(String dirPath, String fullFilePathName, int versionNumber, Activity activity) {
         this.dirPath = dirPath;
@@ -46,7 +46,7 @@ public class DownloadFileTask extends AsyncTask<String, String, String> {
         this.activity = activity;
         this.context = activity;
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        pdfPref = preferences.getString("camName_preference", null);
+        pdfPref = preferences.getBoolean("ci_pdf_preference", false);
     }
 
 
@@ -84,21 +84,15 @@ public class DownloadFileTask extends AsyncTask<String, String, String> {
         int count;
         try {
             URL url;
-            if(Boolean.valueOf(pdfPref)){
-                url = new URL(arg0 + "&fmt=pdf");
-            }
-            else{
-                url = new URL(arg0);
-            }
+            Log.d("DownFileTask.doInBackGround()","Value of pdfPref: "+ pdfPref);
+            url = new URL(arg0);
             URLConnection conexion = url.openConnection();
             conexion.connect();
             Log.d("DownloadFileTaskTest", "Number of args: " + args.length);
-
             int lengthOfFile = conexion.getContentLength();
             Log.d("DownloadFileTaskTest", "Length of file: " + lengthOfFile);
             InputStream input = new BufferedInputStream(url.openStream());
             OutputStream output = new FileOutputStream(fullFilePathName);
-
             byte data[] = new byte[1024];
             long total = 0;
             while ((count = input.read(data)) != -1) {
